@@ -1,0 +1,31 @@
+#include "widget.hpp"
+
+void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
+{
+    if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased)
+    {
+        MouseKey key = MouseKey::Left;
+        switch (event.mouseButton.button)
+        {
+            case sf::Mouse::Right:
+                key = MouseKey::Right;
+                break;
+            default:
+                key = MouseKey::Left;
+        }
+
+        switch (event.type)
+        {
+            case sf::Event::MouseButtonPressed:
+                widget->onMousePressed(key, event.mouseButton.x, event.mouseButton.y, transf_list);
+                break;
+            case sf::Event::MouseButtonReleased:
+                widget->onMouseReleased(key, event.mouseButton.x, event.mouseButton.y, transf_list);
+                break;
+        }
+    }
+    else if (event.type == sf::Event::MouseMoved)
+    {
+        widget->onMouseMoved(event.mouseButton.x, event.mouseButton.y, transf_list);
+    }
+}
