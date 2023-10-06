@@ -17,7 +17,7 @@ int main()
     sf::Texture window_texture;
     window_texture.loadFromFile("mols_ctrl_texture.png");
 
-    Window my_window({0.5f, 0.5f}, 0.2, 0.2, window_texture, {0, 0, 50, 70});
+    Window my_window({0.5f, 0.5f}, 0.5, 0.5, window_texture, {0, 0, 50, 70});
 
     while (window.isOpen())
     {

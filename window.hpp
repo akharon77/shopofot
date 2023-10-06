@@ -35,5 +35,29 @@ public:
     virtual bool onTime (float d_seconds) override;
 };
 
+class WindowDecorator : public Widget
+{
+    Widget *wrappee;
+
+public:
+    WindowD(Vector2f pos, float width, float height, sf::Texture &texture, const sf::IntRect &rect);
+
+    ~Window() = default;
+    Window& operator = (const Window &rhs) = delete;
+    Window(const Window &rhs) = delete;
+
+    virtual void draw(sf::RenderWindow &target, List<Transform> &transf_list) override;
+
+    virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+
+    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) override;
+
+    virtual bool onKeyboardPressed  (KeyboardKey key) override;
+    virtual bool onKeyboardReleased (KeyboardKey key) override;
+
+    virtual bool onTime (float d_seconds) override;
+}
+
 #endif  // WINDOW_HPP
 

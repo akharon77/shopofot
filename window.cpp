@@ -13,8 +13,8 @@ void Window::draw(sf::RenderWindow &target, List<Transform> &transf_list)
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     m_sprite.setPosition(top_transf.m_offset);
-    printf("%f %f\n", m_sprite.getPosition().x, m_sprite.getPosition().y);
     m_sprite.setScale(top_transf.m_scale);
+
     target.draw(m_sprite);
 
     transf_list.PopBack();
