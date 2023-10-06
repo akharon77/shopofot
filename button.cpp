@@ -1,98 +1,120 @@
-// #include "button.hpp"
+ #include "button.hpp"
 
-// Button::Button(Vector2f pos, int32_t width, int32_t height, sf::Texture texture, Vector2u default_pos, Vector2u pressed_pos, Vector2u focused_pos) :
-//     m_pos(pos),
-//     m_width(width),
-//     m_height(height),
-//     m_texture(texture),
-//     m_default_pos(default_pos),
-//     m_pressed_pos(pressed_pos),
-//     m_focused_pos(focused_pos)
-// {
-//     m_sprite.setTexture(m_texture);
-//     m_sprite.setTextureRect(sf::IntRect(m_default_pos.x, m_default_pos.y, m_width, m_height));
-//     m_sprite.setPosition({m_pos.x, m_pos.y});
-// }
-// 
-// void Button::draw(sf::RenderWindow &window)
-// {
-//     window.draw(m_sprite);
-// }
-// 
-// bool Button::checkIn(const Vector2f &pnt) const
-// {
-//     return m_pos.x <= pnt.x && pnt.x <= m_pos.x + m_width &&
-//            m_pos.y <= pnt.y && pnt.y <= m_pos.y + m_height;
-// }
-// 
-// void Button::handleEvent(const sf::Event &event)
-// {
-//     if (event.type == sf::Event::MouseButtonPressed &&
-//         event.mouseButton.button == sf::Mouse::Left &&
-//         checkIn({event.mouseButton.x, event.mouseButton.y}))
-//     {
-//         m_sprite.setTextureRect(sf::IntRect(m_pressed_pos.x, m_pressed_pos.y, m_width, m_height));
-//         onPressed();
-//     }
-//     else if (event.type == sf::Event::MouseButtonReleased &&
-//              event.mouseButton.button == sf::Mouse::Left  &&
-//              checkIn({event.mouseButton.x, event.mouseButton.y}))
-//     {
-//         m_sprite.setTextureRect(sf::IntRect(m_default_pos.x, m_default_pos.y, m_width, m_height));
-//         onReleased();
-//     }
-//     else if (event.type == sf::Event::MouseMoved)
-//     {
-//         if (checkIn({event.mouseMove.x, event.mouseMove.y}))
-//         {
-//             m_sprite.setTextureRect(sf::IntRect(m_focused_pos.x, m_focused_pos.y, m_width, m_height));
-//             onFocused();
-//         }
-//         else
-//         {
-//             m_sprite.setTextureRect(sf::IntRect(m_default_pos.x, m_default_pos.y, m_width, m_height));
-//         }
-//     }
-// }
-// 
-// Panel::Panel() :
-//     m_buf_wdgs(1),
-//     m_wdgs(&m_buf_wdgs)
-// {}
-// 
-// void Panel::draw(sf::RenderWindow &window)
-// {
-//     int32_t anch = m_wdgs.GetHead();
-//     Node<Widget*> node = *m_wdgs.Get(anch);
-// 
-//     int32_t size = m_wdgs.GetSize();
-//     for (int32_t i = 0; i < size; ++i)
-//     {
-//         node.val->draw(window);
-//         anch = node.next;
-//         node = *m_wdgs.Get(anch);
-//     }
-// }
-// 
-// void Panel::handleEvent(const sf::Event &event)
-// {
-//     int32_t anch = m_wdgs.GetHead();
-//     Node<Widget*> node = *m_wdgs.Get(anch);
-// 
-//     int32_t size = m_wdgs.GetSize();
-//     for (int32_t i = 0; i < size; ++i)
-//     {
-//         node.val->handleEvent(event);
-//         anch = node.next;
-//         node = *m_wdgs.Get(anch);
-//     }
-// }
-// 
-// void Panel::add(Widget *wdg)
-// {
-//     m_wdgs.PushBack(wdg);
-// }
-// 
+Button::Button(const Vector2f &pos, float width, float height, const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect) :
+    m_status(DEFAULT),
+    m_width(width),
+    m_height(height),
+    m_transf(pos, Vector2f{m_width, m_height}),
+    m_texture(&texture),
+    m_default_rect(default_rect),
+    m_pressed_rect(pressed_rect),
+    m_focused_rect(focused_rect),
+    m_vertex_array(sf::Quads, 4)
+{
+    m_vertex_array[0].position = {0, 0};
+    m_vertex_array[1].position = {1, 0};
+    m_vertex_array[2].position = {1, 1};
+    m_vertex_array[3].position = {0, 1};
 
-//Button::Button(Vector2f pos, Vector2f size, sf::Texture &texture, sf::IntRect default_rect, sf::IntRect pressed_rect, sf::IntRect focused_rect);
+    setRect(default_rect);
+}
+
+void Button::setRect(const sf::IntRect &rect)
+{
+    m_vertex_array[0].texCoords = {rect.left,              rect.top};
+    m_vertex_array[1].texCoords = {rect.left + rect.width, rect.top};
+    m_vertex_array[2].texCoords = {rect.left + rect.width, rect.top + rect.height};
+    m_vertex_array[3].texCoords = {rect.left,              rect.top + rect.height};
+}
+ 
+void Button::draw(sf::RenderTarget &target, List<Transform> &transf_list)
+{
+    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+
+    sf::VertexArray buf_vertex_array(m_vertex_array);
+    for (int32_t i = 0; i < 4; ++i)
+        buf_vertex_array[i].position = top_transf.rollbackTransform(m_vertex_array[i].position);
+
+    target.draw(buf_vertex_array, m_texture);
+
+    transf_list.PopBack();
+}
+
+bool Button::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+{
+    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+
+    Vector2f pos = top_transf.applyTransform({x, y});
+
+    if (EPS < pos.x && pos.x < 1 - EPS &&
+        EPS < pos.y && pos.y < 1 - EPS)
+    {
+        m_status = PRESSED;
+        setRect(m_pressed_rect);
+
+        onClick();
+
+        transf_list.PopBack();
+        return true;
+    }
+
+    transf_list.PopBack();
+    return false;
+}
+
+bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+{
+    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+
+    Vector2f pos = top_transf.applyTransform({x, y});
+
+    if (m_status == PRESSED)
+    {
+        if (EPS < pos.x && pos.x < 1 - EPS &&
+            EPS < pos.y && pos.y < 1 - EPS)
+        {
+            m_status = FOCUSED;
+            setRect(m_focused_rect);
+        }
+        else
+        {
+            m_status = DEFAULT;
+            setRect(m_default_rect);
+        }
+
+        onReleased();
+    }
+
+    transf_list.PopBack();
+    return true;
+}
+
+bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+{
+    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+
+    Vector2f pos = top_transf.applyTransform({x, y});
+
+    if (m_status == DEFAULT            &&
+        EPS < pos.x && pos.x < 1 - EPS &&
+        EPS < pos.y && pos.y < 1 - EPS)
+    {
+        m_status = FOCUSED;
+        setRect(m_focused_rect);
+    }
+    else if (m_status == FOCUSED              &&
+             !(EPS < pos.x && pos.x < 1 - EPS &&
+               EPS < pos.y && pos.y < 1 - EPS))
+    {
+        m_status = DEFAULT;
+        setRect(m_default_rect);
+    }
+
+    transf_list.PopBack();
+    return true;
+}
 

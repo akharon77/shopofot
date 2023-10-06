@@ -25,3 +25,9 @@ Vector2f Transform::applyTransform(const Vector2f &vec) const
 
     return res;
 }
+
+Vector2f Transform::rollbackTransform (const Vector2f &vec) const
+{
+    return m_offset + Vector2f{vec.x * m_scale.x, vec.y * m_scale.y};
+}
+

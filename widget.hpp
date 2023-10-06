@@ -19,7 +19,7 @@ enum KeyboardKey
 class Widget
 {
 public:
-    virtual void draw(sf::RenderWindow &target, List<Transform> &transf_list)  = 0;
+    virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list)  = 0;
 
     virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)  = 0;
     virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)  = 0;

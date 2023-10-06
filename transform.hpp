@@ -16,8 +16,10 @@ public:
     Transform& operator = (const Transform &rhs) = default;
 
     Transform applyParent    (const Transform &par) const;
-    Vector2f  applyTransform (const Vector2f  &vec) const;
 
+    Vector2f    applyTransform (const Vector2f &vec) const;  // from global to local
+    Vector2f rollbackTransform (const Vector2f &vec) const;  // from local to global
 };
 
 #endif  // TRANSFORM_HPP
+

@@ -26,6 +26,7 @@ void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
     }
     else if (event.type == sf::Event::MouseMoved)
     {
-        widget->onMouseMoved(event.mouseButton.x, event.mouseButton.y, transf_list);
+        widget->onMouseMoved(event.mouseMove.x, event.mouseMove.y, transf_list);
     }
 }
+
