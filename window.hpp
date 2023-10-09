@@ -31,6 +31,8 @@ public:
     virtual bool onKeyboardPressed  (KeyboardKey key) override;
     virtual bool onKeyboardReleased (KeyboardKey key) override;
 
+    virtual bool onResize(float width, float height) override;
+
     virtual bool onTime (float d_seconds) override;
 };
 

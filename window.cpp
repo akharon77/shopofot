@@ -20,6 +20,14 @@ void Window::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     transf_list.PopBack();
 }
 
+bool Window::onResize(float width, float height)
+{
+    m_transf.m_scale = Vector2f{m_transf.m_scale.x / m_width * width, m_transf.m_scale.y / m_height * height};
+    m_size = {width, height};
+    m_width = width;
+    m_height = height;
+}
+
 bool Window::onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) {}
 bool Window::onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) {}
 

@@ -36,6 +36,8 @@ public:
 
     virtual bool onTime (float d_seconds) = 0;
 
+    virtual bool onResize(float width, float height) = 0;
+
     virtual Transform getTransform() const;
     virtual Transform setTransform(const Transform &transf);
 };

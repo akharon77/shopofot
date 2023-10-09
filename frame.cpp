@@ -13,10 +13,7 @@ Frame::Frame(Widget &wrappee, const char *title, float thickness, const ButtonTe
     m_status(DEFAULT),
     m_close_btn(*this, close_btn_texture)
 {
-    m_vertex_array[0].position = {0, 0};
-    m_vertex_array[1].position = {m_size.x, 0};
-    m_vertex_array[2].position = {m_size.x, m_size.y};
-    m_vertex_array[3].position = {0, m_size.y};
+    updateVertexArray();
 
     wrappee.setTransform
     (
@@ -26,6 +23,14 @@ Frame::Frame(Widget &wrappee, const char *title, float thickness, const ButtonTe
             wrappee.m_transf.m_scale
         }
     );
+}
+
+void Frame::updateVertexArray()
+{
+    m_vertex_array[0].position = {0, 0};
+    m_vertex_array[1].position = {m_size.x, 0};
+    m_vertex_array[2].position = {m_size.x, m_size.y};
+    m_vertex_array[3].position = {0, m_size.y};
 }
 
 void Frame::draw(sf::RenderTarget &target, List<Transform> &transf_list)
@@ -50,10 +55,24 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
 
     Vector2f pos = top_transf.applyTransform({x, y});
 
-    if (EPS < pos.x && pos.x < m_wrappee->m_size.x + 2 * m_thickness - EPS &&
+    if (EPS < pos.x && pos.x < m_size.x    - EPS &&
         EPS < pos.y && pos.y < m_thickness - EPS)
     {
         m_status = HOLD;
+        m_hold_pos = pos;
+    }
+
+    if (EPS + m_wrappee->m_size.x + m_thickness < pos.x && pos.x < m_size.x - EPS &&
+        EPS + m_thickness < pos.y && pos.y < m_size.y - EPS)
+    {
+        m_status = (status_t) (m_status | HOLD_HOR);
+        m_hold_pos = pos;
+    }
+
+    if (EPS + m_thickness < pos.x && pos.x < m_size.x - EPS &&
+        EPS + m_thickness + m_wrappee->m_size.y  < pos.y && pos.y < m_size.y)
+    {
+        m_status = (status_t) (m_status | HOLD_VER);
         m_hold_pos = pos;
     }
 
@@ -69,12 +88,19 @@ bool Frame::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> 
 
     Vector2f pos = top_transf.applyTransform({x, y});
 
-    if (m_status == HOLD)
-        m_status = DEFAULT;
+    m_status = DEFAULT;
 
     m_wrappee->onMouseReleased(key, x, y, transf_list);
 
     transf_list.PopBack();
+}
+
+bool Frame::onResize(float width, float height)
+{
+    m_size = {width, height};
+    updateVertexArray();
+
+    m_wrappee->onResize(width - 2 * m_thickness, height - 2 * m_thickness);
 }
 
 bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
@@ -88,6 +114,20 @@ bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
     {
         Vector2f delta_hold_pos = pos - m_hold_pos;
         m_transf.m_offset += Vector2f{delta_hold_pos.x * m_transf.m_scale.x, delta_hold_pos.y * m_transf.m_scale.y};
+    }
+
+    if (m_status & HOLD_HOR)
+    {
+        Vector2f delta_hold_pos = pos - m_hold_pos;
+        onResize(m_size.x + delta_hold_pos.x * m_transf.m_scale.x, m_size.y);
+        m_hold_pos.x = m_size.x;
+    }
+
+    if (m_status & HOLD_VER)
+    {
+        Vector2f delta_hold_pos = pos - m_hold_pos;
+        onResize(m_size.x, m_size.y + delta_hold_pos.y * m_transf.m_scale.y);
+        m_hold_pos.y = m_size.y;
     }
 
     m_wrappee->onMouseMoved(x, y, transf_list);

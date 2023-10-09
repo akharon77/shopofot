@@ -29,8 +29,10 @@ class Frame : public Widget
 
     enum status_t
     {
-        DEFAULT,
-        HOLD
+        DEFAULT  = 0,
+        HOLD     = 1,
+        HOLD_VER = 1 << 1,
+        HOLD_HOR = 1 << 2
     };
 
     Widget *m_wrappee;
@@ -52,6 +54,8 @@ class Frame : public Widget
 
     CloseButton m_close_btn;
 
+    void updateVertexArray();
+
 public:
     Frame(Widget &wrappee, const char *title, float thickness, const ButtonTexture &close_btn_texture);
 
@@ -68,6 +72,8 @@ public:
 
     virtual bool onKeyboardPressed  (KeyboardKey key) override;
     virtual bool onKeyboardReleased (KeyboardKey key) override;
+
+    virtual bool onResize(float width, float height) override;
 
     virtual bool onTime (float d_seconds) override;
 };

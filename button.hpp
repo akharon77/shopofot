@@ -62,9 +62,11 @@ public:
     virtual bool onKeyboardPressed  (KeyboardKey key) {};
     virtual bool onKeyboardReleased (KeyboardKey key) {};
 
+    virtual bool onResize(float width, float height) {};
+
     virtual bool onTime (float d_seconds) {};
 
-    virtual void onClick()    = 0;
+    virtual void onClick() = 0;
     // virtual void onReleased() = 0;
 };
 
