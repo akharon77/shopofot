@@ -1,5 +1,10 @@
 #include "widget.hpp"
 
+Widget::Widget(Transform transf, Vector2f size) :
+    m_transf(transf),
+    m_size(size)
+{}
+
 void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
 {
     if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased)
@@ -28,5 +33,15 @@ void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
     {
         widget->onMouseMoved(event.mouseMove.x, event.mouseMove.y, transf_list);
     }
+}
+
+Transform Widget::getTransform() const
+{
+    return m_transf;
+}
+
+Transform Widget::setTransform(const Transform &transf)
+{
+    m_transf = transf;
 }
 

@@ -12,7 +12,6 @@ class Window : public Widget
     float m_width;
     float m_height;
 
-    Transform    m_transf;
     sf::Sprite   m_sprite;
 
 public:

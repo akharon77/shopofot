@@ -1,9 +1,9 @@
 #include "window.hpp"
 
 Window::Window(Vector2f pos, float width, float height, sf::Texture &texture, const sf::IntRect &rect) :
+    Widget({pos, Vector2f{width / rect.width, height / rect.height}}, {width, height}),
     m_width  (width),
     m_height (height),
-    m_transf (pos, Vector2f{width / rect.width, height / rect.height}),
     m_sprite (texture, rect)
 {}
 

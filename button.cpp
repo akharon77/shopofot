@@ -1,10 +1,10 @@
  #include "button.hpp"
 
 Button::Button(const Vector2f &pos, float width, float height, const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect) :
+    Widget({pos, Vector2f{m_width, m_height}}, {width, height}),
     m_status(DEFAULT),
     m_width(width),
     m_height(height),
-    m_transf(pos, Vector2f{m_width, m_height}),
     m_texture(&texture),
     m_default_rect(default_rect),
     m_pressed_rect(pressed_rect),

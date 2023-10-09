@@ -3,10 +3,11 @@
 #include <SFML/Window/VideoMode.hpp>
 
 #include "window.hpp"
+#include "frame.hpp"
 #include "button.hpp"
 
-const uint32_t SCREEN_WIDTH  = 640; 
-const uint32_t SCREEN_HEIGHT = 480;
+const uint32_t SCREEN_WIDTH  = 1024; 
+const uint32_t SCREEN_HEIGHT = 720;
 
 int main()
 {
@@ -17,18 +18,24 @@ int main()
 
     sf::Texture button_texture;
     button_texture.loadFromFile("mols_ctrl_texture.png");
+    
+    sf::Texture window_texture;
+    window_texture.loadFromFile("mols_ctrl_texture.png");
 
-    Button my_button1({0.25f, 0.25f}, 0.05, 0.05, button_texture,
-                      {0,  0,  57, 52},
-                      {0, 52,  57, 52},
-                      {0, 104, 57, 52});
+    // Button my_button1({0.25f, 0.25f}, 0.05, 0.05, button_texture,
+    //                   {0,  0,  57, 52},
+    //                   {0, 52,  57, 52},
+    //                   {0, 104, 57, 52});
 
-    Button my_button2({0.75f, 0.67f}, 0.05, 0.05, button_texture,
-                      {57,  0,  57, 52},
-                      {57, 52,  57, 52},
-                      {57, 104, 57, 52});
+    // Button my_button2({0.75f, 0.67f}, 0.05, 0.05, button_texture,
+    //                   {57,  0,  57, 52},
+    //                   {57, 52,  57, 52},
+    //                   {57, 104, 57, 52});
 
-    // Window my_window({0.5f, 0.5f}, 0.5, 0.5, window_texture, {0, 0, 50, 70});
+    Window my_window({0.2f, 0.1f}, 0.5, 0.5, window_texture, {0, 0, 50, 70});
+    Window my_window2({0.1f, 0.1f}, 0.5, 0.5, window_texture, {0, 0, 50, 70});
+    Frame my_window_with_frame{my_window, "hello", 0.03, 0.3, 0.4};
+    Frame my_window_with_frame2{my_window2, "hello", 0.03, 0.3, 0.4};
 
     while (window.isOpen())
     {
@@ -39,16 +46,20 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            adaptSfEvent(event, &my_button1, transf_list);
-            adaptSfEvent(event, &my_button2, transf_list);
+            // adaptSfEvent(event, &my_button1, transf_list);
+            // adaptSfEvent(event, &my_button2, transf_list);
+
+            adaptSfEvent(event, &my_window_with_frame, transf_list);
+            adaptSfEvent(event, &my_window_with_frame2, transf_list);
         }
 
         window.clear(sf::Color::Black);
 
-        my_button1.draw(window, transf_list);
-        my_button2.draw(window, transf_list);
+        // my_button1.draw(window, transf_list);
+        // my_button2.draw(window, transf_list);
+        my_window_with_frame.draw(window, transf_list);
+        my_window_with_frame2.draw(window, transf_list);
 
-        //my_window.draw(window, transf_list);
         window.display();
     }
     return 0;

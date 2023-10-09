@@ -1,8 +1,26 @@
 #ifndef FRAME_HPP
 #define FRAME_HPP
 
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
+
+#include "button.hpp"
+
+// class CloseButton : public Button
+// {
+// public:
+//     virtual void onClick()    {};
+//     virtual void onReleased() {};
+// };
+
 class Frame : public Widget
 {
+    enum status_t
+    {
+        DEFAULT,
+        HOLD
+    };
+
     Widget *m_wrappee;
 
     const char *m_title;
@@ -12,18 +30,19 @@ class Frame : public Widget
     float m_width;
     float m_height;
 
-    Transform m_transf;
-    
     sf::VertexArray m_vertex_array;
 
-    CloseButton m_close_btn;
+    status_t m_status;
+    Vector2f m_hold_pos;
+
+    //CloseButton m_close_btn;
 
 public:
-    Frame(Widget *wrappee, const char *title, float thickness, Vector2f pos, float width, float height);
+    Frame(Widget &wrappee, const char *title, float thickness, float width, float height);
 
     ~Frame() = default;
-    Frame& operator = (const Window &rhs) = delete;
-    Frame(const Window &rhs) = delete;
+    Frame& operator = (const Frame &rhs) = delete;
+    Frame(const Frame &rhs) = delete;
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 
@@ -36,13 +55,6 @@ public:
     virtual bool onKeyboardReleased (KeyboardKey key) override;
 
     virtual bool onTime (float d_seconds) override;
-};
-
-class CloseButton : public Button
-{
-public:
-    virtual void onClick()    override;
-    virtual void onReleased() override;
 };
 
 #endif  // FRAME_HPP
