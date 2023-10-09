@@ -8,6 +8,21 @@
 #include "widget.hpp"
 #include "vector2.hpp"
 
+struct ButtonTexture
+{
+    const sf::Texture *m_texture;
+
+    sf::IntRect  m_default_rect;
+    sf::IntRect  m_pressed_rect;
+    sf::IntRect  m_focused_rect;
+
+    ButtonTexture(const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect);
+
+    ~ButtonTexture() = default;
+    ButtonTexture(const ButtonTexture &rhs) = default;
+    ButtonTexture& operator = (const ButtonTexture &rhs) = default;
+};
+
 class Button : public Widget
 {
     enum Status
@@ -24,18 +39,14 @@ class Button : public Widget
 
     Transform m_transf;
 
-    const sf::Texture *m_texture;
-
-    sf::IntRect  m_default_rect;
-    sf::IntRect  m_pressed_rect;
-    sf::IntRect  m_focused_rect;
+    ButtonTexture m_btn_texture;
 
     sf::VertexArray m_vertex_array;
 
     void setRect(const sf::IntRect &rect);
 
 public:
-    Button(const Vector2f &pos, float width, float height, const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect);
+    Button(const Vector2f &pos, float width, float height, const ButtonTexture &btn_texture);
 
     ~Button() = default;
     Button& operator = (const Button &rhs) = delete;
@@ -54,7 +65,7 @@ public:
     virtual bool onTime (float d_seconds) {};
 
     virtual void onClick()    = 0;
-    virtual void onReleased() = 0;
+    // virtual void onReleased() = 0;
 };
 
 #endif  // BUTTON_HPP

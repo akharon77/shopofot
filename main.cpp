@@ -18,11 +18,20 @@ int main()
 
     sf::Texture button_texture;
     button_texture.loadFromFile("mols_ctrl_texture.png");
+
+    ButtonTexture btn_texture_config
+    {
+        button_texture,
+        {0,  0,  57, 52},
+        {0, 52,  57, 52},
+        {0, 104, 57, 52}
+    };
     
     sf::Texture window_texture;
     window_texture.loadFromFile("mols_ctrl_texture.png");
 
-    // Button my_button1({0.25f, 0.25f}, 0.05, 0.05, button_texture,
+    // Button my_button1({0.25f, 0.25f}, 0.05, 0.05, 
+    //                      button_texture,
     //                   {0,  0,  57, 52},
     //                   {0, 52,  57, 52},
     //                   {0, 104, 57, 52});
@@ -32,10 +41,11 @@ int main()
     //                   {57, 52,  57, 52},
     //                   {57, 104, 57, 52});
 
-    Window my_window({0.2f, 0.1f}, 0.5, 0.5, window_texture, {0, 0, 50, 70});
-    Window my_window2({0.1f, 0.1f}, 0.5, 0.5, window_texture, {0, 0, 50, 70});
-    Frame my_window_with_frame{my_window, "hello", 0.03, 0.3, 0.4};
-    Frame my_window_with_frame2{my_window2, "hello", 0.03, 0.3, 0.4};
+    Window my_window({0.2f, 0.1f}, 0.2, 0.2, window_texture, {0, 0, 50, 70});
+    Window my_window2({0.1f, 0.5f}, 0.2, 0.05, window_texture, {0, 0, 50, 70});
+
+    Frame my_window_with_frame{my_window, "hello", 0.02, btn_texture_config};
+    Frame my_window_with_frame2{my_window2, "hello", 0.02, btn_texture_config};
 
     while (window.isOpen())
     {

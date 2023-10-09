@@ -1,26 +1,29 @@
 #include "frame.hpp"
 
-Frame::Frame(Widget &wrappee, const char *title, float thickness, float width, float height) :
-    Widget({wrappee.getTransform().m_offset, Vector2f{2 * thickness + width, 2 * thickness + height}}, {width, height}),
+Frame::Frame(Widget &wrappee, const char *title, float thickness, const ButtonTexture &close_btn_texture) :
+    Widget
+    {
+        {wrappee.getTransform().m_offset, {1, 1}},
+        wrappee.m_size + 2.f * Vector2f{thickness, thickness}
+    },
     m_wrappee(&wrappee),
     m_title(title),
     m_thickness(thickness),
-    m_width(width),
-    m_height(height),
     m_vertex_array(sf::Quads, 4),
-    m_status(DEFAULT)
+    m_status(DEFAULT),
+    m_close_btn(*this, close_btn_texture)
 {
     m_vertex_array[0].position = {0, 0};
-    m_vertex_array[1].position = {1, 0};
-    m_vertex_array[2].position = {1, 1};
-    m_vertex_array[3].position = {0, 1};
+    m_vertex_array[1].position = {m_size.x, 0};
+    m_vertex_array[2].position = {m_size.x, m_size.y};
+    m_vertex_array[3].position = {0, m_size.y};
 
     wrappee.setTransform
     (
         Transform
         {
-            Vector2f{thickness / (2 * thickness + width), thickness / (2 * thickness + height)},
-            wrappee.getTransform().m_scale
+            Vector2f{thickness, thickness},
+            wrappee.m_transf.m_scale
         }
     );
 }
@@ -47,8 +50,8 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
 
     Vector2f pos = top_transf.applyTransform({x, y});
 
-    if (EPS < pos.x && pos.x < 1 - EPS &&
-        EPS < pos.y && pos.y < m_wrappee->getTransform().m_offset.y - EPS)
+    if (EPS < pos.x && pos.x < m_wrappee->m_size.x + 2 * m_thickness - EPS &&
+        EPS < pos.y && pos.y < m_thickness - EPS)
     {
         m_status = HOLD;
         m_hold_pos = pos;

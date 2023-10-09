@@ -6,15 +6,27 @@
 
 #include "button.hpp"
 
-// class CloseButton : public Button
-// {
-// public:
-//     virtual void onClick()    {};
-//     virtual void onReleased() {};
-// };
-
 class Frame : public Widget
 {
+    friend class CloseButton;
+
+    class CloseButton : public Button
+    {
+        Frame *m_frame;
+
+    public:
+        CloseButton(Frame &frame, const ButtonTexture &btn_texture) :
+            Button({0, 0}, 0, 0, btn_texture)
+        {};
+
+        ~CloseButton() = default;
+
+        CloseButton(const CloseButton &rhs) = delete;
+        CloseButton& operator = (const CloseButton& rhs) = delete;
+
+        virtual void onClick() {};
+    };
+
     enum status_t
     {
         DEFAULT,
@@ -35,10 +47,13 @@ class Frame : public Widget
     status_t m_status;
     Vector2f m_hold_pos;
 
-    //CloseButton m_close_btn;
+    sf::Texture *m_texture;
+    sf::IntRect  m_rect;
+
+    CloseButton m_close_btn;
 
 public:
-    Frame(Widget &wrappee, const char *title, float thickness, float width, float height);
+    Frame(Widget &wrappee, const char *title, float thickness, const ButtonTexture &close_btn_texture);
 
     ~Frame() = default;
     Frame& operator = (const Frame &rhs) = delete;

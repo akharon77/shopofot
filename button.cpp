@@ -1,14 +1,18 @@
  #include "button.hpp"
 
-Button::Button(const Vector2f &pos, float width, float height, const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect) :
+ButtonTexture::ButtonTexture(const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect) :
+    m_texture(&texture),
+    m_default_rect(default_rect),
+    m_pressed_rect(pressed_rect),
+    m_focused_rect(focused_rect)
+{}
+
+Button::Button(const Vector2f &pos, float width, float height, const ButtonTexture &btn_texture) :
     Widget({pos, Vector2f{m_width, m_height}}, {width, height}),
     m_status(DEFAULT),
     m_width(width),
     m_height(height),
-    m_texture(&texture),
-    m_default_rect(default_rect),
-    m_pressed_rect(pressed_rect),
-    m_focused_rect(focused_rect),
+    m_btn_texture(btn_texture),
     m_vertex_array(sf::Quads, 4)
 {
     m_vertex_array[0].position = {0, 0};
@@ -16,7 +20,7 @@ Button::Button(const Vector2f &pos, float width, float height, const sf::Texture
     m_vertex_array[2].position = {1, 1};
     m_vertex_array[3].position = {0, 1};
 
-    setRect(default_rect);
+    setRect(m_btn_texture.m_default_rect);
 }
 
 void Button::setRect(const sf::IntRect &rect)
@@ -36,7 +40,7 @@ void Button::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     for (int32_t i = 0; i < 4; ++i)
         buf_vertex_array[i].position = top_transf.rollbackTransform(m_vertex_array[i].position);
 
-    target.draw(buf_vertex_array, m_texture);
+    target.draw(buf_vertex_array, m_btn_texture.m_texture);
 
     transf_list.PopBack();
 }
@@ -52,9 +56,9 @@ bool Button::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
         EPS < pos.y && pos.y < 1 - EPS)
     {
         m_status = PRESSED;
-        setRect(m_pressed_rect);
+        setRect(m_btn_texture.m_pressed_rect);
 
-        onClick();
+        // onClick();
 
         transf_list.PopBack();
         return true;
@@ -77,15 +81,15 @@ bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform>
             EPS < pos.y && pos.y < 1 - EPS)
         {
             m_status = FOCUSED;
-            setRect(m_focused_rect);
+            setRect(m_btn_texture.m_focused_rect);
         }
         else
         {
             m_status = DEFAULT;
-            setRect(m_default_rect);
+            setRect(m_btn_texture.m_default_rect);
         }
 
-        onReleased();
+        onClick();
     }
 
     transf_list.PopBack();
@@ -104,14 +108,14 @@ bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
         EPS < pos.y && pos.y < 1 - EPS)
     {
         m_status = FOCUSED;
-        setRect(m_focused_rect);
+        setRect(m_btn_texture.m_focused_rect);
     }
     else if (m_status == FOCUSED              &&
              !(EPS < pos.x && pos.x < 1 - EPS &&
                EPS < pos.y && pos.y < 1 - EPS))
     {
         m_status = DEFAULT;
-        setRect(m_default_rect);
+        setRect(m_btn_texture.m_default_rect);
     }
 
     transf_list.PopBack();
