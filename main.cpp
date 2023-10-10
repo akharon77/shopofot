@@ -17,12 +17,18 @@ int main()
     sf::Texture window_texture;
     window_texture.loadFromFile("mols_ctrl_texture.png");
 
+    WindowTexture window_texture_config
+    {
+        &window_texture,
+        {0, 0, 57, 52}
+    };
+
     sf::Texture button_texture;
     button_texture.loadFromFile("mols_ctrl_texture.png");
 
     ButtonTexture btn_texture_config
     {
-        button_texture,
+        &button_texture,
         {0,  0,  57, 52},
         {0, 52,  57, 52},
         {0, 104, 57, 52}
@@ -30,7 +36,7 @@ int main()
 
     ButtonTexture btn_texture_config_one
     {
-        button_texture,
+        &button_texture,
         {57,  0,  57, 52},
         {57, 52,  57, 52},
         {57, 104, 57, 52}
@@ -46,8 +52,10 @@ int main()
         &btn_texture_config_one
     };
     
-    Window my_window({0.2f, 0.1f}, 0.7, 0.6, window_texture, {0, 0, 50, 70});
+    Window my_window({0.2f, 0.1f}, 0.7, 0.6, window_texture_config);
+
     ScrollBar my_window_with_scrollbar{my_window, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
+
     Frame my_window_with_scrollbal_n_frame{my_window_with_scrollbar, "hello", 0.02, btn_texture_config};
 
     while (window.isOpen())

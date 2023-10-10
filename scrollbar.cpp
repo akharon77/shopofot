@@ -179,8 +179,10 @@ bool ScrollBar::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transfor
 
     m_wrappee->onMousePressed(key, x, y, transf_list);
 
-    m_btn_ver.onMousePressed(key, x, y, transf_list);
-    m_btn_hor.onMousePressed(key, x, y, transf_list);
+    if (m_is_ver)
+        m_btn_ver.onMousePressed(key, x, y, transf_list);
+    if (m_is_hor)
+        m_btn_hor.onMousePressed(key, x, y, transf_list);
 
     transf_list.PopBack();
 }
@@ -194,16 +196,21 @@ bool ScrollBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transfo
 
     m_wrappee->onMouseReleased(key, x, y, transf_list);
 
-    m_btn_ver.onMouseReleased(key, x, y, transf_list);
-    m_btn_hor.onMouseReleased(key, x, y, transf_list);
+    if (m_is_ver)
+        m_btn_ver.onMouseReleased(key, x, y, transf_list);
+    if (m_is_hor)
+        m_btn_hor.onMouseReleased(key, x, y, transf_list);
 
     transf_list.PopBack();
 }
 
 bool ScrollBar::onResize(float width, float height)
 {
-    if (m_is_ver)
-    {
+    float pos_ver = (m_btn_ver.m_transf.m_offset.y - m_thickness) / (m_height - 2 * m_thickness - m_btn_ver.m_size.y);
+    float pos_hor = (m_btn_hor.m_transf.m_offset.x - m_thickness) / (m_width - 2 * m_thickness - m_btn_hor.m_size.x);
+
+    //if (m_is_hor)
+    //{
         float prev = m_width;
         m_width = width - m_thickness;
         if (m_width > m_wrappee->m_size.x + EPS)
@@ -211,22 +218,27 @@ bool ScrollBar::onResize(float width, float height)
             m_width = prev;
             return false;
         }
-    }
-    if (m_is_hor)
-    {
-        float prev = m_height;
+    //}
+
+    //if (m_is_ver)
+    //{
+        //float prev = m_height;
+        prev = m_height;
         m_height = height - m_thickness;
         if (m_height > m_wrappee->m_size.y + EPS)
         {
             m_height = prev;
             return false;
         }
-    }
+    //}
 
     m_size = {width, height};
 
     m_btn_ver = ScrollButton(*this, VER, *m_texture->m_btn_scroll);
+    m_btn_ver.m_transf.m_offset.y += pos_ver * (m_height - 2 * m_thickness - m_btn_ver.m_size.y);
+
     m_btn_hor = ScrollButton(*this, HOR, *m_texture->m_btn_scroll);
+    m_btn_hor.m_transf.m_offset.x += pos_hor * (m_width - 2 * m_thickness - m_btn_hor.m_size.x);
 
     return true;
 }
@@ -240,8 +252,10 @@ bool ScrollBar::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 
     m_wrappee->onMouseMoved(x, y, transf_list);
 
-    m_btn_ver.onMouseMoved(x, y, transf_list);
-    m_btn_hor.onMouseMoved(x, y, transf_list);
+    if (m_is_ver)
+        m_btn_ver.onMouseMoved(x, y, transf_list);
+    if (m_is_hor)
+        m_btn_hor.onMouseMoved(x, y, transf_list);
 
     transf_list.PopBack();
 }

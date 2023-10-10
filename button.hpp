@@ -16,11 +16,11 @@ struct ButtonTexture
     sf::IntRect  m_pressed_rect;
     sf::IntRect  m_focused_rect;
 
-    ButtonTexture(const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect);
+    // ButtonTexture(const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect);
 
-    ~ButtonTexture() = default;
-    ButtonTexture(const ButtonTexture &rhs) = default;
-    ButtonTexture& operator = (const ButtonTexture &rhs) = default;
+    // ~ButtonTexture() = default;
+    // ButtonTexture(const ButtonTexture &rhs) = default;
+    // ButtonTexture& operator = (const ButtonTexture &rhs) = default;
 };
 
 class Button : public Widget

@@ -4,21 +4,31 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 
 #include "widget.hpp"
 
 const uint32_t SCREEN_WIDTH  = 1024; 
 const uint32_t SCREEN_HEIGHT = 720;
 
+struct WindowTexture
+{
+    sf::Texture *m_texture;
+    sf::IntRect  m_rect;
+};
+
 class Window : public Widget
 {
     float m_width;
     float m_height;
 
-    sf::Sprite   m_sprite;
+    WindowTexture   *m_texture;
+    sf::VertexArray  m_vertex_arr;
+
+    // sf::Sprite   m_sprite;
 
 public:
-    Window(Vector2f pos, float width, float height, sf::Texture &texture, const sf::IntRect &rect);
+    Window(Vector2f pos, float width, float height, WindowTexture &texture);  // sf::Texture &texture, const sf::IntRect &rect);
 
     ~Window() = default;
     Window& operator = (const Window &rhs) = delete;

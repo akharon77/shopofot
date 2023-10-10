@@ -1,21 +1,39 @@
 #include "window.hpp"
 
-Window::Window(Vector2f pos, float width, float height, sf::Texture &texture, const sf::IntRect &rect) :
-    Widget({pos, Vector2f{width / rect.width, height / rect.height}}, {width, height}),
+Window::Window(Vector2f pos, float width, float height, WindowTexture &texture) : // sf::Texture &texture, const sf::IntRect &rect) :
+    Widget({pos, Vector2f{width, height}}, {width, height}),
     m_width  (width),
     m_height (height),
-    m_sprite (texture, rect)
-{}
+    m_texture(&texture),
+    m_vertex_arr(sf::Quads, 4)
+    // m_sprite (texture, rect)
+{
+    m_vertex_arr[0].position = {0, 0};
+    m_vertex_arr[1].position = {1, 0};
+    m_vertex_arr[2].position = {1, 1};
+    m_vertex_arr[3].position = {0, 1};
+    
+    m_vertex_arr[0].texCoords = {texture.m_rect.left,                        texture.m_rect.top};
+    m_vertex_arr[1].texCoords = {texture.m_rect.left + texture.m_rect.width, texture.m_rect.top};
+    m_vertex_arr[2].texCoords = {texture.m_rect.left + texture.m_rect.width, texture.m_rect.top + texture.m_rect.height};
+    m_vertex_arr[3].texCoords = {texture.m_rect.left,                        texture.m_rect.top + texture.m_rect.height};
+}
 
 void Window::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    m_sprite.setPosition(top_transf.m_offset);
-    m_sprite.setScale(top_transf.m_scale);
+    sf::VertexArray buf_vertex_arr(m_vertex_arr);
+    for (int32_t i = 0; i < 4; ++i)
+        buf_vertex_arr[i].position = top_transf.rollbackTransform(buf_vertex_arr[i].position);
 
-    target.draw(m_sprite);
+    target.draw(buf_vertex_arr, m_texture->m_texture);
+
+    // m_sprite.setPosition(top_transf.m_offset);
+    // m_sprite.setScale(top_transf.m_scale);
+
+    // target.draw(m_sprite);
 
     transf_list.PopBack();
 }

@@ -1,11 +1,11 @@
  #include "button.hpp"
 
-ButtonTexture::ButtonTexture(const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect) :
-    m_texture(&texture),
-    m_default_rect(default_rect),
-    m_pressed_rect(pressed_rect),
-    m_focused_rect(focused_rect)
-{}
+// ButtonTexture::ButtonTexture(const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect) :
+//     m_texture(&texture),
+//     m_default_rect(default_rect),
+//     m_pressed_rect(pressed_rect),
+//     m_focused_rect(focused_rect)
+// {}
 
 Button::Button(const Vector2f &pos, float width, float height, const ButtonTexture &btn_texture) :
     Widget({pos, Vector2f{width, height}}, {width, height}),
