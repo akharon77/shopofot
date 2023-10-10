@@ -34,14 +34,14 @@ class Button : public Widget
 
     Status m_status;
 
-    float m_width;
-    float m_height;
-
+    sf::VertexArray m_vertex_array;
     ButtonTexture m_btn_texture;
 
-    sf::VertexArray m_vertex_array;
-
     void setRect(const sf::IntRect &rect);
+
+protected:
+    float m_width;
+    float m_height;
 
 public:
     Button(const Vector2f &pos, float width, float height, const ButtonTexture &btn_texture);

@@ -15,7 +15,14 @@ ScrollBar::ScrollButton::ScrollButton(ScrollBar &scrollbar, scroll_button_t btn_
     m_status(DEFAULT),
     m_hold_pos{0, 0},
     m_scrollbar(&scrollbar)
-{}
+{
+    if (m_width < scrollbar.m_thickness)
+        m_width = scrollbar.m_thickness;
+    if (m_height < scrollbar.m_thickness)
+        m_height = scrollbar.m_thickness;
+    m_size = {m_width, m_height};
+    m_transf.m_scale = m_size;
+}
 
 bool ScrollBar::ScrollButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
@@ -66,6 +73,9 @@ bool ScrollBar::ScrollButton::onMouseMoved(int32_t x, int32_t y, List<Transform>
             if (!(EPS + m_scrollbar->m_thickness < m_transf.m_offset.y &&
                   m_transf.m_offset.y < m_scrollbar->m_height - m_scrollbar->m_thickness - m_size.y - EPS))
                 m_transf.m_offset.y = prev;
+
+            float pos_ver = (m_transf.m_offset.y - m_scrollbar->m_thickness) / (m_scrollbar->m_height - 2 * m_scrollbar->m_thickness - m_size.y);
+            m_scrollbar->m_wrappee->m_transf.m_offset.y = -pos_ver * (m_scrollbar->m_wrappee->m_size.y - m_scrollbar->m_height);
         }
 
         if (m_type == HOR)
@@ -76,6 +86,9 @@ bool ScrollBar::ScrollButton::onMouseMoved(int32_t x, int32_t y, List<Transform>
             if (!(EPS + m_scrollbar->m_thickness < m_transf.m_offset.x &&
                   m_transf.m_offset.x < m_scrollbar->m_width - m_scrollbar->m_thickness - m_size.x - EPS))
                 m_transf.m_offset.x = prev;
+
+            float pos_hor = (m_transf.m_offset.x - m_scrollbar->m_thickness) / (m_scrollbar->m_width - 2 * m_scrollbar->m_thickness - m_size.x);
+            m_scrollbar->m_wrappee->m_transf.m_offset.x = -pos_hor * (m_scrollbar->m_wrappee->m_size.x - m_scrollbar->m_width);
         }
     }
 
@@ -135,23 +148,23 @@ void ScrollBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     vertex_arr[2].position = vertex_arr[2].texCoords = {m_width, m_height};
     vertex_arr[3].position = vertex_arr[3].texCoords = {0, m_height};
 
-    if (m_is_ver)
-    {
-        float delta_y = (m_btn_ver.m_transf.m_offset.y - m_thickness) / (m_height - 2 * m_thickness - m_btn_ver.m_size.y) * (m_wrappee->m_size.y - m_height);
-        vertex_arr[0].texCoords.y += delta_y;
-        vertex_arr[1].texCoords.y += delta_y;
-        vertex_arr[2].texCoords.y += delta_y;
-        vertex_arr[3].texCoords.y += delta_y;
-    }
+    // if (m_is_ver)
+    // {
+    //     float delta_y = (m_btn_ver.m_transf.m_offset.y - m_thickness) / (m_height - 2 * m_thickness - m_btn_ver.m_size.y) * (m_wrappee->m_size.y - m_height);
+    //     vertex_arr[0].texCoords.y += delta_y;
+    //     vertex_arr[1].texCoords.y += delta_y;
+    //     vertex_arr[2].texCoords.y += delta_y;
+    //     vertex_arr[3].texCoords.y += delta_y;
+    // }
 
-    if (m_is_hor)
-    {
-        float delta_x = (m_btn_hor.m_transf.m_offset.x - m_thickness) / (m_width - 2 * m_thickness - m_btn_hor.m_size.x) * (m_wrappee->m_size.x - m_width);
-        vertex_arr[0].texCoords.x += delta_x;
-        vertex_arr[1].texCoords.x += delta_x;
-        vertex_arr[2].texCoords.x += delta_x;
-        vertex_arr[3].texCoords.x += delta_x;
-    }
+    // if (m_is_hor)
+    // {
+    //     float delta_x = (m_btn_hor.m_transf.m_offset.x - m_thickness) / (m_width - 2 * m_thickness - m_btn_hor.m_size.x) * (m_wrappee->m_size.x - m_width);
+    //     vertex_arr[0].texCoords.x += delta_x;
+    //     vertex_arr[1].texCoords.x += delta_x;
+    //     vertex_arr[2].texCoords.x += delta_x;
+    //     vertex_arr[3].texCoords.x += delta_x;
+    // }
 
     for (int32_t i = 0; i < 4; ++i)
     {
@@ -213,7 +226,7 @@ bool ScrollBar::onResize(float width, float height)
     //{
         float prev = m_width;
         m_width = width - m_thickness;
-        if (m_width > m_wrappee->m_size.x + EPS)
+        if (m_width > m_wrappee->m_size.x + EPS || m_width < 3 * m_thickness - EPS)
         {
             m_width = prev;
             return false;
@@ -225,7 +238,7 @@ bool ScrollBar::onResize(float width, float height)
         //float prev = m_height;
         prev = m_height;
         m_height = height - m_thickness;
-        if (m_height > m_wrappee->m_size.y + EPS)
+        if (m_height > m_wrappee->m_size.y + EPS || m_height < 3 * m_thickness + EPS)
         {
             m_height = prev;
             return false;
@@ -236,9 +249,11 @@ bool ScrollBar::onResize(float width, float height)
 
     m_btn_ver = ScrollButton(*this, VER, *m_texture->m_btn_scroll);
     m_btn_ver.m_transf.m_offset.y += pos_ver * (m_height - 2 * m_thickness - m_btn_ver.m_size.y);
+    m_wrappee->m_transf.m_offset.y = -pos_ver * (m_wrappee->m_size.y - m_height);
 
     m_btn_hor = ScrollButton(*this, HOR, *m_texture->m_btn_scroll);
     m_btn_hor.m_transf.m_offset.x += pos_hor * (m_width - 2 * m_thickness - m_btn_hor.m_size.x);
+    m_wrappee->m_transf.m_offset.x = -pos_hor * (m_wrappee->m_size.x - m_width);
 
     return true;
 }
