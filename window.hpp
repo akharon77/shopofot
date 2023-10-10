@@ -7,6 +7,9 @@
 
 #include "widget.hpp"
 
+const uint32_t SCREEN_WIDTH  = 1024; 
+const uint32_t SCREEN_HEIGHT = 720;
+
 class Window : public Widget
 {
     float m_width;

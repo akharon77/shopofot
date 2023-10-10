@@ -1,4 +1,7 @@
+#include <SFML/Graphics/RenderTexture.hpp>
+
 #include "scrollbar.hpp"
+#include "window.hpp"
 
 ScrollBar::ScrollButton::ScrollButton(ScrollBar &scrollbar, scroll_button_t btn_type, ButtonTexture &btn_texture) :
     Button
@@ -119,7 +122,49 @@ void ScrollBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    m_wrappee->draw(target, transf_list);
+    sf::RenderTexture fake_target;
+    fake_target.create(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    m_wrappee->draw(fake_target, transf_list);
+    fake_target.display();
+
+    sf::VertexArray vertex_arr(sf::Quads, 4);
+
+    vertex_arr[0].position = {0, 0};
+    vertex_arr[1].position = {m_width, 0};
+    vertex_arr[2].position = {m_width, m_height};
+    vertex_arr[3].position = {0, m_height};
+
+    vertex_arr[0].texCoords = {0, 0};
+    vertex_arr[1].texCoords = {m_width, 0};
+    vertex_arr[2].texCoords = {m_width, m_height};
+    vertex_arr[3].texCoords = {0, m_height};
+
+    if (m_is_ver)
+    {
+        float delta_y = (m_btn_ver.m_transf.m_offset.y - m_thickness) / (m_height - 2 * m_thickness - m_btn_ver.m_size.y) * (m_wrappee->m_size.y - m_height);
+        vertex_arr[0].texCoords.y += delta_y;
+        vertex_arr[1].texCoords.y += delta_y;
+        vertex_arr[2].texCoords.y += delta_y;
+        vertex_arr[3].texCoords.y += delta_y;
+    }
+
+    if (m_is_hor)
+    {
+        float delta_x = (m_btn_hor.m_transf.m_offset.x - m_thickness) / (m_width - 2 * m_thickness - m_btn_hor.m_size.x) * (m_wrappee->m_size.x - m_width);
+        vertex_arr[0].texCoords.x += delta_x;
+        vertex_arr[1].texCoords.x += delta_x;
+        vertex_arr[2].texCoords.x += delta_x;
+        vertex_arr[3].texCoords.x += delta_x;
+    }
+
+    for (int32_t i = 0; i < 4; ++i)
+    {
+        vertex_arr[i].position = top_transf.rollbackTransform(vertex_arr[i].position);
+        vertex_arr[i].texCoords = top_transf.rollbackTransform(vertex_arr[i].texCoords);
+    }
+
+    target.draw(vertex_arr, &fake_target.getTexture());
 
     if (m_is_ver)
         m_btn_ver.draw(target, transf_list);

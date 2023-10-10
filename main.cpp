@@ -7,9 +7,6 @@
 #include "button.hpp"
 #include "scrollbar.hpp"
 
-const uint32_t SCREEN_WIDTH  = 1024; 
-const uint32_t SCREEN_HEIGHT = 720;
-
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "shopofot");
@@ -60,12 +57,12 @@ int main()
     //                   {57, 52,  57, 52},
     //                   {57, 104, 57, 52});
 
-    Window my_window({0.2f, 0.1f}, 0.2, 0.2, window_texture, {0, 0, 50, 70});
+    Window my_window({0.2f, 0.1f}, 0.7, 0.6, window_texture, {0, 0, 50, 70});
     Window my_window2({0.1f, 0.5f}, 0.2, 0.05, window_texture, {52, 57, 50, 70});
 
     Frame my_window_with_frame2{my_window2, "hello", 0.02, btn_texture_config};
 
-    ScrollBar my_window_last(my_window, 0.03, 0.5, true, 0.5, true, scrollbar_texture_config);
+    ScrollBar my_window_last(my_window, 0.03, 0.2, true, 0.2, true, scrollbar_texture_config);
 
     while (window.isOpen())
     {
