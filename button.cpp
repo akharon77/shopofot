@@ -8,7 +8,7 @@ ButtonTexture::ButtonTexture(const sf::Texture &texture, const sf::IntRect &defa
 {}
 
 Button::Button(const Vector2f &pos, float width, float height, const ButtonTexture &btn_texture) :
-    Widget({pos, Vector2f{m_width, m_height}}, {width, height}),
+    Widget({pos, Vector2f{width, height}}, {width, height}),
     m_status(DEFAULT),
     m_width(width),
     m_height(height),
@@ -58,8 +58,6 @@ bool Button::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
         m_status = PRESSED;
         setRect(m_btn_texture.m_pressed_rect);
 
-        // onClick();
-
         transf_list.PopBack();
         return true;
     }
@@ -88,8 +86,6 @@ bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform>
             m_status = DEFAULT;
             setRect(m_btn_texture.m_default_rect);
         }
-
-        onClick();
     }
 
     transf_list.PopBack();
@@ -110,7 +106,7 @@ bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
         m_status = FOCUSED;
         setRect(m_btn_texture.m_focused_rect);
     }
-    else if (m_status == FOCUSED              &&
+    else if (m_status != DEFAULT              &&
              !(EPS < pos.x && pos.x < 1 - EPS &&
                EPS < pos.y && pos.y < 1 - EPS))
     {

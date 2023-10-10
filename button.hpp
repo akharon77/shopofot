@@ -37,8 +37,6 @@ class Button : public Widget
     float m_width;
     float m_height;
 
-    Transform m_transf;
-
     ButtonTexture m_btn_texture;
 
     sf::VertexArray m_vertex_array;
@@ -65,9 +63,6 @@ public:
     virtual bool onResize(float width, float height) {};
 
     virtual bool onTime (float d_seconds) {};
-
-    virtual void onClick() = 0;
-    // virtual void onReleased() = 0;
 };
 
 #endif  // BUTTON_HPP
