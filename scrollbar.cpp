@@ -7,8 +7,8 @@ ScrollBar::ScrollButton::ScrollButton(ScrollBar &scrollbar, scroll_button_t btn_
     Button
     {
         btn_type == VER ? Vector2f{scrollbar.m_width, scrollbar.m_thickness} : Vector2f{scrollbar.m_thickness, scrollbar.m_height},
-        btn_type == VER ? scrollbar.m_thickness : ((scrollbar.m_height / scrollbar.m_wrappee->m_size.y) * (scrollbar.m_height - 2 * scrollbar.m_thickness)),
-        btn_type == VER ? ((scrollbar.m_width / scrollbar.m_wrappee->m_size.x) * (scrollbar.m_width - 2 * scrollbar.m_thickness)) : scrollbar.m_thickness,
+        btn_type == VER ? scrollbar.m_thickness : ((scrollbar.m_width / scrollbar.m_wrappee->m_size.x) * (scrollbar.m_width - 2 * scrollbar.m_thickness)),
+        btn_type == VER ? ((scrollbar.m_height / scrollbar.m_wrappee->m_size.y) * (scrollbar.m_height - 2 * scrollbar.m_thickness)) : scrollbar.m_thickness,
         btn_texture
     },
     m_type(btn_type),
@@ -130,15 +130,10 @@ void ScrollBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
     sf::VertexArray vertex_arr(sf::Quads, 4);
 
-    vertex_arr[0].position = {0, 0};
-    vertex_arr[1].position = {m_width, 0};
-    vertex_arr[2].position = {m_width, m_height};
-    vertex_arr[3].position = {0, m_height};
-
-    vertex_arr[0].texCoords = {0, 0};
-    vertex_arr[1].texCoords = {m_width, 0};
-    vertex_arr[2].texCoords = {m_width, m_height};
-    vertex_arr[3].texCoords = {0, m_height};
+    vertex_arr[0].position = vertex_arr[0].texCoords = {0, 0};
+    vertex_arr[1].position = vertex_arr[1].texCoords = {m_width, 0};
+    vertex_arr[2].position = vertex_arr[2].texCoords = {m_width, m_height};
+    vertex_arr[3].position = vertex_arr[3].texCoords = {0, m_height};
 
     if (m_is_ver)
     {
@@ -207,10 +202,33 @@ bool ScrollBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transfo
 
 bool ScrollBar::onResize(float width, float height)
 {
-    //m_size = {width, height};
-    //updateVertexArray();
+    if (m_is_ver)
+    {
+        float prev = m_width;
+        m_width = width - m_thickness;
+        if (m_width > m_wrappee->m_size.x + EPS)
+        {
+            m_width = prev;
+            return false;
+        }
+    }
+    if (m_is_hor)
+    {
+        float prev = m_height;
+        m_height = height - m_thickness;
+        if (m_height > m_wrappee->m_size.y + EPS)
+        {
+            m_height = prev;
+            return false;
+        }
+    }
 
-    //m_wrappee->onResize(width - 2 * m_thickness, height - 2 * m_thickness);
+    m_size = {width, height};
+
+    m_btn_ver = ScrollButton(*this, VER, *m_texture->m_btn_scroll);
+    m_btn_hor = ScrollButton(*this, HOR, *m_texture->m_btn_scroll);
+
+    return true;
 }
 
 bool ScrollBar::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)

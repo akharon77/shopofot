@@ -97,10 +97,12 @@ bool Frame::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> 
 
 bool Frame::onResize(float width, float height)
 {
+    bool res = m_wrappee->onResize(width - 2 * m_thickness, height - 2 * m_thickness);
+    if (!res)
+        return false;
+
     m_size = {width, height};
     updateVertexArray();
-
-    m_wrappee->onResize(width - 2 * m_thickness, height - 2 * m_thickness);
 }
 
 bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)

@@ -48,8 +48,8 @@ protected:
 
         ~ScrollButton() = default;
 
-        ScrollButton(const ScrollButton &rhs) = delete;
-        ScrollButton& operator = (const ScrollButton& rhs) = delete;
+        ScrollButton(const ScrollButton &rhs) = default;
+        ScrollButton& operator = (const ScrollButton& rhs) = default;
 
         virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
         virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
@@ -81,8 +81,8 @@ public:
     ScrollBar(Widget &wrappee, float thickness, float width, bool is_hor, float height, bool is_ver, ScrollBarTexture &texture);
 
     ~ScrollBar() = default;
-    ScrollBar& operator = (const ScrollBar &rhs) = delete;
-    ScrollBar(const ScrollBar &rhs) = delete;
+    ScrollBar& operator = (const ScrollBar &rhs) = default;
+    ScrollBar(const ScrollBar &rhs) = default;
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 

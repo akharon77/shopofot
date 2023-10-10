@@ -47,8 +47,8 @@ public:
     Button(const Vector2f &pos, float width, float height, const ButtonTexture &btn_texture);
 
     ~Button() = default;
-    Button& operator = (const Button &rhs) = delete;
-    Button(const Button &rhs) = delete;
+    Button& operator = (const Button &rhs) = default;
+    Button(const Button &rhs) = default;
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 

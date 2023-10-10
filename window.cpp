@@ -26,6 +26,8 @@ bool Window::onResize(float width, float height)
     m_size = {width, height};
     m_width = width;
     m_height = height;
+
+    return true;
 }
 
 bool Window::onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) {}

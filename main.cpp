@@ -46,23 +46,9 @@ int main()
         &btn_texture_config_one
     };
     
-    // Button my_button1({0.25f, 0.25f}, 0.05, 0.05, 
-    //                      button_texture,
-    //                   {0,  0,  57, 52},
-    //                   {0, 52,  57, 52},
-    //                   {0, 104, 57, 52});
-
-    // Button my_button2({0.75f, 0.67f}, 0.05, 0.05, button_texture,
-    //                   {57,  0,  57, 52},
-    //                   {57, 52,  57, 52},
-    //                   {57, 104, 57, 52});
-
     Window my_window({0.2f, 0.1f}, 0.7, 0.6, window_texture, {0, 0, 50, 70});
-    Window my_window2({0.1f, 0.5f}, 0.2, 0.05, window_texture, {52, 57, 50, 70});
-
-    Frame my_window_with_frame2{my_window2, "hello", 0.02, btn_texture_config};
-
-    ScrollBar my_window_last(my_window, 0.03, 0.2, true, 0.2, true, scrollbar_texture_config);
+    ScrollBar my_window_with_scrollbar{my_window, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
+    Frame my_window_with_scrollbal_n_frame{my_window_with_scrollbar, "hello", 0.02, btn_texture_config};
 
     while (window.isOpen())
     {
@@ -76,16 +62,16 @@ int main()
             // adaptSfEvent(event, &my_button1, transf_list);
             // adaptSfEvent(event, &my_button2, transf_list);
 
-            adaptSfEvent(event, &my_window_last, transf_list);
-            adaptSfEvent(event, &my_window_with_frame2, transf_list);
+            adaptSfEvent(event, &my_window_with_scrollbal_n_frame, transf_list);
+            // adaptSfEvent(event, &my_window_with_frame2, transf_list);
         }
 
         window.clear(sf::Color::Black);
 
         // my_button1.draw(window, transf_list);
         // my_button2.draw(window, transf_list);
-        my_window_last.draw(window, transf_list);
-        my_window_with_frame2.draw(window, transf_list);
+        my_window_with_scrollbal_n_frame.draw(window, transf_list);
+        // my_window_with_frame2.draw(window, transf_list);
 
         window.display();
     }
