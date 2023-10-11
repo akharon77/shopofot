@@ -90,7 +90,7 @@ bool Canvas::onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
         float rad = 10;
         sf::CircleShape circ(rad);
         circ.setOrigin(rad / 2, rad / 2);
-        circ.setOutlineColor(sf::Color::Red);
+        circ.setFillColor(sf::Color::Red);
         circ.setPosition(pos.x * m_canv_width, pos.y * m_canv_height);
         m_canv_texture.draw(circ);
 
