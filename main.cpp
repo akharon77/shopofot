@@ -3,6 +3,7 @@
 #include <SFML/Window/VideoMode.hpp>
 
 #include "window.hpp"
+#include "canvas.hpp"
 #include "frame.hpp"
 #include "button.hpp"
 #include "scrollbar.hpp"
@@ -52,7 +53,7 @@ int main()
         &btn_texture_config_one
     };
     
-    Window my_window({0.2f, 0.1f}, 0.7, 0.6, window_texture_config);
+    Canvas my_window({0.2f, 0.1f}, 0.7, 0.6, 1000, 1000);
 
     ScrollBar my_window_with_scrollbar{my_window, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
 

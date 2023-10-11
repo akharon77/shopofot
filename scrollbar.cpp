@@ -185,19 +185,30 @@ void ScrollBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
 bool ScrollBar::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
+    bool res = false;
+
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     Vector2f pos = top_transf.applyTransform({x, y});
 
-    m_wrappee->onMousePressed(key, x, y, transf_list);
-
     if (m_is_ver)
-        m_btn_ver.onMousePressed(key, x, y, transf_list);
+        res = res || m_btn_ver.onMousePressed(key, x, y, transf_list);
     if (m_is_hor)
-        m_btn_hor.onMousePressed(key, x, y, transf_list);
+        res = res || m_btn_hor.onMousePressed(key, x, y, transf_list);
+
+    if (res)
+    {
+        transf_list.PopBack();
+        return true;
+    }
+
+    if (EPS < pos.x && pos.x < m_width - EPS &&
+        EPS < pos.y && pos.y < m_height - EPS)
+        res = res || m_wrappee->onMousePressed(key, x, y, transf_list);
 
     transf_list.PopBack();
+    return res;
 }
 
 bool ScrollBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)

@@ -4,22 +4,37 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/RenderTexture.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 
-#include "window.hpp"
+#include "widget.hpp"
 
-class Canvas : public Window 
+class Canvas : public Widget
 {
+    enum status_t
+    {
+        DEFAULT,
+        TOOL_DOWN
+    };
+
+    status_t m_status;
+
     float m_width;
     float m_height;
 
-    sf::Sprite   m_sprite;
+    int32_t m_canv_width;
+    int32_t m_canv_height;
+
+    sf::RenderTexture m_canv_texture;
+    sf::VertexArray   m_vertex_arr;
 
 public:
-    Window(Vector2f pos, float width, float height, sf::Texture &texture, const sf::IntRect &rect);
+    Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height);
 
-    ~Window() = default;
-    Window& operator = (const Window &rhs) = delete;
-    Window(const Window &rhs) = delete;
+    ~Canvas() = default;
+    Canvas& operator = (const Canvas &rhs) = delete;
+    Canvas(const Canvas &rhs) = delete;
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 

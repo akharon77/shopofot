@@ -19,6 +19,7 @@ struct WindowTexture
 
 class Window : public Widget
 {
+protected:
     float m_width;
     float m_height;
 
