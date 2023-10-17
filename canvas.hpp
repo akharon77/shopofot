@@ -10,27 +10,24 @@
 
 #include "widget.hpp"
 
+class Tool;
+
 class Canvas : public Widget
 {
-    enum status_t
-    {
-        DEFAULT,
-        TOOL_DOWN
-    };
-
-    status_t m_status;
-
     float m_width;
     float m_height;
 
-    int32_t m_canv_width;
-    int32_t m_canv_height;
-
-    sf::RenderTexture m_canv_texture;
     sf::VertexArray   m_vertex_arr;
 
 public:
-    Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height);
+    int32_t m_canv_width;
+    int32_t m_canv_height;
+
+    Tool *m_tool;
+
+    sf::RenderTexture m_canv_texture;
+
+    Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, Tool *tool);
 
     ~Canvas() = default;
     Canvas& operator = (const Canvas &rhs) = delete;
@@ -49,6 +46,31 @@ public:
     virtual bool onResize(float width, float height) override;
 
     virtual bool onTime (float d_seconds) override;
+};
+
+class Tool
+{
+public:
+    virtual void onMainButton(MouseKey key, Vector2f pos, Canvas &canvas)      = 0;
+    virtual void onSecondaryButton(MouseKey key, Vector2f pos, Canvas &canvas) = 0;
+
+    virtual void onModifier1(MouseKey key, Vector2f pos, Canvas &canvas) = 0;
+    virtual void onModifier2(MouseKey key, Vector2f pos, Canvas &canvas) = 0;
+    virtual void onModifier3(MouseKey key, Vector2f pos, Canvas &canvas) = 0;
+
+    virtual void onMove(Vector2f pos, Canvas &canvas)    = 0;
+    virtual void onConfirm(Vector2f pos, Canvas &canvas) = 0;
+    virtual void onCancel(Vector2f pos, Canvas &canvas)  = 0;
+
+    virtual Widget* getWidget() = 0;
+};
+
+struct ToolPalette
+{
+    Tool *m_active_tool;
+
+    sf::Color m_foreground_color;
+    sf::Color m_background_color;
 };
 
 #endif  // CANVAS_HPP

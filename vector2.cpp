@@ -14,3 +14,4 @@ float len(const Vector2f &rhs)
 {
     return sqrt(len2(rhs));
 }
+

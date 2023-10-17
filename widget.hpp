@@ -22,7 +22,7 @@ public:
     Transform m_transf;
     Vector2f  m_size;
 
-    Widget(Transform transf, Vector2f size);
+    Widget(Transform transf = {}, Vector2f size = {});
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list)  = 0;
 

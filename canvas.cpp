@@ -1,13 +1,14 @@
 #include "canvas.hpp"
+#include "tool.hpp"
 
-Canvas::Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height) :
+Canvas::Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, Tool *tool) :
     Widget({pos, Vector2f{width, height}}, {width, height}),
-    m_status(DEFAULT),
     m_width  (width),
     m_height (height),
     m_canv_width(canv_width),
     m_canv_height(canv_height),
-    m_vertex_arr(sf::Quads, 4)
+    m_vertex_arr(sf::Quads, 4),
+    m_tool(tool)
 {
     m_canv_texture.create(canv_width, canv_height);
     m_canv_texture.clear(sf::Color::Black);
@@ -35,6 +36,8 @@ void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     m_canv_texture.display();
     target.draw(buf_vertex_arr, &m_canv_texture.getTexture());
 
+    m_tool->getWidget()->draw(target, transf_list);
+
     transf_list.PopBack();
 }
 
@@ -53,12 +56,13 @@ bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     Vector2f pos = top_transf.applyTransform({x, y});
-    printf("%f %f\n", pos.x, pos.y);
     if (EPS < pos.x && pos.x < 1 - EPS &&
         EPS < pos.y && pos.y < 1 - EPS)
     {
-        m_status = TOOL_DOWN;
-        printf("down\n");
+        Vector2f pos = top_transf.applyTransform({x, y});
+        m_tool->onMainButton(key, pos, *this);
+
+        m_tool->getWidget()->onMousePressed(key, x, y, transf_list);
 
         transf_list.PopBack();
         return true;
@@ -70,8 +74,10 @@ bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
 
 bool Canvas::onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    m_status = DEFAULT;
-    printf("released\n");
+    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+
+    m_tool->onMainButton(key, top_transf.applyTransform({x, y}), *this);
+    m_tool->getWidget()->onMouseReleased(key, x, y, transf_list);
     return true;
 }
 
@@ -81,22 +87,9 @@ bool Canvas::onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     Vector2f pos = top_transf.applyTransform({x, y});
-    if (m_status == TOOL_DOWN &&
-        EPS < pos.x && pos.x < 1 - EPS &&
-        EPS < pos.y && pos.y < 1 - EPS)
-    {
-        printf("moved: %f, %f\n", pos.x, pos.y);
+    m_tool->onMove(pos, *this);
 
-        float rad = 10;
-        sf::CircleShape circ(rad);
-        circ.setOrigin(rad / 2, rad / 2);
-        circ.setFillColor(sf::Color::Red);
-        circ.setPosition(pos.x * m_canv_width, pos.y * m_canv_height);
-        m_canv_texture.draw(circ);
-
-        transf_list.PopBack();
-        return true;
-    }
+    m_tool->getWidget()->onMouseMoved(x, y, transf_list);
 
     transf_list.PopBack();
     return false;

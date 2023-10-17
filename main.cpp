@@ -7,6 +7,7 @@
 #include "frame.hpp"
 #include "button.hpp"
 #include "scrollbar.hpp"
+#include "line_tool.hpp"
 
 int main()
 {
@@ -45,13 +46,15 @@ int main()
         &btn_texture_config
     };
     
-    Canvas my_window({0.2f, 0.1f}, 0.7, 0.6, 1000, 1000);
+    LineTool line_tool;
+
+    Canvas my_window({0.2f, 0.1f}, 0.7, 0.6, 640, 1000, &line_tool);
     ScrollBar my_window_with_scrollbar{my_window, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
     Frame my_window_with_scrollbal_frame{my_window_with_scrollbar, "hello", 0.02, btn_texture_config};
 
-    Canvas my_window1({0.6f, 0.8f}, 0.7, 0.6, 1000, 1000);
-    ScrollBar my_window_with_scrollbar1{my_window1, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
-    Frame my_window_with_scrollbal_frame1{my_window_with_scrollbar1, "hello", 0.02, btn_texture_config};
+    // Canvas my_window1({0.6f, 0.8f}, 0.7, 0.6, 1000, 1000);
+    // ScrollBar my_window_with_scrollbar1{my_window1, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
+    // Frame my_window_with_scrollbal_frame1{my_window_with_scrollbar1, "hello", 0.02, btn_texture_config};
 
     while (window.isOpen())
     {
@@ -62,14 +65,14 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            adaptSfEvent(event, &my_window_with_scrollbal_frame, transf_list);
-            adaptSfEvent(event, &my_window_with_scrollbal_frame1, transf_list);
+            adaptSfEvent(event, &my_window_with_scrollbal_frame,  transf_list);
+            // adaptSfEvent(event, &my_window_with_scrollbal_frame1, transf_list);
         }
 
         window.clear(sf::Color::Black);
 
         my_window_with_scrollbal_frame.draw(window, transf_list);
-        my_window_with_scrollbal_frame1.draw(window, transf_list);
+        // my_window_with_scrollbal_frame1.draw(window, transf_list);
 
         window.display();
     }

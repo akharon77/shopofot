@@ -22,10 +22,13 @@ void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
         switch (event.type)
         {
             case sf::Event::MouseButtonPressed:
-                widget->onMousePressed(key, event.mouseButton.x, event.mouseButton.y, transf_list);
+                widget->onMousePressed(key, 
+                        event.mouseButton.x, event.mouseButton.y, transf_list);
                 break;
+
             case sf::Event::MouseButtonReleased:
-                widget->onMouseReleased(key, event.mouseButton.x, event.mouseButton.y, transf_list);
+                widget->onMouseReleased(key, 
+                        event.mouseButton.x, event.mouseButton.y, transf_list);
                 break;
         }
     }
