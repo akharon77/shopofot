@@ -59,13 +59,12 @@ bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
     if (EPS < pos.x && pos.x < 1 - EPS &&
         EPS < pos.y && pos.y < 1 - EPS)
     {
-        Vector2f pos = top_transf.applyTransform({x, y});
         m_tool->onMainButton(MouseType::PRESSED, pos, *this);
 
-        m_tool->getWidget()->onMousePressed(key, x, y, transf_list);
+        bool res = m_tool->getWidget()->onMousePressed(key, x, y, transf_list);
 
         transf_list.PopBack();
-        return true;
+        return res; 
     }
 
     transf_list.PopBack();
@@ -74,10 +73,13 @@ bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
 
 bool Canvas::onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
+    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     m_tool->onMainButton(MouseType::RELEASED, top_transf.applyTransform({x, y}), *this);
     m_tool->getWidget()->onMouseReleased(key, x, y, transf_list);
+
+    transf_list.PopBack();
     return true;
 }
 

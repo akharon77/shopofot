@@ -9,6 +9,7 @@
 #include "scrollbar.hpp"
 #include "line_tool.hpp"
 #include "brush.hpp"
+#include "square_tool.hpp"
 
 int main()
 {
@@ -47,7 +48,7 @@ int main()
         &btn_texture_config
     };
     
-    BrushTool line_tool;
+    SquareTool line_tool;
 
     Canvas my_window({0.2f, 0.1f}, 1, 1, 640, 480, &line_tool);
     ScrollBar my_window_with_scrollbar{my_window, 0.01, 0.3, true, 0.3, true, scrollbar_texture_config};
