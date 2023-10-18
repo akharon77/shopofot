@@ -10,7 +10,7 @@
 
 #include "widget.hpp"
 
-class Tool;
+class ToolPalette;
 
 class Canvas : public Widget
 {
@@ -23,11 +23,12 @@ public:
     int32_t m_canv_width;
     int32_t m_canv_height;
 
-    Tool *m_tool;
+    ToolPalette *m_tool_palette;
+    // Tool *m_tool;
 
     sf::RenderTexture m_canv_texture;
 
-    Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, Tool *tool);
+    Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette);
 
     ~Canvas() = default;
     Canvas& operator = (const Canvas &rhs) = delete;
@@ -73,10 +74,29 @@ public:
 
 struct ToolPalette
 {
-    Tool *m_active_tool;
+    int32_t m_anch;
+
+    List<Tool*> m_list;
 
     sf::Color m_foreground_color;
     sf::Color m_background_color;
+
+    Tool *getActiveTool()
+    {
+        return m_list.Get(m_anch)->val;
+    }
+
+    void addTool(Tool *tool)
+    {
+        m_anch = m_list.PushBack(tool);
+    }
+
+    void nextTool()
+    {
+        m_anch = m_list.Get(m_anch)->next;
+        if (m_anch == m_list.m_dummy_head)
+            m_anch = m_list.Get(m_anch)->next;
+    }
 };
 
 #endif  // CANVAS_HPP

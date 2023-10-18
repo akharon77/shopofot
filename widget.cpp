@@ -36,6 +36,10 @@ void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
     {
         widget->onMouseMoved(event.mouseMove.x, event.mouseMove.y, transf_list);
     }
+    else if (event.type == sf::Event::KeyPressed)
+    {
+        widget->onKeyboardPressed((KeyboardKey) event.key.code);
+    }
 }
 
 Transform Widget::getTransform() const

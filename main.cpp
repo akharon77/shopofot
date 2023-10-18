@@ -48,9 +48,16 @@ int main()
         &btn_texture_config
     };
     
-    SquareTool line_tool;
+    LineTool line_tool;
+    SquareTool square_tool;
+    BrushTool brush_tool;
 
-    Canvas my_window({0.2f, 0.1f}, 1, 1, 640, 480, &line_tool);
+    ToolPalette tool_palette;
+    tool_palette.addTool(&line_tool);
+    tool_palette.addTool(&square_tool);
+    tool_palette.addTool(&brush_tool);
+
+    Canvas my_window({0.2f, 0.1f}, 1, 1, 640, 480, tool_palette);
     ScrollBar my_window_with_scrollbar{my_window, 0.01, 0.3, true, 0.3, true, scrollbar_texture_config};
     Frame my_window_with_scrollbal_frame{my_window_with_scrollbar, "hello", 0.01, btn_texture_config};
 
