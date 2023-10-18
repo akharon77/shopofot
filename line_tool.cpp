@@ -22,11 +22,12 @@ void LineToolWidget::draw(sf::RenderTarget &target, List<Transform> &transf_list
     target.draw(line, 2, sf::Lines);
 }
 
-void LineTool::onMainButton(MouseKey key, Vector2f pos, Canvas &canvas)
+void LineTool::onMainButton(MouseType key, Vector2f pos, Canvas &canvas)
 {
     if (m_widget.m_status == LineToolWidget::DEFAULT)
     {
         m_widget.m_status = LineToolWidget::HOLD;
+        m_widget.m_first_pos = m_widget.m_second_pos = pos;
     }
     else
     {

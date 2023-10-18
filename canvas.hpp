@@ -48,15 +48,21 @@ public:
     virtual bool onTime (float d_seconds) override;
 };
 
+enum class MouseType
+{
+    PRESSED,
+    RELEASED
+};
+
 class Tool
 {
 public:
-    virtual void onMainButton(MouseKey key, Vector2f pos, Canvas &canvas)      = 0;
-    virtual void onSecondaryButton(MouseKey key, Vector2f pos, Canvas &canvas) = 0;
+    virtual void onMainButton(MouseType key, Vector2f pos, Canvas &canvas)      = 0;
+    virtual void onSecondaryButton(MouseType key, Vector2f pos, Canvas &canvas) = 0;
 
-    virtual void onModifier1(MouseKey key, Vector2f pos, Canvas &canvas) = 0;
-    virtual void onModifier2(MouseKey key, Vector2f pos, Canvas &canvas) = 0;
-    virtual void onModifier3(MouseKey key, Vector2f pos, Canvas &canvas) = 0;
+    virtual void onModifier1(MouseType key, Vector2f pos, Canvas &canvas) = 0;
+    virtual void onModifier2(MouseType key, Vector2f pos, Canvas &canvas) = 0;
+    virtual void onModifier3(MouseType key, Vector2f pos, Canvas &canvas) = 0;
 
     virtual void onMove(Vector2f pos, Canvas &canvas)    = 0;
     virtual void onConfirm(Vector2f pos, Canvas &canvas) = 0;

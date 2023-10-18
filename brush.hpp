@@ -1,43 +1,27 @@
-#ifndef LINE_TOOL_HPP
-#define LINE_TOOL_HPP
+#ifndef BRUSH_TOOL_HPP
+#define BRUSH_TOOL_HPP
 
 #include "tool.hpp"
 
-class LineToolWidget : public Widget
+class BrushToolWidget : public Widget
 {
+    sf::CircleShape m_shape;
+
 public:
-    enum status_t
+    BrushToolWidget() :
+        m_shape(2)
     {
-        DEFAULT,
-        HOLD
-    };
-
-    status_t m_status;
-
-    Vector2f m_first_pos;
-    Vector2f m_second_pos;
-
-    LineToolWidget() :
-        Widget(),
-        m_status(DEFAULT)
-    {}
+        m_shape.setFillColor(sf::Color::Red);
+        m_shape.setOrigin(1, 1);
+        m_shape.setRadius(5);
+    }
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
     virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) {}
 
-    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
-    {
-        m_status = DEFAULT;
-    }
+    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) {}
 
-    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
-    {
-        if (m_status == HOLD)
-        {
-            Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-            m_second_pos = top_transf.applyTransform({x, y});
-        }
-    }
+    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) {}
 
     virtual bool onKeyboardPressed  (KeyboardKey key) {}
     virtual bool onKeyboardReleased (KeyboardKey key) {}
@@ -47,13 +31,23 @@ public:
     virtual bool onResize(float width, float height) {}
 };
 
-class LineTool : public Tool
+class BrushTool : public Tool
 {
-    LineToolWidget m_widget;
+    enum status_t
+    {
+        DEFAULT,
+        HOLD
+    };
+
+    status_t m_status;
+    Vector2f m_prev_pos;
+
+    BrushToolWidget m_widget;
 
 public:
-    LineTool() {}
-    ~LineTool() {}
+    BrushTool() :
+        m_status(DEFAULT)
+    {}
 
     virtual void onMainButton(MouseType key, Vector2f pos, Canvas &canvas) override;
 
@@ -63,7 +57,7 @@ public:
     virtual void onModifier2(MouseType key, Vector2f pos, Canvas &canvas) {}
     virtual void onModifier3(MouseType key, Vector2f pos, Canvas &canvas) {}
 
-    virtual void onMove(Vector2f pos, Canvas &canvas) {}
+    virtual void onMove(Vector2f pos, Canvas &canvas) override;
 
     virtual void onConfirm(Vector2f pos, Canvas &canvas) {}
     virtual void onCancel(Vector2f pos, Canvas &canvas) {}
@@ -74,5 +68,5 @@ public:
     }
 };
 
-#endif  // LINE_TOOL_HPP
+#endif  // BRUSH_TOOL_HPP
 

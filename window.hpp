@@ -8,8 +8,8 @@
 
 #include "widget.hpp"
 
-const uint32_t SCREEN_WIDTH  = 1024; 
-const uint32_t SCREEN_HEIGHT = 720;
+const uint32_t SCREEN_WIDTH  = 1920; 
+const uint32_t SCREEN_HEIGHT = 1024;
 
 struct WindowTexture
 {
