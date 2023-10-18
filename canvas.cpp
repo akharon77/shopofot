@@ -101,6 +101,9 @@ bool Canvas::onKeyboardPressed  (KeyboardKey key)
 {
     if (key == KeyboardKey::Right)
         m_tool_palette->nextTool();
+
+    if (key == KeyboardKey::Enter)
+        m_tool_palette->getActiveTool()->onConfirm({0, 0}, *this);
 }
 
 bool Canvas::onKeyboardReleased (KeyboardKey key) {}

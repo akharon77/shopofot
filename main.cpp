@@ -10,6 +10,8 @@
 #include "line_tool.hpp"
 #include "brush.hpp"
 #include "square_tool.hpp"
+#include "polyline_tool.hpp"
+#include "polygon_tool.hpp"
 
 int main()
 {
@@ -51,11 +53,15 @@ int main()
     LineTool line_tool;
     SquareTool square_tool;
     BrushTool brush_tool;
+    PolyLineTool polyline_tool;
+    PolygonTool polygon_tool;
 
     ToolPalette tool_palette;
     tool_palette.addTool(&line_tool);
     tool_palette.addTool(&square_tool);
     tool_palette.addTool(&brush_tool);
+    tool_palette.addTool(&polyline_tool);
+    tool_palette.addTool(&polygon_tool);
 
     Canvas my_window({0.2f, 0.1f}, 1, 1, 640, 480, tool_palette);
     ScrollBar my_window_with_scrollbar{my_window, 0.01, 0.3, true, 0.3, true, scrollbar_texture_config};
