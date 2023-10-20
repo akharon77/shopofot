@@ -8,7 +8,8 @@ Canvas::Canvas(Vector2f pos, float width, float height, int32_t canv_width, int3
     m_canv_width(canv_width),
     m_canv_height(canv_height),
     m_vertex_arr(sf::Quads, 4),
-    m_tool_palette(&tool_palette)
+    m_tool_palette(&tool_palette),
+    m_last_mouse_pos(0, 0)
 {
     m_canv_texture.create(canv_width, canv_height);
     m_canv_texture.clear(sf::Color::Black);
@@ -89,21 +90,35 @@ bool Canvas::onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     Vector2f pos = top_transf.applyTransform({x, y});
-    m_tool_palette->getActiveTool()->onMove(pos, *this);
+    m_last_mouse_pos = pos;
 
+    m_tool_palette->getActiveTool()->onMove(pos, *this);
     m_tool_palette->getActiveTool()->getWidget()->onMouseMoved(x, y, transf_list);
 
     transf_list.PopBack();
-    return false;
+    return true;
 }
 
 bool Canvas::onKeyboardPressed  (KeyboardKey key)
 {
     if (key == KeyboardKey::Right)
+    {
         m_tool_palette->nextTool();
+        return true;
+    }
 
     if (key == KeyboardKey::Enter)
-        m_tool_palette->getActiveTool()->onConfirm({0, 0}, *this);
+    {
+        m_tool_palette->getActiveTool()->onConfirm(m_last_mouse_pos, *this);
+        return true;
+    }
+
+    if (key == KeyboardKey::Escape)
+    {
+        m_tool_palette->getActiveTool()->onCancel(m_last_mouse_pos, *this);
+    }
+
+    return false;
 }
 
 bool Canvas::onKeyboardReleased (KeyboardKey key) {}

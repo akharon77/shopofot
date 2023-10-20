@@ -18,26 +18,15 @@ public:
     Vector2f m_second_pos;
 
     LineToolWidget() :
-        Widget(),
         m_status(DEFAULT)
     {}
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
     virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) {}
 
-    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
-    {
-        m_status = DEFAULT;
-    }
+    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) {}
 
-    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
-    {
-        if (m_status == HOLD)
-        {
-            Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-            m_second_pos = top_transf.applyTransform({x, y});
-        }
-    }
+    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) {}
 
     virtual bool onKeyboardPressed  (KeyboardKey key) {}
     virtual bool onKeyboardReleased (KeyboardKey key) {}
@@ -52,9 +41,6 @@ class LineTool : public Tool
     LineToolWidget m_widget;
 
 public:
-    LineTool() {}
-    ~LineTool() {}
-
     virtual void onMainButton(MouseType key, Vector2f pos, Canvas &canvas) override;
 
     virtual void onSecondaryButton(MouseType key, Vector2f pos, Canvas &canvas) {}
@@ -63,10 +49,10 @@ public:
     virtual void onModifier2(MouseType key, Vector2f pos, Canvas &canvas) {}
     virtual void onModifier3(MouseType key, Vector2f pos, Canvas &canvas) {}
 
-    virtual void onMove(Vector2f pos, Canvas &canvas) {}
+    virtual void onMove(Vector2f pos, Canvas &canvas) override;
 
-    virtual void onConfirm(Vector2f pos, Canvas &canvas) {}
-    virtual void onCancel(Vector2f pos, Canvas &canvas) {}
+    virtual void onConfirm(Vector2f pos, Canvas &canvas) override;
+    virtual void onCancel(Vector2f pos, Canvas &canvas) override;
 
     virtual Widget* getWidget()
     {

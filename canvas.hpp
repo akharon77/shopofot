@@ -24,9 +24,10 @@ public:
     int32_t m_canv_height;
 
     ToolPalette *m_tool_palette;
-    // Tool *m_tool;
 
     sf::RenderTexture m_canv_texture;
+
+    Vector2f m_last_mouse_pos;
 
     Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette);
 

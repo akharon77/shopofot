@@ -60,3 +60,9 @@ void PolygonTool::onConfirm(Vector2f pos, Canvas &canvas)
     m_widget.m_arr.resize(0);
 }
 
+void PolygonTool::onCancel(Vector2f pos, Canvas &canvas)
+{
+    m_widget.m_status = PolygonToolWidget::DEFAULT;
+    m_widget.m_arr.clear();
+}
+
