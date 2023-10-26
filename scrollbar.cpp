@@ -255,8 +255,8 @@ bool ScrollBar::onResize(float width, float height)
             return false;
         }
     //}
-
-    m_size = {width, height};
+    
+    m_size = {width + m_is_ver ? m_thickness : 0, height + m_is_hor ? m_thickness : 0};
 
     m_btn_ver = ScrollButton(*this, VER, *m_texture->m_btn_scroll);
     m_btn_ver.m_transf.m_offset.y += pos_ver * (m_height - 2 * m_thickness - m_btn_ver.m_size.y);

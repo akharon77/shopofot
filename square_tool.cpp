@@ -59,3 +59,13 @@ void SquareTool::onMove(Vector2f pos, Canvas &canvas)
         m_widget.m_pos = pos;
 }
 
+void SquareTool::onCancel(Vector2f pos, Canvas &canvas)
+{
+    m_widget.m_status = SquareToolWidget::DEFAULT;
+}
+
+void SquareTool::onConfirm(Vector2f pos, Canvas &canvas)
+{
+    m_widget.m_status = SquareToolWidget::DEFAULT;
+}
+

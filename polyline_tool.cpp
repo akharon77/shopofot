@@ -26,19 +26,23 @@ void PolyLineTool::onMainButton(MouseType key, Vector2f pos, Canvas &canvas)
 {
     if (key == MouseType::PRESSED)
     {
-        if (m_widget.m_status == PolyLineToolWidget::ACTIVE && 
-            m_widget.m_arr.getVertexCount() > 0             &&
-            len(pos - m_widget.m_arr[0].position) < EPS)
+        if (m_widget.m_status == PolyLineToolWidget::ACTIVE)
         {
-            onConfirm(pos, canvas);
+            // printf("%f %f %f %f\n", pos.x, pos.y, m_widget.m_arr[0].position.x, m_widget.m_arr[0].position.y);
+            if (m_widget.m_arr.getVertexCount() > 0 && len(pos - m_widget.m_arr[0].position) < 2 * EPS)
+            {
+                m_widget.m_arr.append(pos);
+                onConfirm(pos, canvas);
+            }
         }
         else
         {
             m_widget.m_status = PolyLineToolWidget::ACTIVE;
-            m_widget.m_pos = pos;
         }
+
+        m_widget.m_pos = pos;
     }
-    else if (m_widget.m_status == PolyLineToolWidget::ACTIVE && key == MouseType::RELEASED)
+    else if (m_widget.m_status == PolyLineToolWidget::ACTIVE)
     {
         m_widget.m_arr.append(pos);
         m_widget.m_pos = pos;

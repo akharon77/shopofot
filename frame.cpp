@@ -79,6 +79,8 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
     m_wrappee->onMousePressed(key, x, y, transf_list);
 
     transf_list.PopBack();
+
+    return true;
 }
 
 bool Frame::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
@@ -93,6 +95,8 @@ bool Frame::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> 
     m_wrappee->onMouseReleased(key, x, y, transf_list);
 
     transf_list.PopBack();
+
+    return true;
 }
 
 bool Frame::onResize(float width, float height)
@@ -103,6 +107,7 @@ bool Frame::onResize(float width, float height)
 
     m_size = {width, height};
     updateVertexArray();
+    return true;
 }
 
 bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
@@ -135,6 +140,7 @@ bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
     m_wrappee->onMouseMoved(x, y, transf_list);
 
     transf_list.PopBack();
+    return true;
 }
 
 bool Frame::onKeyboardPressed(KeyboardKey key)

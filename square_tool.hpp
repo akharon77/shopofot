@@ -62,8 +62,8 @@ public:
 
     virtual void onMove(Vector2f pos, Canvas &canvas) override;
 
-    virtual void onConfirm(Vector2f pos, Canvas &canvas) {}
-    virtual void onCancel(Vector2f pos, Canvas &canvas) {}
+    virtual void onConfirm(Vector2f pos, Canvas &canvas) override;
+    virtual void onCancel(Vector2f pos, Canvas &canvas) override;
 
     virtual Widget* getWidget()
     {

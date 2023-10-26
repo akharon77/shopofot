@@ -80,6 +80,9 @@ bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform>
         {
             m_status = FOCUSED;
             setRect(m_btn_texture.m_focused_rect);
+
+            transf_list.PopBack();
+            return true;
         }
         else
         {
@@ -89,7 +92,7 @@ bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform>
     }
 
     transf_list.PopBack();
-    return true;
+    return false;
 }
 
 bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
