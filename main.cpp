@@ -113,6 +113,7 @@ int main()
     ScrollBar my_window_with_scrollbar{my_window, 0.01, 0.3, true, 0.3, true, scrollbar_texture_config};
     Menu my_window_with_scrollbar_menu{my_window_with_scrollbar};
     my_window_with_scrollbar_menu.addButton(sample_button);
+    my_window_with_scrollbar_menu.addButton(ver_btn_list);
     Frame my_window_with_scrollbar_menu_frame{my_window_with_scrollbar_menu, "hello", 0.01, btn_texture_config};
 
     Canvas my_window1({0.6f, 0.8f}, 1, 1, 1000, 1000, tool_palette, filter_palette);
@@ -129,14 +130,14 @@ int main()
                 window.close();
 
             adaptSfEvent(event, &my_window_with_scrollbar_menu_frame,  transf_list);
-            adaptSfEvent(event, &ver_btn_list,  transf_list);
+            //adaptSfEvent(event, &ver_btn_list,  transf_list);
             //adaptSfEvent(event, &my_window_with_scrollbal_frame1, transf_list);
         }
 
         window.clear(sf::Color::Black);
 
         my_window_with_scrollbar_menu_frame.draw(window, transf_list);
-        ver_btn_list.draw(window, transf_list);
+        //ver_btn_list.draw(window, transf_list);
         //my_window_with_scrollbal_frame1.draw(window, transf_list);
 
         window.display();

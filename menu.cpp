@@ -32,6 +32,8 @@ void Menu::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
+    m_wrappee->draw(target, transf_list);
+
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
 
@@ -42,8 +44,6 @@ void Menu::draw(sf::RenderTarget &target, List<Transform> &transf_list)
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
-
-    m_wrappee->draw(target, transf_list);
 
     transf_list.PopBack();
 }

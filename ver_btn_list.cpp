@@ -8,10 +8,10 @@ VerticalButtonList::VerticalButtonList(Vector2f pos, float width, float height, 
 
 void VerticalButtonList::addButton(Button &btn)
 {
-    btn.m_transf.m_offset = {0, 1 + m_bottom};
-    btn.m_transf.m_scale.x /= m_width;
-    btn.m_transf.m_scale.y /= m_height;
-    m_bottom += btn.m_size.y / m_transf.m_scale.y;
+    btn.m_transf.m_offset = {0, m_size.y + m_bottom};
+    // btn.m_transf.m_scale.x /= m_width;
+    // btn.m_transf.m_scale.y /= m_height;
+    m_bottom += btn.m_size.y;
     m_btn_lst.PushBack(&btn);
 }
 
@@ -22,7 +22,8 @@ void VerticalButtonList::draw(sf::RenderTarget &target, List<Transform> &transf_
     if (m_status != OPENED)
         return;
 
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    transf_list.PushBack(Transform(m_transf.m_offset, {1, 1}).applyParent(transf_list.Get(transf_list.GetTail())->val));
+    //transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_btn_lst.GetHead();
@@ -36,6 +37,7 @@ void VerticalButtonList::draw(sf::RenderTarget &target, List<Transform> &transf_
         node = *m_btn_lst.Get(anch);
     }
 
+    //transf_list.PopBack();
     transf_list.PopBack();
 }
 
@@ -52,7 +54,8 @@ bool VerticalButtonList::onMousePressed(MouseKey key, int32_t x, int32_t y, List
     }
     else if (m_status == OPENED)
     {
-        transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+        transf_list.PushBack(Transform(m_transf.m_offset, {1, 1}).applyParent(transf_list.Get(transf_list.GetTail())->val));
+        //transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
         Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
         int32_t anch = m_btn_lst.GetHead();
@@ -82,7 +85,8 @@ bool VerticalButtonList::onMouseReleased(MouseKey key, int32_t x, int32_t y, Lis
     if (m_status != OPENED)
         return true;
 
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    transf_list.PushBack(Transform(m_transf.m_offset, {1, 1}).applyParent(transf_list.Get(transf_list.GetTail())->val));
+    //transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_btn_lst.GetHead();
@@ -105,7 +109,8 @@ bool VerticalButtonList::onMouseMoved(int32_t x, int32_t y, List<Transform> &tra
 {
     TextButton::onMouseMoved(x, y, transf_list);
 
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    transf_list.PushBack(Transform(m_transf.m_offset, {1, 1}).applyParent(transf_list.Get(transf_list.GetTail())->val));
+    //transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_btn_lst.GetHead();
