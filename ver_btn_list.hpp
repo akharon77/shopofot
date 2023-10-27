@@ -3,14 +3,24 @@
 
 #include "list.hpp"
 #include "widget.hpp"
-#include "button.hpp"
+#include "text_btn.hpp"
 
-class VerticalButtonList : public Widget
+class VerticalButtonList : public TextButton
 {
-    List<Button*> m_btn_list;
+    enum status_t
+    {
+        DEFAULT,
+        OPENED
+    };
+
+    status_t m_status;
+
+    List<Button*> m_btn_lst;
+
+    float m_bottom;
 
 public:
-    VerticalButtonList(Vector2f pos);
+    VerticalButtonList(Vector2f pos, float width, float height, const char *str, sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture);
 
     ~VerticalButtonList() = default;
     VerticalButtonList& operator = (const VerticalButtonList &rhs) = delete;
@@ -30,7 +40,7 @@ public:
 
     virtual bool onTime (float d_seconds) override;
 
-    virtual bool onResize(float width, float height) override;
+    // virtual bool onResize(float width, float height) override;
 };
 
 #endif  // VER_BTN_LIST_HPP

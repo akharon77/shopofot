@@ -38,7 +38,10 @@ void Button::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
     sf::VertexArray buf_vertex_array(m_vertex_array);
     for (int32_t i = 0; i < 4; ++i)
-        buf_vertex_array[i].position = top_transf.rollbackTransform(m_vertex_array[i].position);
+    {
+        Vector2f pos = buf_vertex_array[i].position = top_transf.rollbackTransform(m_vertex_array[i].position);
+        Vector2f pos1 = pos;
+    }
 
     target.draw(buf_vertex_array, m_btn_texture.m_texture);
 

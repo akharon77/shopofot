@@ -84,23 +84,25 @@ int main()
         0.05, 0.02,
         btn_texture_config
     };
+    Button sample_button1
+    {
+        {0, 0.5},
+        0.03, 0.01,
+        btn_texture_config
+    };
+    Button sample_button2
+    {
+        {0.5, 0},
+        0.07, 0.04,
+        btn_texture_config
+    };
 
     sf::Font font;
     font.loadFromFile("arial.ttf");
 
-    TextButton sample_btn2
-    {
-        {0, 0},
-        0.05, 0.02,
-        "File",
-        font,
-        16,
-        btn_texture_config
-    };
-
-    VerticalButtonList ver_btn_list({0, 0});
-    ver_btn_list.addButton(sample_button);
-    ver_btn_list.addButton(sample_btn2);
+    VerticalButtonList ver_btn_list({0, 0}, 0.05, 0.02, "File", font, 16, btn_texture_config);
+    ver_btn_list.addButton(sample_button1);
+    ver_btn_list.addButton(sample_button2);
 
     sf::Image cat_img;
     cat_img.loadFromFile("cat.jpg");
