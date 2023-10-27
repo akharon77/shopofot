@@ -21,21 +21,14 @@
 
 #include "brightness_filter.hpp"
 
+#include "shopofot.hpp"
+
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "shopofot");
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_WIDTH), "shopofot");
 
     List<Transform> transf_list;
     transf_list.PushBack({{0, 0}, {SCREEN_WIDTH, SCREEN_HEIGHT}});
-
-    sf::Texture window_texture;
-    window_texture.loadFromFile("mols_ctrl_texture.png");
-
-    WindowTexture window_texture_config
-    {
-        &window_texture,
-        {0, 0, 57, 52}
-    };
 
     sf::Texture button_texture;
     button_texture.loadFromFile("mols_ctrl_texture.png");
@@ -50,7 +43,7 @@ int main()
 
     ScrollBarTexture scrollbar_texture_config
     {
-        &window_texture,
+        &button_texture,
         &btn_texture_config,
         &btn_texture_config,
         &btn_texture_config,
@@ -71,12 +64,14 @@ int main()
     tool_palette.addTool(&polyline_tool);
     tool_palette.addTool(&polygon_tool);
 
-    BrightnessFilter brightness_filter;
-    brightness_filter.setBrightnessDelta(0.1);
+    BrightnessFilter brightness_filter_pos;
+    brightness_filter_pos.setBrightnessDelta(0.05);
+    BrightnessFilter brightness_filter_neg;
+    brightness_filter_neg.setBrightnessDelta(-0.05);
 
     FilterPalette filter_palette;
-    int32_t brightness_filter_id = filter_palette.addFilter(brightness_filter);
-    filter_palette.setLastFilter(brightness_filter_id);
+    int32_t brightness_filter_pos_id = filter_palette.addFilter(brightness_filter_pos);
+    int32_t brightness_filter_neg_id = filter_palette.addFilter(brightness_filter_neg);
 
     Button sample_button
     {
@@ -108,12 +103,16 @@ int main()
     cat_img.loadFromFile("cat.jpg");
 
     Canvas my_window({0.2f, 0.1f}, 1, 1, 640, 480, tool_palette, filter_palette);
+    FilterVerticalButtonList filt_ver_btn_lst(my_window, brightness_filter_pos_id, brightness_filter_neg_id,
+                                            {0, 0}, 0.05, 0.02, font, 16, btn_texture_config);
     my_window.loadFromImage(cat_img);
 
     ScrollBar my_window_with_scrollbar{my_window, 0.01, 0.3, true, 0.3, true, scrollbar_texture_config};
+
     Menu my_window_with_scrollbar_menu{my_window_with_scrollbar};
-    my_window_with_scrollbar_menu.addButton(sample_button);
     my_window_with_scrollbar_menu.addButton(ver_btn_list);
+    my_window_with_scrollbar_menu.addButton(filt_ver_btn_lst);
+
     Frame my_window_with_scrollbar_menu_frame{my_window_with_scrollbar_menu, "hello", 0.01, btn_texture_config};
 
     Canvas my_window1({0.6f, 0.8f}, 1, 1, 1000, 1000, tool_palette, filter_palette);
@@ -130,15 +129,11 @@ int main()
                 window.close();
 
             adaptSfEvent(event, &my_window_with_scrollbar_menu_frame,  transf_list);
-            //adaptSfEvent(event, &ver_btn_list,  transf_list);
-            //adaptSfEvent(event, &my_window_with_scrollbal_frame1, transf_list);
         }
 
         window.clear(sf::Color::Black);
 
         my_window_with_scrollbar_menu_frame.draw(window, transf_list);
-        //ver_btn_list.draw(window, transf_list);
-        //my_window_with_scrollbal_frame1.draw(window, transf_list);
 
         window.display();
     }

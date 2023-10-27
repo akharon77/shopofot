@@ -53,22 +53,24 @@ bool Menu::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &t
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
+    bool res = false;
+
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
 
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onMousePressed(key, x, y, transf_list);
+        res = res || node.val->onMousePressed(key, x, y, transf_list);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    m_wrappee->onMousePressed(key, x, y, transf_list);
+    res = res || m_wrappee->onMousePressed(key, x, y, transf_list);
 
     transf_list.PopBack();
 
-    return true;
+    return res;
 }
 
 bool Menu::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)

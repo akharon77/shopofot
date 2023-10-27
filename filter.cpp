@@ -67,6 +67,7 @@ void FilterMask::invert()
 
 size_t FilterPalette::addFilter(Filter &filter)
 {
+    m_last_filter = &filter;
     return m_filter_lst.PushBack(&filter);
 }
 

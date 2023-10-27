@@ -92,9 +92,9 @@ void BrightnessFilter::applyFilter(Canvas &canvas, const FilterMask &mask)
                 b_dash = x;
             }
 
-            color.r = std::min(255, int32_t((r_dash + m) * 255));
-            color.g = std::min(255, int32_t((g_dash + m) * 255));
-            color.b = std::min(255, int32_t((b_dash + m) * 255));
+            color.r = std::max(0, std::min(255, int32_t((r_dash + m) * 255)));
+            color.g = std::max(0, std::min(255, int32_t((g_dash + m) * 255)));
+            color.b = std::max(0, std::min(255, int32_t((b_dash + m) * 255)));
 
             buf_img.setPixel(x_coord, y_coord, color);
         }
