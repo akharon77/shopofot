@@ -6,6 +6,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 
 #include "line_tool.hpp"
+#include "canvas.hpp"
 
 void LineToolWidget::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {

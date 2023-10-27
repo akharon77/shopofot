@@ -6,6 +6,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 
 #include "polyline_tool.hpp"
+#include "canvas.hpp"
 
 void PolyLineToolWidget::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {

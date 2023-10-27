@@ -53,6 +53,8 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
+    bool res = false;
+
     Vector2f pos = top_transf.applyTransform({x, y});
 
     if (EPS < pos.x && pos.x < m_size.x    - EPS &&
@@ -60,6 +62,8 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
     {
         m_status = HOLD;
         m_hold_pos = pos;
+
+        res = true;
     }
 
     if (EPS + m_wrappee->m_size.x + m_thickness < pos.x && pos.x < m_size.x - EPS &&
@@ -67,6 +71,8 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
     {
         m_status = (status_t) (m_status | HOLD_HOR);
         m_hold_pos = pos;
+
+        res = true;
     }
 
     if (EPS + m_thickness < pos.x && pos.x < m_size.x - EPS &&
@@ -74,13 +80,15 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
     {
         m_status = (status_t) (m_status | HOLD_VER);
         m_hold_pos = pos;
+
+        res = true;
     }
 
-    m_wrappee->onMousePressed(key, x, y, transf_list);
+    res = res || m_wrappee->onMousePressed(key, x, y, transf_list);
 
     transf_list.PopBack();
 
-    return true;
+    return res;
 }
 
 bool Frame::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)

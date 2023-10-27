@@ -9,8 +9,9 @@
 #include <SFML/Graphics/CircleShape.hpp>
 
 #include "widget.hpp"
-
-class ToolPalette;
+#include "filter_mask.hpp"
+#include "filter_palette.hpp"
+#include "tool_palette.hpp"
 
 class Canvas : public Widget
 {
@@ -19,21 +20,30 @@ class Canvas : public Widget
 
     sf::VertexArray   m_vertex_arr;
 
+    void updateVertexArray();
+
 public:
     int32_t m_canv_width;
     int32_t m_canv_height;
 
-    ToolPalette *m_tool_palette;
+    ToolPalette   *m_tool_palette;
+
+    FilterMask     m_filter_mask;
+    FilterPalette *m_filter_palette;
 
     sf::RenderTexture m_canv_texture;
+    sf::Image         m_image;
 
     Vector2f m_last_mouse_pos;
 
-    Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette);
+    Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette);
 
     ~Canvas() = default;
     Canvas& operator = (const Canvas &rhs) = delete;
     Canvas(const Canvas &rhs) = delete;
+
+    sf::Image getImage();
+    void loadFromImage(const sf::Image &image);
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 
@@ -48,56 +58,6 @@ public:
     virtual bool onResize(float width, float height) override;
 
     virtual bool onTime (float d_seconds) override;
-};
-
-enum class MouseType
-{
-    PRESSED,
-    RELEASED
-};
-
-class Tool
-{
-public:
-    virtual void onMainButton(MouseType key, Vector2f pos, Canvas &canvas)      = 0;
-    virtual void onSecondaryButton(MouseType key, Vector2f pos, Canvas &canvas) = 0;
-
-    virtual void onModifier1(MouseType key, Vector2f pos, Canvas &canvas) = 0;
-    virtual void onModifier2(MouseType key, Vector2f pos, Canvas &canvas) = 0;
-    virtual void onModifier3(MouseType key, Vector2f pos, Canvas &canvas) = 0;
-
-    virtual void onMove(Vector2f pos, Canvas &canvas)    = 0;
-    virtual void onConfirm(Vector2f pos, Canvas &canvas) = 0;
-    virtual void onCancel(Vector2f pos, Canvas &canvas)  = 0;
-
-    virtual Widget* getWidget() = 0;
-};
-
-struct ToolPalette
-{
-    int32_t m_anch;
-
-    List<Tool*> m_list;
-
-    sf::Color m_foreground_color;
-    sf::Color m_background_color;
-
-    Tool *getActiveTool()
-    {
-        return m_list.Get(m_anch)->val;
-    }
-
-    void addTool(Tool *tool)
-    {
-        m_anch = m_list.PushBack(tool);
-    }
-
-    void nextTool()
-    {
-        m_anch = m_list.Get(m_anch)->next;
-        if (m_anch == m_list.m_dummy_head)
-            m_anch = m_list.Get(m_anch)->next;
-    }
 };
 
 #endif  // CANVAS_HPP

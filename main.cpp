@@ -5,15 +5,21 @@
 #include "window.hpp"
 #include "canvas.hpp"
 #include "frame.hpp"
+
 #include "button.hpp"
 #include "scrollbar.hpp"
 #include "menu.hpp"
+
 #include "ver_btn_list.hpp"
+#include "text_btn.hpp"
+
 #include "line_tool.hpp"
 #include "brush.hpp"
 #include "square_tool.hpp"
 #include "polyline_tool.hpp"
 #include "polygon_tool.hpp"
+
+#include "brightness_filter.hpp"
 
 int main()
 {
@@ -65,6 +71,13 @@ int main()
     tool_palette.addTool(&polyline_tool);
     tool_palette.addTool(&polygon_tool);
 
+    BrightnessFilter brightness_filter;
+    brightness_filter.setBrightnessDelta(0.1);
+
+    FilterPalette filter_palette;
+    int32_t brightness_filter_id = filter_palette.addFilter(brightness_filter);
+    filter_palette.setLastFilter(brightness_filter_id);
+
     Button sample_button
     {
         {0, 0},
@@ -72,10 +85,16 @@ int main()
         btn_texture_config
     };
 
-    Button sample_btn2
+    sf::Font font;
+    font.loadFromFile("arial.ttf");
+
+    TextButton sample_btn2
     {
         {0, 0},
         0.05, 0.02,
+        "File",
+        font,
+        16,
         btn_texture_config
     };
 
@@ -83,13 +102,18 @@ int main()
     ver_btn_list.addButton(sample_button);
     ver_btn_list.addButton(sample_btn2);
 
-    Canvas my_window({0.2f, 0.1f}, 1, 1, 640, 480, tool_palette);
+    sf::Image cat_img;
+    cat_img.loadFromFile("cat.jpg");
+
+    Canvas my_window({0.2f, 0.1f}, 1, 1, 640, 480, tool_palette, filter_palette);
+    my_window.loadFromImage(cat_img);
+
     ScrollBar my_window_with_scrollbar{my_window, 0.01, 0.3, true, 0.3, true, scrollbar_texture_config};
     Menu my_window_with_scrollbar_menu{my_window_with_scrollbar};
     my_window_with_scrollbar_menu.addButton(sample_button);
     Frame my_window_with_scrollbar_menu_frame{my_window_with_scrollbar_menu, "hello", 0.01, btn_texture_config};
 
-    Canvas my_window1({0.6f, 0.8f}, 1, 1, 1000, 1000, tool_palette);
+    Canvas my_window1({0.6f, 0.8f}, 1, 1, 1000, 1000, tool_palette, filter_palette);
     ScrollBar my_window_with_scrollbar1{my_window1, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
     Frame my_window_with_scrollbal_frame1{my_window_with_scrollbar1, "hello", 0.02, btn_texture_config};
 

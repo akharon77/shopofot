@@ -31,7 +31,7 @@ public:
     void        PopBack      ();
     void        PopFront     ();
 
-    uint32_t    GetSize      ();
+    uint32_t    GetSize      () const;
 
     int32_t     GetTail      ();
 
@@ -148,7 +148,7 @@ int32_t List<T>::GetTail()
 }
 
 template<typename T>
-uint32_t List<T>::GetSize()
+uint32_t List<T>::GetSize() const
 {
     return m_size;
 }

@@ -6,6 +6,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 
 #include "polygon_tool.hpp"
+#include "canvas.hpp"
 
 void PolygonToolWidget::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {

@@ -6,6 +6,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 
 #include "square_tool.hpp"
+#include "canvas.hpp"
 
 void SquareToolWidget::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {

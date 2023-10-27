@@ -6,6 +6,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 
 #include "brush.hpp"
+#include "canvas.hpp"
 
 void BrushToolWidget::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
