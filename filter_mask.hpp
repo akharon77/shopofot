@@ -17,6 +17,8 @@ public:
     FilterMask(const FilterMask &rhs)             = delete;
     FilterMask operator = (const FilterMask &rhs) = delete;
 
+    void resize(size_t width, size_t height);
+
     size_t getWidth()  const;
     size_t getHeight() const;
 

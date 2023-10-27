@@ -44,6 +44,8 @@ public:
 
     sf::Image getImage();
     void loadFromImage(const sf::Image &image);
+    void drawImage(const sf::Image &image);
+    void resize(uint32_t width, uint32_t height);
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 

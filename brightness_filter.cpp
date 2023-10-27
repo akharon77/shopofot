@@ -15,6 +15,12 @@ void BrightnessFilter::applyFilter(Canvas &canvas, const FilterMask &mask)
     {
         for (int32_t y_coord = 0; y_coord < size.y; ++y_coord)
         {
+            if (!mask.getPixel(x_coord, y_coord))
+            {
+                buf_img.setPixel(x_coord, y_coord, sf::Color::Transparent);
+                continue;
+            }
+
             sf::Color color = buf_img.getPixel(x_coord, y_coord);
             float r_dash = color.r / 255.f;
             float g_dash = color.g / 255.f;
@@ -94,6 +100,5 @@ void BrightnessFilter::applyFilter(Canvas &canvas, const FilterMask &mask)
         }
     }
 
-    buf_img.saveToFile("buf.jpg");
-    canvas.loadFromImage(buf_img);
+    canvas.drawImage(buf_img);
 }

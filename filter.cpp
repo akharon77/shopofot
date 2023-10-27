@@ -22,6 +22,17 @@ FilterMask::~FilterMask()
     m_buf = nullptr;
 }
 
+void FilterMask::resize(size_t width, size_t height)
+{
+    m_width = width;
+    m_height = height;
+
+    delete[] m_buf;
+    m_buf = new bool[width * height];
+
+    fill(true);
+}
+
 size_t FilterMask::getWidth() const
 {
     return m_width;
@@ -45,7 +56,7 @@ void FilterMask::setPixel(size_t x, size_t y, bool value)
 void FilterMask::fill(bool value)
 {
     for (int32_t i = 0; i < m_width * m_height; ++i)
-        m_buf[i] = 0;
+        m_buf[i] = value;
 }
 
 void FilterMask::invert()

@@ -38,21 +38,33 @@ sf::Image Canvas::getImage()
     return m_canv_texture.getTexture().copyToImage();
 }
 
-void Canvas::loadFromImage(const sf::Image &image)
+void Canvas::drawImage(const sf::Image &image)
 {
     sf::Texture buf_texture;
     buf_texture.loadFromImage(image);
-
-    sf::Vector2u size = image.getSize();
-    m_canv_texture.create(size.x, size.y);
-    m_canv_width = size.x;
-    m_canv_height = size.y;
-    updateVertexArray();
 
     sf::Sprite buf_sprite;
     buf_sprite.setTexture(buf_texture);
     m_canv_texture.draw(buf_sprite);
     m_canv_texture.display();
+}
+
+void Canvas::loadFromImage(const sf::Image &image)
+{
+    sf::Vector2u size = image.getSize();
+    resize(size.x, size.y);
+    drawImage(image);
+}
+
+void Canvas::resize(uint32_t width, uint32_t height)
+{
+    m_canv_width = width;
+    m_canv_height = height;
+    updateVertexArray();
+
+    m_filter_mask.resize(width, height);
+
+    m_canv_texture.create(width, height);
 }
 
 void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
