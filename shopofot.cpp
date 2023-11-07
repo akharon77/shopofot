@@ -1,5 +1,4 @@
 #include "shopofot.hpp"
-
 ButtonFilterApply::ButtonFilterApply(Vector2f pos, float width, float height, const char *str, TextButtonTexture &btn_texture, CanvasManager &canv_manager, int32_t filt_id) :  //sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture, Canvas &canvas, int32_t filt_id) :
     TextButton(pos, width, height, str, btn_texture),
     m_canv_manager(&canv_manager),
@@ -36,6 +35,42 @@ void FilterVerticalButtonList::addFilter(const char *str, int32_t filt_id)
 }
 
 FilterVerticalButtonList::~FilterVerticalButtonList()
+{
+    Button *pop_btn = nullptr;
+    do
+    {
+        pop_btn = popButton();
+        delete pop_btn;
+    }
+    while (pop_btn != nullptr);
+}
+
+ButtonNewCanvasWindow::ButtonNewCanvasWindow(Vector2f pos, float width, float height, TextButtonTexture &btn_texture, CanvasManager &canv_manager) :
+    TextButton(pos, width, height, "New canvas", btn_texture),
+    m_canv_manager(&canv_manager)
+{}
+
+bool ButtonNewCanvasWindow::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+{
+    bool res = TextButton::onMousePressed(key, x, y, transf_list);
+    if (res)
+        m_canv_manager->addCanvas(1024, 640);
+
+    return res;
+}
+
+FileVerticalButtonList::FileVerticalButtonList(Vector2f pos, float width, float height, CanvasManager &canv_manager, TextButtonTexture &btn_texture) :
+    VerticalButtonList(pos, width, height, "File", btn_texture),
+    m_width(width),
+    m_height(height),
+    m_canv_manager(&canv_manager),
+    m_btn_texture(&btn_texture)
+{
+    Button *btn = new ButtonNewCanvasWindow({0, 0}, m_width, m_height, *m_btn_texture, *m_canv_manager);
+    addButton(*btn);
+}
+
+FileVerticalButtonList::~FileVerticalButtonList()
 {
     Button *pop_btn = nullptr;
     do

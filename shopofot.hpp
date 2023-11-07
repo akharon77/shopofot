@@ -16,6 +16,16 @@ public:
     virtual bool onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
 };
 
+class ButtonNewCanvasWindow : public TextButton
+{
+    CanvasManager *m_canv_manager;
+
+public:
+    ButtonNewCanvasWindow(Vector2f pos, float width, float height, TextButtonTexture &btn_texture, CanvasManager &canv_manager);
+
+    virtual bool onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+};
+
 class FilterVerticalButtonList : public VerticalButtonList
 {
     float m_width;
@@ -33,6 +43,22 @@ public:
 
     FilterVerticalButtonList& operator = (FilterVerticalButtonList &rhs) = delete;
     FilterVerticalButtonList(const FilterVerticalButtonList &rhs) = delete;
+};
+
+class FileVerticalButtonList : public VerticalButtonList
+{
+    float m_width;
+    float m_height;
+
+    CanvasManager *m_canv_manager;
+    TextButtonTexture *m_btn_texture;
+
+public:
+    FileVerticalButtonList(Vector2f pos, float width, float height, CanvasManager &canv_manager, TextButtonTexture &btn_texture);
+    ~FileVerticalButtonList();
+
+    FileVerticalButtonList& operator = (FileVerticalButtonList &rhs) = delete;
+    FileVerticalButtonList(const FileVerticalButtonList &rhs) = delete;
 };
 
 #endif  // SHOPOFOT_HPP
