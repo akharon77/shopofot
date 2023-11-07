@@ -147,6 +147,7 @@ bool Frame::onResize(float width, float height)
         return false;
 
     m_size = {width, height};
+    // printf("frame size: %f %f\n", width, height);
     m_close_btn.m_transf.m_offset = {width - m_thickness, 0};
     updateVertexArray();
     return true;
