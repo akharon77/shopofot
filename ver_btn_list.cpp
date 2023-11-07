@@ -64,7 +64,7 @@ bool VerticalButtonList::onMousePressed(MouseKey key, int32_t x, int32_t y, List
         int32_t size = m_btn_lst.GetSize();
         for (int32_t i = 0; i < size; ++i)
         {
-            res = res || node.val->onMousePressed(key, x, y, transf_list);
+            res = node.val->onMousePressed(key, x, y, transf_list) || res;
             anch = node.next;
             node = *m_btn_lst.Get(anch);
         }

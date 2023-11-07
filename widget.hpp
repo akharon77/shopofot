@@ -48,6 +48,12 @@ enum class KeyboardKey
     F15, Pause
 };
 
+class Container
+{
+public:
+    virtual bool close(int32_t id) = 0;
+};
+
 class Widget
 {
 public:

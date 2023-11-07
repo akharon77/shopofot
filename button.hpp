@@ -60,7 +60,12 @@ public:
     virtual bool onKeyboardPressed  (KeyboardKey key) {};
     virtual bool onKeyboardReleased (KeyboardKey key) {};
 
-    virtual bool onResize(float width, float height) {};
+    virtual bool onResize(float width, float height)
+    {
+        m_size = {width, height};
+        m_width = width;
+        m_height = height;
+    };
 
     virtual bool onTime (float d_seconds) {};
 };

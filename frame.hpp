@@ -6,33 +6,47 @@
 
 #include "button.hpp"
 
+struct FrameTexture
+{
+    ButtonTexture *m_close_btn_texture;
+    ButtonTexture *m_full_btn_texture;
+};
+
 class Frame : public Widget
 {
-    friend class CloseButton;
-
     class CloseButton : public Button
     {
-        Frame *m_frame;
+        Container *m_container;
+        int32_t    m_close_id;
 
     public:
-        CloseButton(Frame &frame, const ButtonTexture &btn_texture) :
+        CloseButton(const ButtonTexture &btn_texture) :
             Button({0, 0}, 0, 0, btn_texture)
         {};
 
         ~CloseButton() = default;
-
         CloseButton(const CloseButton &rhs) = delete;
         CloseButton& operator = (const CloseButton& rhs) = delete;
 
-        virtual void onClick() {};
+        void setContainer(Container &container);
+        void setCloseId(int32_t id);
+
+        virtual bool onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
     };
 
-    enum status_t
+    enum class status_t : uint8_t
     {
         DEFAULT  = 0,
         HOLD     = 1,
         HOLD_VER = 1 << 1,
         HOLD_HOR = 1 << 2
+    };
+
+    enum class interactive_t : uint8_t
+    {
+        DEFAULT  = 0,
+        CLOSABLE = 1,
+        FULLABLE = 1 << 1
     };
 
     Widget *m_wrappee;
@@ -49,19 +63,29 @@ class Frame : public Widget
     status_t m_status;
     Vector2f m_hold_pos;
 
+    FrameTexture *m_frame_texture;
+
     sf::Texture *m_texture;
     sf::IntRect  m_rect;
+
+    // CloseButton m_close_btn;
+
+    interactive_t m_interactive;
 
     CloseButton m_close_btn;
 
     void updateVertexArray();
 
 public:
-    Frame(Widget &wrappee, const char *title, float thickness, const ButtonTexture &close_btn_texture);
+    Frame(Widget &wrappee, const char *title, float thickness, FrameTexture &frame_texture);
 
     ~Frame() = default;
     Frame& operator = (const Frame &rhs) = delete;
     Frame(const Frame &rhs) = delete;
+
+    void setClosable(bool flag);
+    void setCloseId(int32_t id);
+    void setContainer(Container &container);
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 
