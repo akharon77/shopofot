@@ -40,6 +40,10 @@ public:
     CanvasManager(const CanvasManager &rhs) = delete;
 
     void addCanvas(int32_t canv_width, int32_t canv_height);
+    Canvas *getActive();
+    FilterPalette *getFilterPalette();
+    ToolPalette *getToolPalette();
+
     virtual bool close(int32_t id) override;
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;

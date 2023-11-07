@@ -97,7 +97,14 @@ int main()
     sf::Font font;
     font.loadFromFile("arial.ttf");
 
-    VerticalButtonList ver_btn_list({0, 0}, 0.05, 0.02, "File", font, 16, btn_texture_config);
+    TextButtonTexture text_btn_texture_config
+    {
+        &font,
+        16,
+        &btn_texture_config
+    };
+
+    VerticalButtonList ver_btn_list({0, 0}, 0.05, 0.02, "File", text_btn_texture_config);
     ver_btn_list.addButton(sample_button1);
     ver_btn_list.addButton(sample_button2);
 
@@ -118,6 +125,14 @@ int main()
     canv_manager.addCanvas(1024, 640);
     canv_manager.addCanvas(1024, 640);
 
+    FilterVerticalButtonList filt_ver_btn_lst({0, 0}, 0.05, 0.02, canv_manager, text_btn_texture_config);
+    filt_ver_btn_lst.addFilter("Light+", brightness_filter_pos_id);
+    filt_ver_btn_lst.addFilter("Light-", brightness_filter_neg_id);
+    
+    Menu menu(canv_manager);
+    menu.addButton(ver_btn_list);
+    menu.addButton(filt_ver_btn_lst);
+
     // sf::Image cat_img;
     // cat_img.loadFromFile("cat.jpg");
 
@@ -127,10 +142,6 @@ int main()
     // my_window.loadFromImage(cat_img);
 
     // ScrollBar my_window_with_scrollbar{my_window, 0.01, 0.3, true, 0.3, true, scrollbar_texture_config};
-
-    // Menu my_window_with_scrollbar_menu{my_window_with_scrollbar};
-    // my_window_with_scrollbar_menu.addButton(ver_btn_list);
-    // my_window_with_scrollbar_menu.addButton(filt_ver_btn_lst);
 
     // Frame my_window_with_scrollbar_menu_frame{my_window_with_scrollbar_menu, "hello", 0.01, btn_texture_config};
 
@@ -147,13 +158,13 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            adaptSfEvent(event, &canv_manager, transf_list);
+            adaptSfEvent(event, &menu, transf_list);
             // adaptSfEvent(event, &my_window_with_scrollbar_menu_frame,  transf_list);
         }
 
         window.clear(sf::Color::Black);
 
-        canv_manager.draw(window, transf_list);
+        menu.draw(window, transf_list);
         // my_window_with_scrollbar_menu_frame.draw(window, transf_list);
 
         window.display();

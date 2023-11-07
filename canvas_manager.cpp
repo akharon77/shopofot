@@ -14,8 +14,8 @@ void CanvasManager::addCanvas(int32_t canv_width, int32_t canv_height)
     Frame *frame = new Frame(*scrollbar, "hello", 0.02, *m_texture->m_frame_texture);
 
     int32_t id = m_canv_window_lst.PushBack(new CanvasWindow(canvas, scrollbar, frame));
-    frame->setContainer(*this);
     frame->setClosable(true);
+    frame->setContainer(*this);
     frame->setCloseId(id);
 }
 
@@ -181,3 +181,21 @@ bool CanvasManager::onResize(float width, float height)
 {
     return false;
 }
+
+Canvas *CanvasManager::getActive()
+{
+    int32_t anch = m_canv_window_lst.GetHead();
+    Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
+    return node.val->m_canvas;
+}
+
+FilterPalette *CanvasManager::getFilterPalette()
+{
+    return m_filter_palette;
+}
+
+ToolPalette *CanvasManager::getToolPalette()
+{
+    return m_tool_palette;
+}
+

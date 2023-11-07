@@ -1,11 +1,11 @@
 #include "text_btn.hpp"
 
-TextButton::TextButton(const Vector2f &pos, float width, float height, const char *str, sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture) : 
-    Button(pos, width, height, btn_texture)
+TextButton::TextButton(const Vector2f &pos, float width, float height, const char *str, TextButtonTexture &btn_texture) :  // sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture) : 
+    Button(pos, width, height, *btn_texture.m_btn_texture)
 {
-    m_text.setFont(font);
+    m_text.setFont(*btn_texture.m_font);
     m_text.setString(str);
-    m_text.setCharacterSize(char_size);
+    m_text.setCharacterSize(btn_texture.m_char_size);
 }
 
 void TextButton::draw(sf::RenderTarget &target, List<Transform> &transf_list)

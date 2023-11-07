@@ -1,18 +1,30 @@
 #include "ver_btn_list.hpp"
 
-VerticalButtonList::VerticalButtonList(Vector2f pos, float width, float height, const char *str, sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture) :
-    TextButton(pos, width, height, str, font, char_size, btn_texture),
+VerticalButtonList::VerticalButtonList(Vector2f pos, float width, float height, const char *str, TextButtonTexture &btn_texture) :
+    TextButton(pos, width, height, str, btn_texture),
     m_status(DEFAULT),
     m_bottom(0)
 {}
 
-void VerticalButtonList::addButton(Button &btn)
+int32_t VerticalButtonList::addButton(Button &btn)
 {
     btn.m_transf.m_offset = {0, m_size.y + m_bottom};
     // btn.m_transf.m_scale.x /= m_width;
     // btn.m_transf.m_scale.y /= m_height;
     m_bottom += btn.m_size.y;
-    m_btn_lst.PushBack(&btn);
+    return m_btn_lst.PushBack(&btn);
+}
+
+Button *VerticalButtonList::popButton()
+{
+    if (m_btn_lst.GetSize() == 0)
+        return nullptr;
+
+    int32_t anch = m_btn_lst.GetTail();
+    Button* res = m_btn_lst.Get(anch)->val;
+    m_bottom -= res->m_size.y;
+    m_btn_lst.Erase(anch);
+    return res;
 }
 
 void VerticalButtonList::draw(sf::RenderTarget &target, List<Transform> &transf_list)

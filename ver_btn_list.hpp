@@ -20,13 +20,14 @@ class VerticalButtonList : public TextButton
     float m_bottom;
 
 public:
-    VerticalButtonList(Vector2f pos, float width, float height, const char *str, sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture);
+    VerticalButtonList(Vector2f pos, float width, float height, const char *str, TextButtonTexture &m_btn_texture);
 
     ~VerticalButtonList() = default;
     VerticalButtonList& operator = (const VerticalButtonList &rhs) = delete;
     VerticalButtonList(const VerticalButtonList &rhs) = delete;
 
-    void addButton(Button &btn);
+    int32_t addButton(Button &btn);
+    Button *popButton();
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 
