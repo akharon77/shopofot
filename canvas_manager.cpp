@@ -15,7 +15,7 @@ void CanvasManager::addCanvas(int32_t canv_width, int32_t canv_height)
 
     int32_t id = m_canv_window_lst.PushBack(new CanvasWindow(canvas, scrollbar, frame));
     frame->setContainer(*this);
-    frame->setClosable(false);
+    frame->setClosable(true);
     frame->setCloseId(id);
 }
 
@@ -66,9 +66,12 @@ bool CanvasManager::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Tran
         bool res = node.val->m_frame->onMousePressed(key, x, y, transf_list);
         if (res)
         {
-            CanvasWindow *val = node.val;
-            m_canv_window_lst.Erase(anch);
-            m_canv_window_lst.PushFront(val);
+            if (m_canv_window_lst.GetSize() == size)
+            {
+                CanvasWindow *val = node.val;
+                m_canv_window_lst.Erase(anch);
+                m_canv_window_lst.PushFront(val);
+            }
 
             transf_list.PopBack();
             return true;

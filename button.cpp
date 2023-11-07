@@ -103,6 +103,8 @@ bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
+    bool res = false;
+
     Vector2f pos = top_transf.applyTransform({x, y});
 
     if (m_status == DEFAULT            &&
@@ -110,6 +112,7 @@ bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
         EPS < pos.y && pos.y < 1 - EPS)
     {
         m_status = FOCUSED;
+        res = true;
         setRect(m_btn_texture.m_focused_rect);
     }
     else if (m_status != DEFAULT              &&
@@ -117,10 +120,11 @@ bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
                EPS < pos.y && pos.y < 1 - EPS))
     {
         m_status = DEFAULT;
+        res = true;
         setRect(m_btn_texture.m_default_rect);
     }
 
     transf_list.PopBack();
-    return true;
+    return res;
 }
 

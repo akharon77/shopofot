@@ -42,15 +42,15 @@ void Frame::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-        m_close_btn.draw(target, transf_list);
-
     sf::VertexArray buf_vertex_array(m_vertex_array);
     for (int32_t i = 0; i < buf_vertex_array.getVertexCount(); ++i)
         buf_vertex_array[i].position = top_transf.rollbackTransform(m_vertex_array[i].position);
 
     target.draw(buf_vertex_array);
     m_wrappee->draw(target, transf_list);
+
+    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+        m_close_btn.draw(target, transf_list);
 
     transf_list.PopBack();
 }
@@ -176,6 +176,7 @@ bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
     {
         Vector2f delta_hold_pos = pos - m_hold_pos;
         m_transf.m_offset += Vector2f{delta_hold_pos.x * m_transf.m_scale.x, delta_hold_pos.y * m_transf.m_scale.y};
+        res = true;
     }
 
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_HOR)
@@ -183,6 +184,7 @@ bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
         Vector2f delta_hold_pos = pos - m_hold_pos;
         onResize(m_size.x + delta_hold_pos.x * m_transf.m_scale.x, m_size.y);
         m_hold_pos.x = m_size.x;
+        res = true;
     }
 
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_VER)
@@ -190,6 +192,7 @@ bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
         Vector2f delta_hold_pos = pos - m_hold_pos;
         onResize(m_size.x, m_size.y + delta_hold_pos.y * m_transf.m_scale.y);
         m_hold_pos.y = m_size.y;
+        res = true;
     }
 
     res = res || m_wrappee->onMouseMoved(x, y, transf_list);

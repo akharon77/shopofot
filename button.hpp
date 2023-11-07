@@ -63,6 +63,7 @@ public:
     virtual bool onResize(float width, float height)
     {
         m_size = {width, height};
+        m_transf.m_scale = m_size;
         m_width = width;
         m_height = height;
     };
