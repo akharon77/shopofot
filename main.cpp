@@ -24,6 +24,7 @@
 #include "brightness_filter.hpp"
 #include "blackwhite_filter.hpp"
 #include "onecolor_filter.hpp"
+#include "negative_filter.hpp"
 
 #include "shopofot.hpp"
 
@@ -169,12 +170,15 @@ int main()
     OneColorFilter red_filter(OneColorFilter::RED);
     OneColorFilter green_blue_filter(OneColorFilter::GREEN | OneColorFilter::BLUE);
 
+    NegativeFilter negative_filter;
+
     FilterPalette filter_palette;
     int32_t brightness_filter_pos_id = filter_palette.addFilter(brightness_filter_pos);
     int32_t brightness_filter_neg_id = filter_palette.addFilter(brightness_filter_neg);
     int32_t blackwhite_filter_id     = filter_palette.addFilter(blackwhite_filter);
     int32_t red_filter_id            = filter_palette.addFilter(red_filter);
     int32_t green_blue_filter_id     = filter_palette.addFilter(green_blue_filter);
+    int32_t negative_filter_id       = filter_palette.addFilter(negative_filter);
 
     CanvasManager canv_manager({0, 0}, {1, 1}, tool_palette, filter_palette, canv_manager_texture_config);
 
@@ -186,6 +190,7 @@ int main()
     filt_ver_btn_lst.addFilter("B/W",        blackwhite_filter_id);
     filt_ver_btn_lst.addFilter("Red",        red_filter_id);
     filt_ver_btn_lst.addFilter("Green&Blue", green_blue_filter_id);
+    filt_ver_btn_lst.addFilter("Negative",   negative_filter_id);
     
     Menu menu(canv_manager);
     menu.addButton(file_ver_btn_lst);
