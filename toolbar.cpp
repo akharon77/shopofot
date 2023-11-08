@@ -31,8 +31,8 @@ void ToolBar::addButton(ButtonTexture &btn_texture, int32_t tool_id)
     int32_t x = cnt % m_cnt_x;
     int32_t y = cnt / m_cnt_x;
 
-    m_size.x = std::max(m_size.x, m_btn_width * x);
-    m_size.y = std::max(m_size.y, m_btn_height * y);
+    m_size.x = std::max(m_size.x, m_btn_width * (x + 1));
+    m_size.y = std::max(m_size.y, m_btn_height * (y + 1));
 
     ToolButton *btn = new ToolButton({x * m_btn_width, y * m_btn_height}, m_btn_width, m_btn_height, btn_texture, *m_tool_palette, tool_id);
     setToggled(m_btn_list.PushBack(btn));

@@ -12,7 +12,8 @@ Frame::Frame(Widget &wrappee, const char *title, float thickness, FrameTexture &
     m_vertex_array(sf::Quads, 4),
     m_status(status_t::DEFAULT),
     m_frame_texture(&frame_texture),
-    m_close_btn(*frame_texture.m_close_btn_texture)
+    m_close_btn(*frame_texture.m_close_btn_texture),
+    m_interactive(interactive_t::DEFAULT)
 {
     updateVertexArray();
 

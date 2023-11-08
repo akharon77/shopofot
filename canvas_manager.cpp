@@ -18,7 +18,7 @@ void CanvasManager::addCanvas(int32_t canv_width, int32_t canv_height)
 
     // canvas->loadFromImage(cat_img);
 
-    int32_t id = m_canv_window_lst.PushBack(new CanvasWindow(canvas, scrollbar, frame));
+    int32_t id = m_canv_window_lst.PushFront(new CanvasWindow(canvas, scrollbar, frame));
     frame->setClosable(true);
     frame->setContainer(*this);
     frame->setCloseId(id);
