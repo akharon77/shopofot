@@ -10,18 +10,34 @@ class LineEdit : public Widget
 {
     char m_buf[256];
     int32_t m_len;
-    sf::Text m_text;
 
     bool m_shift_flag;
 
     char m_last_char;
 
+    enum class status_t
+    {
+        DEFAULT,
+        PRESSED
+    };
+
+    status_t m_status;
+    bool m_cursor_flag;
+    float m_accum;
+
 public:
-    LineEdit(Vector2f pos, float width, float height, sf::Font &font, int32_t char_size);
+    sf::Text m_text;
+    float m_thickness;
+
+    LineEdit(Vector2f pos, float width, float height, sf::Font &font, float thickness);
 
     ~LineEdit() = default;
     LineEdit& operator = (const LineEdit &rhs) = delete;
     LineEdit(const LineEdit &rhs) = delete;
+
+    void clear();
+
+    void draw(sf::RenderTarget &target, Vector2f pos);
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 

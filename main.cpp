@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/VideoMode.hpp>
+#include <SFML/System/Clock.hpp>
 
 #include "window.hpp"
 #include "canvas.hpp"
@@ -18,6 +19,7 @@
 #include "square_tool.hpp"
 #include "polyline_tool.hpp"
 #include "polygon_tool.hpp"
+#include "line_edit_tool.hpp"
 
 #include "brightness_filter.hpp"
 
@@ -36,6 +38,9 @@ int main()
 
     sf::Texture button_texture;
     button_texture.loadFromFile("mols_ctrl_texture.png");
+
+    sf::Font font;
+    font.loadFromFile("anon_pro.ttf");
 
     ButtonTexture btn_texture_config
     {
@@ -60,6 +65,7 @@ int main()
     BrushTool brush_tool;
     PolyLineTool polyline_tool;
     PolygonTool polygon_tool;
+    LineEditTool line_edit_tool(font, 0.05);
 
     ToolPalette tool_palette;
     tool_palette.addTool(&line_tool);
@@ -67,6 +73,7 @@ int main()
     tool_palette.addTool(&brush_tool);
     tool_palette.addTool(&polyline_tool);
     tool_palette.addTool(&polygon_tool);
+    tool_palette.addTool(&line_edit_tool);
 
     BrightnessFilter brightness_filter_pos;
     brightness_filter_pos.setBrightnessDelta(0.05);
@@ -95,9 +102,6 @@ int main()
         0.07, 0.04,
         btn_texture_config
     };
-
-    sf::Font font;
-    font.loadFromFile("anon_pro.ttf");
 
     TextButtonTexture text_btn_texture_config
     {
@@ -155,7 +159,9 @@ int main()
     // ScrollBar my_window_with_scrollbar1{my_window1, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
     // Frame my_window_with_scrollbal_frame1{my_window_with_scrollbar1, "hello", 0.02, btn_texture_config};
 
-    LineEdit line_edit({0.3, 0.3}, 0.1, 0.1, font, 16);
+    // LineEdit line_edit({0.3, 0.3}, 0.1, 0.1, font, 16);
+
+    sf::Clock globalClock;
 
     while (window.isOpen())
     {
@@ -167,14 +173,18 @@ int main()
                 window.close();
 
             adaptSfEvent(event, &menu, transf_list);
-            adaptSfEvent(event, &line_edit, transf_list);
+            // adaptSfEvent(event, &line_edit, transf_list);
             // adaptSfEvent(event, &my_window_with_scrollbar_menu_frame,  transf_list);
         }
+
+        // line_edit.onTime(globalClock.getElapsedTime().asSeconds());
+        menu.onTime(globalClock.getElapsedTime().asSeconds());
+        globalClock.restart();
 
         window.clear(sf::Color::Black);
 
         menu.draw(window, transf_list);
-        line_edit.draw(window, transf_list);
+        // line_edit.draw(window, transf_list);
         // my_window_with_scrollbar_menu_frame.draw(window, transf_list);
 
         window.display();
