@@ -23,6 +23,8 @@
 
 #include "shopofot.hpp"
 
+#include "line_edit.hpp"
+
 #include "canvas_manager.hpp"
 
 int main()
@@ -95,7 +97,7 @@ int main()
     };
 
     sf::Font font;
-    font.loadFromFile("arial.ttf");
+    font.loadFromFile("anon_pro.ttf");
 
     TextButtonTexture text_btn_texture_config
     {
@@ -153,6 +155,8 @@ int main()
     // ScrollBar my_window_with_scrollbar1{my_window1, 0.03, 0.3, true, 0.3, true, scrollbar_texture_config};
     // Frame my_window_with_scrollbal_frame1{my_window_with_scrollbar1, "hello", 0.02, btn_texture_config};
 
+    LineEdit line_edit({0.3, 0.3}, 0.1, 0.1, font, 16);
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -163,12 +167,14 @@ int main()
                 window.close();
 
             adaptSfEvent(event, &menu, transf_list);
+            adaptSfEvent(event, &line_edit, transf_list);
             // adaptSfEvent(event, &my_window_with_scrollbar_menu_frame,  transf_list);
         }
 
         window.clear(sf::Color::Black);
 
         menu.draw(window, transf_list);
+        line_edit.draw(window, transf_list);
         // my_window_with_scrollbar_menu_frame.draw(window, transf_list);
 
         window.display();

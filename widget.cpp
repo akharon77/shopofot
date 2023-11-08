@@ -40,6 +40,10 @@ void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
     {
         widget->onKeyboardPressed((KeyboardKey) event.key.code);
     }
+    else if (event.type == sf::Event::KeyReleased)
+    {
+        widget->onKeyboardReleased((KeyboardKey) event.key.code);
+    }
 }
 
 Transform Widget::getTransform() const

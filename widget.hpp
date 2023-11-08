@@ -13,7 +13,7 @@ enum class MouseKey
     Right
 };
 
-enum class KeyboardKey
+enum class KeyboardKey : uint32_t
 {
     A = 0,
     B, C,
