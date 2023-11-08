@@ -12,6 +12,11 @@ void CanvasManager::addCanvas(int32_t canv_width, int32_t canv_height)
     Canvas *canvas = new Canvas(m_size / 2.f, m_size.x, m_size.y, canv_width, canv_height, *m_tool_palette, *m_filter_palette);
     ScrollBar *scrollbar = new ScrollBar(*canvas, 0.01, 0.3, true, 0.3, true, *m_texture->m_scrollbar_texture);
     Frame *frame = new Frame(*scrollbar, "hello", 0.02, *m_texture->m_frame_texture);
+    
+    sf::Image cat_img;
+    cat_img.loadFromFile("cat.jpg");
+
+    canvas->loadFromImage(cat_img);
 
     int32_t id = m_canv_window_lst.PushBack(new CanvasWindow(canvas, scrollbar, frame));
     frame->setClosable(true);

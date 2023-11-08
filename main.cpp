@@ -22,6 +22,8 @@
 #include "line_edit_tool.hpp"
 
 #include "brightness_filter.hpp"
+#include "blackwhite_filter.hpp"
+#include "onecolor_filter.hpp"
 
 #include "shopofot.hpp"
 
@@ -80,9 +82,16 @@ int main()
     BrightnessFilter brightness_filter_neg;
     brightness_filter_neg.setBrightnessDelta(-0.05);
 
+    BlackWhiteFilter blackwhite_filter;
+    OneColorFilter red_filter(OneColorFilter::RED);
+    OneColorFilter green_blue_filter(OneColorFilter::GREEN | OneColorFilter::BLUE);
+
     FilterPalette filter_palette;
     int32_t brightness_filter_pos_id = filter_palette.addFilter(brightness_filter_pos);
     int32_t brightness_filter_neg_id = filter_palette.addFilter(brightness_filter_neg);
+    int32_t blackwhite_filter_id     = filter_palette.addFilter(blackwhite_filter);
+    int32_t red_filter_id            = filter_palette.addFilter(red_filter);
+    int32_t green_blue_filter_id     = filter_palette.addFilter(green_blue_filter);
 
     Button sample_button
     {
@@ -127,7 +136,7 @@ int main()
     canv_manager.addCanvas(1024, 640);
     canv_manager.addCanvas(1024, 640);
 
-    FileVerticalButtonList file_ver_btn_lst({0, 0}, 0.05, 0.02, canv_manager, text_btn_texture_config);
+    FileVerticalButtonList file_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
 
     // VerticalButtonList file_btn_list({0, 0}, 0.05, 0.02, "File", text_btn_texture_config);
     // ButtonNewCanvasWindow btn_new_canvas({0, 0}, 0.05, 0.02, text_btn_texture_config, canv_manager);
@@ -135,9 +144,12 @@ int main()
     // file_btn_list.addButton(btn_new_canvas);
     // file_btn_list.addButton(sample_button2);
 
-    FilterVerticalButtonList filt_ver_btn_lst({0, 0}, 0.05, 0.02, canv_manager, text_btn_texture_config);
-    filt_ver_btn_lst.addFilter("Light+", brightness_filter_pos_id);
-    filt_ver_btn_lst.addFilter("Light-", brightness_filter_neg_id);
+    FilterVerticalButtonList filt_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
+    filt_ver_btn_lst.addFilter("Light+",     brightness_filter_pos_id);
+    filt_ver_btn_lst.addFilter("Light-",     brightness_filter_neg_id);
+    filt_ver_btn_lst.addFilter("B/W",        blackwhite_filter_id);
+    filt_ver_btn_lst.addFilter("Red",        red_filter_id);
+    filt_ver_btn_lst.addFilter("Green&Blue", green_blue_filter_id);
     
     Menu menu(canv_manager);
     menu.addButton(file_ver_btn_lst);
