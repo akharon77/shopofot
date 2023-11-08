@@ -30,6 +30,7 @@
 #include "line_edit.hpp"
 
 #include "canvas_manager.hpp"
+#include "toolbar.hpp"
 
 int main()
 {
@@ -70,12 +71,14 @@ int main()
     LineEditTool line_edit_tool(font, 0.05);
 
     ToolPalette tool_palette;
-    tool_palette.addTool(&line_tool);
-    tool_palette.addTool(&square_tool);
-    tool_palette.addTool(&brush_tool);
-    tool_palette.addTool(&polyline_tool);
-    tool_palette.addTool(&polygon_tool);
-    tool_palette.addTool(&line_edit_tool);
+    ToolBar toolbar({0.2, 0.2}, 0.05, 0.05, tool_palette, 2);
+
+    toolbar.addButton(btn_texture_config, tool_palette.addTool(&line_tool));
+    toolbar.addButton(btn_texture_config, tool_palette.addTool(&square_tool));
+    toolbar.addButton(btn_texture_config, tool_palette.addTool(&brush_tool));
+    toolbar.addButton(btn_texture_config, tool_palette.addTool(&polyline_tool));
+    toolbar.addButton(btn_texture_config, tool_palette.addTool(&polygon_tool));
+    toolbar.addButton(btn_texture_config, tool_palette.addTool(&line_edit_tool));
 
     BrightnessFilter brightness_filter_pos;
     brightness_filter_pos.setBrightnessDelta(0.05);
@@ -185,6 +188,7 @@ int main()
                 window.close();
 
             adaptSfEvent(event, &menu, transf_list);
+            adaptSfEvent(event, &toolbar, transf_list);
             // adaptSfEvent(event, &line_edit, transf_list);
             // adaptSfEvent(event, &my_window_with_scrollbar_menu_frame,  transf_list);
         }
@@ -196,8 +200,11 @@ int main()
         window.clear(sf::Color::Black);
 
         menu.draw(window, transf_list);
+        toolbar.draw(window, transf_list);
         // line_edit.draw(window, transf_list);
         // my_window_with_scrollbar_menu_frame.draw(window, transf_list);
+        //
+        printf("%d\n", toolbar.m_toggled_id);
 
         window.display();
     }

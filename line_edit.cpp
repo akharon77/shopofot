@@ -15,12 +15,6 @@ LineEdit::LineEdit(Vector2f pos, float width, float height, sf::Font &font, floa
     m_text.setColor(sf::Color::White);
 }
 
-void LineEdit::draw(sf::RenderTarget &target, Vector2f pos)
-{
-    m_text.setPosition(pos);
-    target.draw(m_text);
-}
-
 void LineEdit::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
@@ -29,14 +23,14 @@ void LineEdit::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     Vector2f pos = top_transf.rollbackTransform({0, 0});
 
     m_text.setPosition(pos);
-    m_text.setCharacterSize((int32_t) (m_thickness * top_transf.m_scale.y));
+    m_text.setCharacterSize((int32_t) (m_thickness * top_transf.m_scale.x));
 
     if (m_status == status_t::PRESSED || m_cursor_flag)
     {
         sf::RectangleShape rect;
         rect.setPosition(pos);
-        sf::FloatRect local_bounds = m_text.getGlobalBounds();
-        rect.setSize({local_bounds.width + 2, local_bounds.height + 2});
+        sf::FloatRect local_bounds = m_text.getLocalBounds();
+        rect.setSize({local_bounds.width, local_bounds.height});
         // rect.setScale(top_transf.m_scale);
         rect.setOutlineThickness(2);
         rect.setOutlineColor(sf::Color::Blue);

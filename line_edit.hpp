@@ -37,8 +37,6 @@ public:
 
     void clear();
 
-    void draw(sf::RenderTarget &target, Vector2f pos);
-
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 
     virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;

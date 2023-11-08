@@ -18,9 +18,15 @@ struct ToolPalette
         return m_list.Get(m_anch)->val;
     }
 
-    void addTool(Tool *tool)
+    void setActiveTool(int32_t id)
+    {
+        m_anch = id;
+    }
+
+    int32_t addTool(Tool *tool)
     {
         m_anch = m_list.PushBack(tool);
+        return m_anch;
     }
 
     void nextTool()
@@ -30,7 +36,6 @@ struct ToolPalette
             m_anch = m_list.Get(m_anch)->next;
     }
 };
-
 
 #endif  // TOOL_PALETTE_HPP
 

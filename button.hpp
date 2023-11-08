@@ -25,6 +25,9 @@ struct ButtonTexture
 
 class Button : public Widget
 {
+    sf::VertexArray m_vertex_array;
+
+protected:
     enum Status
     {
         DEFAULT,
@@ -34,12 +37,10 @@ class Button : public Widget
 
     Status m_status;
 
-    sf::VertexArray m_vertex_array;
     ButtonTexture m_btn_texture;
 
     void setRect(const sf::IntRect &rect);
 
-protected:
     float m_width;
     float m_height;
 
