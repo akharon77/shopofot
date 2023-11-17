@@ -159,7 +159,7 @@ int main()
     };
     toolbar.addButton(line_edit_tool_btn_texture_config, tool_palette.addTool(&line_edit_tool));
 
-    Frame toolbar_frame(toolbar, "toolbar", 0.02, frame_texture_config);
+    Frame toolbar_frame(toolbar, "toolbar", 0.01, frame_texture_config);
 
     BrightnessFilter brightness_filter_pos;
     brightness_filter_pos.setBrightnessDelta(0.05);
