@@ -18,6 +18,8 @@ public:
     void setLastFilter(size_t filter_id);
 
     size_t getFilterCount() const;
+
+    int32_t loadPlugin(const char *path);
 };
 
 #endif  // FILTER_PALETTE_HPP

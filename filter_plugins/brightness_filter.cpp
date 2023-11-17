@@ -1,9 +1,50 @@
 #include "brightness_filter.hpp"
 #include "canvas.hpp"
 
+BrightnessFilter::BrightnessFilter() :
+    m_ref_cnt(0),
+    m_delta(0.1)
+{}
+
+Plugin *BrightnessFilter::tryGetInterface(size_t interface_id)
+{
+    Plugin *result = nullptr;
+
+    switch ((PluginGuid) interface_id)
+    {
+        case PluginGuid::Plugin:
+            result = (Plugin*) this;
+            break;
+        case PluginGuid::Filter:
+            result = (Filter*) this;
+            break;
+        default:
+            result = nullptr;
+    }
+
+    if (result)
+        result->addReference();
+
+    return result;
+}
+
+void BrightnessFilter::addReference()
+{
+    ++m_ref_cnt;
+}
+
+void BrightnessFilter::release()
+{
+    --m_ref_cnt;
+
+    if (m_ref_cnt == 0)
+        delete this;
+}
+
 void BrightnessFilter::setBrightnessDelta(float delta)
 {
     m_delta = delta;
+    m_plugin_data.m_sign = delta > EPS;
 }
 
 void BrightnessFilter::applyFilter(Canvas &canvas, const FilterMask &mask)
@@ -101,4 +142,9 @@ void BrightnessFilter::applyFilter(Canvas &canvas, const FilterMask &mask)
     }
 
     canvas.drawImage(buf_img);
+}
+
+extern "C" Plugin *loadPlugin()
+{
+    return new BrightnessFilter;
 }

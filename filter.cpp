@@ -1,4 +1,5 @@
 #include <cassert>
+#include <dlfcn.h>
 
 #include "filter.hpp"
 #include "filter_mask.hpp"
@@ -89,5 +90,21 @@ void FilterPalette::setLastFilter(size_t filter_id)
 size_t FilterPalette::getFilterCount() const
 {
     return m_filter_lst.GetSize();
+}
+
+int32_t FilterPalette::loadPlugin(const char *path)
+{
+    void *plugin = dlopen(path, RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
+    void *loadPlugin_symbol = dlsym(plugin, "loadPlugin");
+
+    typedef Filter* plugin_loader_t(void);
+    plugin_loader_t *load = (plugin_loader_t*) loadPlugin_symbol;
+    Filter *loaded_filter = load();
+
+    int32_t res = addFilter(*loaded_filter);
+
+    dlclose(plugin);
+
+    return res;
 }
 
