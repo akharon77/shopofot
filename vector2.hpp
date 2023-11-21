@@ -1,22 +1,28 @@
-#ifndef VECTOR2_HPP
-#define VECTOR2_HPP
+#ifndef VECTOR2D_HPP
+#define VECTOR2D_HPP
 
-#include <SFML/System/Vector2.hpp>
-#include <cmath>
-
-// compatibility
-using Vector2f = sf::Vector2f;
-float dot(const Vector2f &lhs, const Vector2f &rhs);
-float len2(const Vector2f &rhs);
-float len(const Vector2f &rhs);
+const double EPS = 1e-6;
 
 class Vec2d
 {
 public:
+    explicit Vec2d(const double x = 0, const double y = 0);
+
+    ~Vec2d()                             = default;
+    Vec2d(const Vec2d &rhs)              = default;
+    Vec2d &operator = (const Vec2d &rhs) = default;
+
     double x, y;
 
     double length();
     double length2();
+
+    Vec2d &operator /= (const double val);
+    Vec2d &operator += (const Vec2d &rhs);
+    Vec2d &operator -= (const Vec2d &rhs);
+    Vec2d &operator *= (const double val);
+    Vec2d &operator *= (const Vec2d &rhs);
+    Vec2d &operator /= (const Vec2d &rhs);
 };
 
 double dot   (const Vec2d &lhs, const Vec2d &rhs);
@@ -33,14 +39,5 @@ Vec2d operator * (const double val, const Vec2d &vec);
 Vec2d operator - (const Vec2d &vec);
 Vec2d operator / (const Vec2d &lhs, const Vec2d &rhs);
 
-Vec2d &operator /= (Vec2d &lhs, const double val);
-Vec2d &operator += (Vec2d &lhs, const Vec2d &rhs);
-Vec2d &operator -= (Vec2d &lhs, const Vec2d &rhs);
-Vec2d &operator *= (Vec2d &lhs, const double val);
-Vec2d &operator *= (Vec2d &lhs, const Vec2d &rhs);
-Vec2d &operator /= (Vec2d &lhs, const Vec2d &rhs);
-
-const double EPS = 1e-6;
-
-#endif  // VECTOR2_HPP
+#endif  // VECTOR2D_HPP
 

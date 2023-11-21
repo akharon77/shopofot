@@ -14,7 +14,7 @@ $(BIN): $(OBJ) filter_plugins/brightness_filter.so
 -include $(DEP)
 
 filter_plugins/brightness_filter.so: filter_plugins/brightness_filter.o
-	g++ -shared filter_plugins/brightness_filter.o canvas.o -o filter_plugins/brightness_filter.so
+	g++ -shared $(OBJ) -lsfml-window -lsfml-system -lsfml-graphics -o filter_plugins/brightness_filter.so
 
 filter_plugins/brightness_filter.o: filter_plugins/brightness_filter.cpp
 	g++ -I ~/Projects/shopofot -Wall -c -fPIC filter_plugins/brightness_filter.cpp -o filter_plugins/brightness_filter.o -static
