@@ -56,11 +56,20 @@ public:
 
 class Widget
 {
+    LayoutBox *m_layout_box;
+
 public:
     Transform m_transf;
     Vector2f  m_size;
 
-    Widget(Transform transf = {}, Vector2f size = {});
+    Widget(const LayoutBox &box);
+
+    virtual void onParentUpdate(const LayoutBox &parent_box);
+
+    virtual       LayoutBox& getLayoutBox ();
+    virtual const LayoutBox& getLayoutBox () const;
+
+    virtual void setLayoutBox(const LayoutBox &box);
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list)  = 0;
 

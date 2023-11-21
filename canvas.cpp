@@ -2,10 +2,10 @@
 #include "tool.hpp"
 #include "filter.hpp"
 
-Canvas::Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette) :
-    Widget({pos, Vector2f{width, height}}, {width, height}),
-    m_width  (width),
-    m_height (height),
+Canvas::Canvas(const LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette) :
+    Widget(box),
+    m_width (0),  // TODO: where is this used?
+    m_height(0),
     m_canv_width(canv_width),
     m_canv_height(canv_height),
     m_vertex_arr(sf::Quads, 4),
@@ -69,6 +69,10 @@ void Canvas::resize(uint32_t width, uint32_t height)
 
 void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox()->getPosition(), getLayoutBox()->getSize());
+
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
@@ -86,6 +90,7 @@ void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     transf_list.PopBack();
 }
 
+// deprecated
 bool Canvas::onResize(float width, float height)
 {
     m_size = {width, height};
@@ -97,6 +102,10 @@ bool Canvas::onResize(float width, float height)
 
 bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) 
 {
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox()->getPosition(), getLayoutBox()->getSize());
+
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
@@ -121,6 +130,10 @@ bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
 
 bool Canvas::onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox()->getPosition(), getLayoutBox()->getSize());
+
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
@@ -136,6 +149,10 @@ bool Canvas::onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform
 
 bool Canvas::onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
 {
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox()->getPosition(), getLayoutBox()->getSize());
+
     transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 

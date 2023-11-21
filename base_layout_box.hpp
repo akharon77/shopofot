@@ -15,7 +15,7 @@ class BaseLayoutBox : public LayoutBox
     Vec2d m_old_parent_size;
 
 public:
-    BaseLayoutBox(const Vec2d &pos, const Vec2d &size);
+    BaseLayoutBox(const Vec2d &pos = {0, 0}, const Vec2d &size = {1, 1});
 
     ~BaseLayoutBox()                                     = default;
     BaseLayoutBox(const BaseLayoutBox &rhs)              = default;

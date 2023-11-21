@@ -83,83 +83,83 @@ int main()
         &frame_texture_config
     };
     
-    LineTool line_tool;
-    SquareTool square_tool;
-    BrushTool brush_tool;
-    PolyLineTool polyline_tool;
-    PolygonTool polygon_tool;
-    LineEditTool line_edit_tool(font, 0.05);
+    // LineTool line_tool;
+    // SquareTool square_tool;
+    // BrushTool brush_tool;
+    // PolyLineTool polyline_tool;
+    // PolygonTool polygon_tool;
+    // LineEditTool line_edit_tool(font, 0.05);
 
     ToolPalette tool_palette;
-    ToolBar toolbar({0.2, 0.2}, 0.05, 0.05, tool_palette, 2);
+    // ToolBar toolbar({0.2, 0.2}, 0.05, 0.05, tool_palette, 2);
 
-    sf::Texture line_tool_btn_texture;
-    line_tool_btn_texture.loadFromFile("line_tool_btn_texture.png");
-    ButtonTexture line_tool_btn_texture_config
-    {
-        &line_tool_btn_texture,
-        {57,  0,  57, 52},
-        {57, 52,  57, 52},
-        {57, 104, 57, 52}
-    };
-    toolbar.addButton(line_tool_btn_texture_config, tool_palette.addTool(&line_tool));
+    // sf::Texture line_tool_btn_texture;
+    // line_tool_btn_texture.loadFromFile("line_tool_btn_texture.png");
+    // ButtonTexture line_tool_btn_texture_config
+    // {
+    //     &line_tool_btn_texture,
+    //     {57,  0,  57, 52},
+    //     {57, 52,  57, 52},
+    //     {57, 104, 57, 52}
+    // };
+    // toolbar.addButton(line_tool_btn_texture_config, tool_palette.addTool(&line_tool));
 
-    sf::Texture square_tool_btn_texture;
-    square_tool_btn_texture.loadFromFile("square_tool_btn_texture.png");
-    ButtonTexture square_tool_btn_texture_config
-    {
-        &square_tool_btn_texture,
-        {57,  0,  57, 52},
-        {57, 52,  57, 52},
-        {57, 104, 57, 52}
-    };
-    toolbar.addButton(square_tool_btn_texture_config, tool_palette.addTool(&square_tool));
+    // sf::Texture square_tool_btn_texture;
+    // square_tool_btn_texture.loadFromFile("square_tool_btn_texture.png");
+    // ButtonTexture square_tool_btn_texture_config
+    // {
+    //     &square_tool_btn_texture,
+    //     {57,  0,  57, 52},
+    //     {57, 52,  57, 52},
+    //     {57, 104, 57, 52}
+    // };
+    // toolbar.addButton(square_tool_btn_texture_config, tool_palette.addTool(&square_tool));
 
-    sf::Texture brush_tool_btn_texture;
-    brush_tool_btn_texture.loadFromFile("brush_tool_btn_texture.png");
-    ButtonTexture brush_tool_btn_texture_config
-    {
-        &brush_tool_btn_texture,
-        {57,  0,  57, 52},
-        {57, 52,  57, 52},
-        {57, 104, 57, 52}
-    };
-    toolbar.addButton(brush_tool_btn_texture_config, tool_palette.addTool(&brush_tool));
+    // sf::Texture brush_tool_btn_texture;
+    // brush_tool_btn_texture.loadFromFile("brush_tool_btn_texture.png");
+    // ButtonTexture brush_tool_btn_texture_config
+    // {
+    //     &brush_tool_btn_texture,
+    //     {57,  0,  57, 52},
+    //     {57, 52,  57, 52},
+    //     {57, 104, 57, 52}
+    // };
+    // toolbar.addButton(brush_tool_btn_texture_config, tool_palette.addTool(&brush_tool));
 
-    sf::Texture polyline_tool_btn_texture;
-    polyline_tool_btn_texture.loadFromFile("polyline_tool_btn_texture.png");
-    ButtonTexture polyline_tool_btn_texture_config
-    {
-        &polyline_tool_btn_texture,
-        {57,  0,  57, 52},
-        {57, 52,  57, 52},
-        {57, 104, 57, 52}
-    };
-    toolbar.addButton(polyline_tool_btn_texture_config, tool_palette.addTool(&polyline_tool));
+    // sf::Texture polyline_tool_btn_texture;
+    // polyline_tool_btn_texture.loadFromFile("polyline_tool_btn_texture.png");
+    // ButtonTexture polyline_tool_btn_texture_config
+    // {
+    //     &polyline_tool_btn_texture,
+    //     {57,  0,  57, 52},
+    //     {57, 52,  57, 52},
+    //     {57, 104, 57, 52}
+    // };
+    // toolbar.addButton(polyline_tool_btn_texture_config, tool_palette.addTool(&polyline_tool));
 
-    sf::Texture polygon_tool_btn_texture;
-    polygon_tool_btn_texture.loadFromFile("polygon_tool_btn_texture.png");
-    ButtonTexture polygon_tool_btn_texture_config
-    {
-        &polygon_tool_btn_texture,
-        {57,  0,  57, 52},
-        {57, 52,  57, 52},
-        {57, 104, 57, 52}
-    };
-    toolbar.addButton(polygon_tool_btn_texture_config, tool_palette.addTool(&polygon_tool));
+    // sf::Texture polygon_tool_btn_texture;
+    // polygon_tool_btn_texture.loadFromFile("polygon_tool_btn_texture.png");
+    // ButtonTexture polygon_tool_btn_texture_config
+    // {
+    //     &polygon_tool_btn_texture,
+    //     {57,  0,  57, 52},
+    //     {57, 52,  57, 52},
+    //     {57, 104, 57, 52}
+    // };
+    // toolbar.addButton(polygon_tool_btn_texture_config, tool_palette.addTool(&polygon_tool));
 
-    sf::Texture line_edit_tool_btn_texture;
-    line_edit_tool_btn_texture.loadFromFile("line_edit_tool_btn_texture.png");
-    ButtonTexture line_edit_tool_btn_texture_config
-    {
-        &line_edit_tool_btn_texture,
-        {57,  0,  57, 52},
-        {57, 52,  57, 52},
-        {57, 104, 57, 52}
-    };
-    toolbar.addButton(line_edit_tool_btn_texture_config, tool_palette.addTool(&line_edit_tool));
+    // sf::Texture line_edit_tool_btn_texture;
+    // line_edit_tool_btn_texture.loadFromFile("line_edit_tool_btn_texture.png");
+    // ButtonTexture line_edit_tool_btn_texture_config
+    // {
+    //     &line_edit_tool_btn_texture,
+    //     {57,  0,  57, 52},
+    //     {57, 52,  57, 52},
+    //     {57, 104, 57, 52}
+    // };
+    // toolbar.addButton(line_edit_tool_btn_texture_config, tool_palette.addTool(&line_edit_tool));
 
-    Frame toolbar_frame(toolbar, "toolbar", 0.01, frame_texture_config);
+    // Frame toolbar_frame(toolbar, "toolbar", 0.01, frame_texture_config);
 
     // BrightnessFilter brightness_filter_pos;
     // brightness_filter_pos.setBrightnessDelta(0.05);
@@ -173,7 +173,7 @@ int main()
     // NegativeFilter negative_filter;
 
     FilterPalette filter_palette;
-    int32_t brightness_filter_pos_id = filter_palette.loadPlugin("filter_plugins/brightness_filter.so");
+    // int32_t brightness_filter_pos_id = filter_palette.loadPlugin("filter_plugins/brightness_filter.so");
 
     // filter_palette.addFilter(brightness_filter_pos);
     // int32_t brightness_filter_neg_id = filter_palette.addFilter(brightness_filter_neg);
@@ -182,21 +182,28 @@ int main()
     // int32_t green_blue_filter_id     = filter_palette.addFilter(green_blue_filter);
     // int32_t negative_filter_id       = filter_palette.addFilter(negative_filter);
 
-    CanvasManager canv_manager({0, 0}, {1, 1}, tool_palette, filter_palette, canv_manager_texture_config);
+    // CanvasManager canv_manager({0, 0}, {1, 1}, tool_palette, filter_palette, canv_manager_texture_config);
 
-    FileVerticalButtonList file_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
+    // FileVerticalButtonList file_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
 
-    FilterVerticalButtonList filt_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
-    filt_ver_btn_lst.addFilter("Light+",     brightness_filter_pos_id);
+    // FilterVerticalButtonList filt_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
+    // filt_ver_btn_lst.addFilter("Light+",     brightness_filter_pos_id);
     // filt_ver_btn_lst.addFilter("Light-",     brightness_filter_neg_id);
     // filt_ver_btn_lst.addFilter("B/W",        blackwhite_filter_id);
     // filt_ver_btn_lst.addFilter("Red",        red_filter_id);
     // filt_ver_btn_lst.addFilter("Green&Blue", green_blue_filter_id);
     // filt_ver_btn_lst.addFilter("Negative",   negative_filter_id);
     
-    Menu menu(canv_manager);
-    menu.addButton(file_ver_btn_lst);
-    menu.addButton(filt_ver_btn_lst);
+    // Menu menu(canv_manager);
+    // menu.addButton(file_ver_btn_lst);
+    // menu.addButton(filt_ver_btn_lst);
+
+    BaseLayoutBox sample_box;
+    Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
+
+    sf::Image cat_img;
+    cat_img.loadFromFile("cat.jpg");
+    canvas->loadFromImage(cat_img);
 
     sf::Clock globalClock;
 
@@ -209,17 +216,17 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            adaptSfEvent(event, &menu, transf_list);
-            adaptSfEvent(event, &toolbar_frame, transf_list);
+            // adaptSfEvent(event, &menu, transf_list);
+            // adaptSfEvent(event, &toolbar_frame, transf_list);
         }
 
-        menu.onTime(globalClock.getElapsedTime().asSeconds());
+        // menu.onTime(globalClock.getElapsedTime().asSeconds());
         globalClock.restart();
 
         window.clear(sf::Color::Black);
 
-        menu.draw(window, transf_list);
-        toolbar_frame.draw(window, transf_list);
+        // menu.draw(window, transf_list);
+        // toolbar_frame.draw(window, transf_list);
 
         window.display();
     }

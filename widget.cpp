@@ -1,9 +1,29 @@
 #include "widget.hpp"
 
-Widget::Widget(Transform transf, Vector2f size) :
-    m_transf(transf),
-    m_size(size)
+Widget::Widget(const LayoutBox &box) :
+    m_layout_box(box.clone())
 {}
+
+void Widget::onParentUpdate(const LayoutBox &parent_box)
+{
+    m_layout_box->onParentUpdate(parent_box);
+}
+
+LayoutBox& Widget::getLayoutBox()
+{
+    return *m_layout_box;
+}
+
+const LayoutBox& Widget::getLayoutBox() const
+{
+    return *m_layout_box;
+}
+
+void Widget::setLayoutBox(const LayoutBox &box)
+{
+    delete m_layout_box;
+    m_layout_box = box.clone();
+}
 
 void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
 {
@@ -44,15 +64,5 @@ void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
     {
         widget->onKeyboardReleased((KeyboardKey) event.key.code);
     }
-}
-
-Transform Widget::getTransform() const
-{
-    return m_transf;
-}
-
-Transform Widget::setTransform(const Transform &transf)
-{
-    m_transf = transf;
 }
 

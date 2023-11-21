@@ -36,7 +36,7 @@ public:
 
     Vector2f m_last_mouse_pos;
 
-    Canvas(Vector2f pos, float width, float height, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette);
+    Canvas(int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette);
 
     ~Canvas() = default;
     Canvas& operator = (const Canvas &rhs) = delete;
