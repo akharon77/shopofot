@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include "layout_box.hpp"
 #include "list.hpp"
 #include "transform.hpp"
 
@@ -60,7 +61,7 @@ class Widget
 
 public:
     Transform m_transf;
-    Vector2f  m_size;
+    Vec2d     m_size;
 
     Widget(const LayoutBox &box);
 

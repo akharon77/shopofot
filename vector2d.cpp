@@ -5,6 +5,16 @@
 explicit Vec2d::Vec2d(const double x_, const double y_) : x(x_), y(y_)
 {}
 
+explicit Vec2d::Vec2d(const Vector2f &rhs) :
+    x(rhs.x),
+    y(rhs.y)
+{}
+
+explicit Vec2d::operator Vector2f() const
+{
+    return Vector2f(x, y);
+}
+
 double Vec2d::length2() const
 {
     return dot(*this, *this);

@@ -34,9 +34,9 @@ public:
     sf::RenderTexture m_canv_texture;
     sf::Image         m_image;
 
-    Vector2f m_last_mouse_pos;
+    Vec2d m_last_mouse_pos;
 
-    Canvas(int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette);
+    Canvas(const LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette);
 
     ~Canvas() = default;
     Canvas& operator = (const Canvas &rhs) = delete;

@@ -4,8 +4,8 @@
 
 Canvas::Canvas(const LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette) :
     Widget(box),
-    m_width (0),  // TODO: where is this used?
-    m_height(0),
+    m_width (box.getSize().x),  // TODO: where is this used?
+    m_height(box.getSize().y),
     m_canv_width(canv_width),
     m_canv_height(canv_height),
     m_vertex_arr(sf::Quads, 4),
@@ -71,14 +71,14 @@ void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
     // TODO: make more based and less cringe
     // for compatibility only
-    Transform m_transf(getLayoutBox()->getPosition(), getLayoutBox()->getSize());
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
 
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     sf::VertexArray buf_vertex_arr(m_vertex_arr);
     for (int32_t i = 0; i < 4; ++i)
-        buf_vertex_arr[i].position = top_transf.rollbackTransform(buf_vertex_arr[i].position);
+        buf_vertex_arr[i].position = static_cast<Vector2f>(top_transf.apply(Vec2d(buf_vertex_arr[i].position)));
 
     m_canv_texture.display();
     target.draw(buf_vertex_arr, &m_canv_texture.getTexture());
@@ -93,7 +93,7 @@ void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 // deprecated
 bool Canvas::onResize(float width, float height)
 {
-    m_size = {width, height};
+    m_size = Vec2d(width, height);
     m_width = width;
     m_height = height;
 
@@ -104,17 +104,17 @@ bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
 {
     // TODO: make more based and less cringe
     // for compatibility only
-    Transform m_transf(getLayoutBox()->getPosition(), getLayoutBox()->getSize());
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
 
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
     if (EPS < pos.x && pos.x < 1 - EPS &&
         EPS < pos.y && pos.y < 1 - EPS)
     {
         Tool *tool = m_tool_palette->getActiveTool();
-        tool->onMainButton(MouseType::PRESSED, pos, *this);
+        tool->onMainButton(MouseType::PRESSED, static_cast<Vector2f>(pos), *this);
 
         Widget *tool_widget = tool->getWidget();
         if (tool_widget != nullptr)
@@ -132,13 +132,13 @@ bool Canvas::onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform
 {
     // TODO: make more based and less cringe
     // for compatibility only
-    Transform m_transf(getLayoutBox()->getPosition(), getLayoutBox()->getSize());
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
 
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     Tool *tool = m_tool_palette->getActiveTool();
-    tool->onMainButton(MouseType::RELEASED, top_transf.applyTransform({x, y}), *this);
+    tool->onMainButton(MouseType::RELEASED, static_cast<Vector2f>(top_transf.restore(Vec2d(x, y))), *this);
     Widget *tool_widget = tool->getWidget();
     if (tool_widget != nullptr)
         tool_widget->onMouseReleased(key, x, y, transf_list);
@@ -151,16 +151,16 @@ bool Canvas::onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
 {
     // TODO: make more based and less cringe
     // for compatibility only
-    Transform m_transf(getLayoutBox()->getPosition(), getLayoutBox()->getSize());
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
 
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
     m_last_mouse_pos = pos;
 
     Tool *tool = m_tool_palette->getActiveTool();
-    tool->onMove(pos, *this);
+    tool->onMove(static_cast<Vector2f>(pos), *this);
     Widget *tool_widget = tool->getWidget();
     if (tool_widget != nullptr)
         tool_widget->onMouseMoved(x, y, transf_list);
@@ -182,13 +182,13 @@ bool Canvas::onKeyboardPressed  (KeyboardKey key)
 
     if (key == KeyboardKey::Enter)
     {
-        m_tool_palette->getActiveTool()->onConfirm(m_last_mouse_pos, *this);
+        m_tool_palette->getActiveTool()->onConfirm(static_cast<Vector2f>(m_last_mouse_pos), *this);
         return true;
     }
 
     if (key == KeyboardKey::Escape)
     {
-        m_tool_palette->getActiveTool()->onCancel(m_last_mouse_pos, *this);
+        m_tool_palette->getActiveTool()->onCancel(static_cast<Vector2f>(m_last_mouse_pos), *this);
     }
 
     if (key == KeyboardKey::F)

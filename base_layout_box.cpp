@@ -1,6 +1,6 @@
-#include "lazy_layout_box.hpp"
+#include "base_layout_box.hpp"
 
-const Vec2d BaseLayoutBox::INVALID_PAR_SIZE = {-1, -1};
+const Vec2d BaseLayoutBox::INVALID_PAR_SIZE = Vec2d(-1, -1);
 
 BaseLayoutBox::BaseLayoutBox(const Vec2d &pos, const Vec2d &size) :
     m_pos(pos),
@@ -26,7 +26,7 @@ bool BaseLayoutBox::setSize(const Vec2d &size)
     return true;
 }
 
-bool BaseLayoutBox::setPosition(const Vec2d &position)
+bool BaseLayoutBox::setPosition(const Vec2d &pos)
 {
     m_pos = pos;
     return true;
