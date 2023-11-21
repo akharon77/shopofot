@@ -1,6 +1,6 @@
 #include "transform.hpp"
 
-explicit Transform::Transform(const Vec2d &offset, const Vec2d &scale) :
+Transform::Transform(const Vec2d &offset, const Vec2d &scale) :
     m_offset(offset), m_scale(scale)
 {}
 
@@ -38,13 +38,11 @@ Vec2d Transform::restore(const Vec2d &vec) const
 
 Transform Transform::combine(const Transform &parent_transform) const
 {
-    Transform res =
-    {
-        parent_transform.getOffset() + offset * parent_transform.getScale(),
-        scale * parent_transform.getScale()
-    };
-
-    return res;
+    return Transform
+           {
+               parent_transform.getOffset() + m_offset * parent_transform.getScale(),
+               m_scale * parent_transform.getScale()
+           };
 }
 
 // Transform::Transform(const Vector2f &offset, const Vector2f &scale) :

@@ -5,83 +5,84 @@
 
 #include "window.hpp"
 #include "canvas.hpp"
-#include "frame.hpp"
+#include "base_layout_box.hpp"
+// #include "frame.hpp"
 
-#include "button.hpp"
-#include "scrollbar.hpp"
-#include "menu.hpp"
-
-#include "ver_btn_list.hpp"
-#include "text_btn.hpp"
-
-#include "line_tool.hpp"
-#include "brush.hpp"
-#include "square_tool.hpp"
-#include "polyline_tool.hpp"
-#include "polygon_tool.hpp"
-#include "line_edit_tool.hpp"
-
-#include "filter_plugins/brightness_filter.hpp"
+// #include "button.hpp"
+// #include "scrollbar.hpp"
+// #include "menu.hpp"
+// 
+// #include "ver_btn_list.hpp"
+// #include "text_btn.hpp"
+// 
+// #include "line_tool.hpp"
+// #include "brush.hpp"
+// #include "square_tool.hpp"
+// #include "polyline_tool.hpp"
+// #include "polygon_tool.hpp"
+// #include "line_edit_tool.hpp"
+// 
+// #include "filter_plugins/brightness_filter.hpp"
 // #include "blackwhite_filter.hpp"
 // #include "onecolor_filter.hpp"
 // #include "negative_filter.hpp"
 
-#include "shopofot.hpp"
+// #include "shopofot.hpp"
 
-#include "line_edit.hpp"
+// #include "line_edit.hpp"
 
-#include "canvas_manager.hpp"
-#include "toolbar.hpp"
+// #include "canvas_manager.hpp"
+// #include "toolbar.hpp"
 
 int main()
 {
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_WIDTH), "shopofot");
 
     List<Transform> transf_list;
-    transf_list.PushBack({{0, 0}, {SCREEN_WIDTH, SCREEN_HEIGHT}});
+    transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{SCREEN_WIDTH, SCREEN_HEIGHT}});
 
-    sf::Texture button_texture;
-    button_texture.loadFromFile("mols_ctrl_texture.png");
+    // sf::Texture button_texture;
+    // button_texture.loadFromFile("mols_ctrl_texture.png");
 
-    sf::Font font;
-    font.loadFromFile("anon_pro.ttf");
+    // sf::Font font;
+    // font.loadFromFile("anon_pro.ttf");
 
-    ButtonTexture btn_texture_config
-    {
-        &button_texture,
-        {57,  0,  57, 52},
-        {57, 52,  57, 52},
-        {57, 104, 57, 52}
-    };
+    // ButtonTexture btn_texture_config
+    // {
+    //     &button_texture,
+    //     {57,  0,  57, 52},
+    //     {57, 52,  57, 52},
+    //     {57, 104, 57, 52}
+    // };
 
-    ScrollBarTexture scrollbar_texture_config
-    {
-        &button_texture,
-        &btn_texture_config,
-        &btn_texture_config,
-        &btn_texture_config,
-        &btn_texture_config,
-        &btn_texture_config
-    };
+    // ScrollBarTexture scrollbar_texture_config
+    // {
+    //     &button_texture,
+    //     &btn_texture_config,
+    //     &btn_texture_config,
+    //     &btn_texture_config,
+    //     &btn_texture_config,
+    //     &btn_texture_config
+    // };
 
-    TextButtonTexture text_btn_texture_config
-    {
-        &font,
-        16,
-        &btn_texture_config
-    };
+    // TextButtonTexture text_btn_texture_config
+    // {
+    //     &font,
+    //     16,
+    //     &btn_texture_config
+    // };
 
-    FrameTexture frame_texture_config
-    {
-        &btn_texture_config,
-        &btn_texture_config
-    };
+    // FrameTexture frame_texture_config
+    // {
+    //     &btn_texture_config,
+    //     &btn_texture_config
+    // };
 
-    CanvasManagerTexture canv_manager_texture_config
-    {
-        &scrollbar_texture_config,
-        &frame_texture_config
-    };
+    // CanvasManagerTexture canv_manager_texture_config
+    // {
+    //     &scrollbar_texture_config,
+    //     &frame_texture_config
+    // };
     
     // LineTool line_tool;
     // SquareTool square_tool;
@@ -203,7 +204,7 @@ int main()
 
     sf::Image cat_img;
     cat_img.loadFromFile("cat.jpg");
-    canvas->loadFromImage(cat_img);
+    canvas.loadFromImage(cat_img);
 
     sf::Clock globalClock;
 
@@ -216,7 +217,7 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // adaptSfEvent(event, &menu, transf_list);
+            adaptSfEvent(event, canvas, transf_list);
             // adaptSfEvent(event, &toolbar_frame, transf_list);
         }
 
@@ -225,6 +226,7 @@ int main()
 
         window.clear(sf::Color::Black);
 
+        canvas.draw(window, transf_list);
         // menu.draw(window, transf_list);
         // toolbar_frame.draw(window, transf_list);
 

@@ -83,9 +83,13 @@ void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     m_canv_texture.display();
     target.draw(buf_vertex_arr, &m_canv_texture.getTexture());
 
-    Widget *tool_widget = m_tool_palette->getActiveTool()->getWidget();
-    if (tool_widget != nullptr)
-        tool_widget->draw(target, transf_list);
+    Tool *tool = m_tool_palette->getActiveTool();
+    if (tool != nullptr)
+    {
+        Widget *tool_widget = tool->getWidget();
+        if (tool_widget != nullptr)
+            tool_widget->draw(target, transf_list);
+    }
 
     transf_list.PopBack();
 }
@@ -114,11 +118,14 @@ bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
         EPS < pos.y && pos.y < 1 - EPS)
     {
         Tool *tool = m_tool_palette->getActiveTool();
-        tool->onMainButton(MouseType::PRESSED, static_cast<Vector2f>(pos), *this);
+        if (tool != nullptr)
+        {
+            tool->onMainButton(MouseType::PRESSED, static_cast<Vector2f>(pos), *this);
 
-        Widget *tool_widget = tool->getWidget();
-        if (tool_widget != nullptr)
-            tool_widget->onMousePressed(key, x, y, transf_list);
+            Widget *tool_widget = tool->getWidget();
+            if (tool_widget != nullptr)
+                tool_widget->onMousePressed(key, x, y, transf_list);
+        }
 
         transf_list.PopBack();
         return true; 
@@ -138,10 +145,13 @@ bool Canvas::onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     Tool *tool = m_tool_palette->getActiveTool();
-    tool->onMainButton(MouseType::RELEASED, static_cast<Vector2f>(top_transf.restore(Vec2d(x, y))), *this);
-    Widget *tool_widget = tool->getWidget();
-    if (tool_widget != nullptr)
-        tool_widget->onMouseReleased(key, x, y, transf_list);
+    if (tool != nullptr)
+    {
+        tool->onMainButton(MouseType::RELEASED, static_cast<Vector2f>(top_transf.restore(Vec2d(x, y))), *this);
+        Widget *tool_widget = tool->getWidget();
+        if (tool_widget != nullptr)
+            tool_widget->onMouseReleased(key, x, y, transf_list);
+    }
 
     transf_list.PopBack();
     return true;
@@ -160,10 +170,13 @@ bool Canvas::onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
     m_last_mouse_pos = pos;
 
     Tool *tool = m_tool_palette->getActiveTool();
-    tool->onMove(static_cast<Vector2f>(pos), *this);
-    Widget *tool_widget = tool->getWidget();
-    if (tool_widget != nullptr)
-        tool_widget->onMouseMoved(x, y, transf_list);
+    if (tool != nullptr)
+    {
+        tool->onMove(static_cast<Vector2f>(pos), *this);
+        Widget *tool_widget = tool->getWidget();
+        if (tool_widget != nullptr)
+            tool_widget->onMouseMoved(x, y, transf_list);
+    }
 
     transf_list.PopBack();
     return true;
@@ -172,6 +185,9 @@ bool Canvas::onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list)
 bool Canvas::onKeyboardPressed  (KeyboardKey key)
 {
     Tool *tool = m_tool_palette->getActiveTool();
+    if (tool == nullptr)
+        return false;
+
     Widget *tool_widget = tool->getWidget();
 
     if (key == KeyboardKey::Right)
@@ -205,6 +221,9 @@ bool Canvas::onKeyboardPressed  (KeyboardKey key)
 bool Canvas::onKeyboardReleased (KeyboardKey key)
 {
     Tool *tool = m_tool_palette->getActiveTool();
+    if (tool == nullptr)
+        return false;
+
     Widget *tool_widget = tool->getWidget();
 
     if (tool_widget != nullptr)
@@ -216,6 +235,9 @@ bool Canvas::onKeyboardReleased (KeyboardKey key)
 bool Canvas::onTime(float d_seconds)
 {
     Tool *tool = m_tool_palette->getActiveTool();
+    if (tool == nullptr)
+        return false;
+
     Widget *tool_widget = tool->getWidget();
 
     if (tool_widget != nullptr)

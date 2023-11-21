@@ -20,8 +20,8 @@ public:
 
     double x, y;
 
-    double length();
-    double length2();
+    double length() const;
+    double length2() const;
 
     Vec2d &operator /= (const double val);
     Vec2d &operator += (const Vec2d &rhs);
@@ -47,6 +47,7 @@ Vec2d operator * (const Vec2d &lhs, const Vec2d &rhs);
 
 Vec2d operator - (const Vec2d &vec);
 Vec2d operator / (const Vec2d &lhs, const Vec2d &rhs);
+Vec2d operator / (const Vec2d &vec, const double val);
 
 #endif  // VECTOR2D_HPP
 

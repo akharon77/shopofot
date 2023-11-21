@@ -25,7 +25,7 @@ void Widget::setLayoutBox(const LayoutBox &box)
     m_layout_box = box.clone();
 }
 
-void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
+void adaptSfEvent(sf::Event event, Widget &widget, List<Transform> &transf_list)
 {
     if (event.type == sf::Event::MouseButtonPressed || event.type == sf::Event::MouseButtonReleased)
     {
@@ -42,27 +42,27 @@ void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list)
         switch (event.type)
         {
             case sf::Event::MouseButtonPressed:
-                widget->onMousePressed(key, 
-                        event.mouseButton.x, event.mouseButton.y, transf_list);
+                widget.onMousePressed(key, 
+                       event.mouseButton.x, event.mouseButton.y, transf_list);
                 break;
 
             case sf::Event::MouseButtonReleased:
-                widget->onMouseReleased(key, 
-                        event.mouseButton.x, event.mouseButton.y, transf_list);
+                widget.onMouseReleased(key, 
+                       event.mouseButton.x, event.mouseButton.y, transf_list);
                 break;
         }
     }
     else if (event.type == sf::Event::MouseMoved)
     {
-        widget->onMouseMoved(event.mouseMove.x, event.mouseMove.y, transf_list);
+        widget.onMouseMoved(event.mouseMove.x, event.mouseMove.y, transf_list);
     }
     else if (event.type == sf::Event::KeyPressed)
     {
-        widget->onKeyboardPressed((KeyboardKey) event.key.code);
+        widget.onKeyboardPressed((KeyboardKey) event.key.code);
     }
     else if (event.type == sf::Event::KeyReleased)
     {
-        widget->onKeyboardReleased((KeyboardKey) event.key.code);
+        widget.onKeyboardReleased((KeyboardKey) event.key.code);
     }
 }
 

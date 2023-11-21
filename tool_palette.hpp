@@ -15,6 +15,9 @@ struct ToolPalette
 
     Tool *getActiveTool()
     {
+        if (m_list.GetSize() == 0)
+            return nullptr;
+
         return m_list.Get(m_anch)->val;
     }
 

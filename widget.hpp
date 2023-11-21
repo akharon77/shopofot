@@ -7,6 +7,7 @@
 #include "layout_box.hpp"
 #include "list.hpp"
 #include "transform.hpp"
+#include <cassert>
 
 enum class MouseKey
 {
@@ -86,11 +87,11 @@ public:
 
     virtual bool onResize(float width, float height) = 0;
 
-    virtual Transform getTransform() const;
-    virtual Transform setTransform(const Transform &transf);
+    virtual Transform getTransform() const {assert(0);}
+    virtual Transform setTransform(const Transform &transf) {assert(0);}
 };
 
-void adaptSfEvent(sf::Event event, Widget *widget, List<Transform> &transf_list);
+void adaptSfEvent(sf::Event event, Widget &widget, List<Transform> &transf_list);
 
 #endif  // WIDGET_HPP
 
