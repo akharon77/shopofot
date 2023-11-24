@@ -6,7 +6,7 @@
 #include <SFML/Graphics/VertexArray.hpp>
 
 #include "widget.hpp"
-#include "vector2.hpp"
+#include "vector2d.hpp"
 
 struct ButtonTexture
 {
@@ -45,7 +45,7 @@ protected:
     float m_height;
 
 public:
-    Button(const Vector2f &pos, float width, float height, const ButtonTexture &btn_texture);
+    Button(const LayoutBox &box, const ButtonTexture &btn_texture);
 
     ~Button() = default;
     Button& operator = (const Button &rhs) = default;

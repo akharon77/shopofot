@@ -199,7 +199,7 @@ int main()
     // menu.addButton(file_ver_btn_lst);
     // menu.addButton(filt_ver_btn_lst);
 
-    BaseLayoutBox sample_box;
+    BaseLayoutBox sample_box(Vec2d(0.5, 0.5), Vec2d(0.5, 0.5));
     Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
 
     sf::Image cat_img;

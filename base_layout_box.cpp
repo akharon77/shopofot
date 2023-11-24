@@ -10,6 +10,10 @@ BaseLayoutBox::BaseLayoutBox(const Vec2d &pos, const Vec2d &size) :
     m_old_parent_size(INVALID_PAR_SIZE)
 {}
 
+BaseLayoutBox::BaseLayoutBox(const LayoutBox &box) :
+    BaseLayoutBox(box.getPosition(), box.getSize())
+{}
+
 Vec2d BaseLayoutBox::getSize() const
 {
     return m_size;

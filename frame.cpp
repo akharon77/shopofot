@@ -1,14 +1,11 @@
 #include "frame.hpp"
 
 Frame::Frame(Widget &wrappee, const char *title, float thickness, FrameTexture &frame_texture) :
-    Widget
-    {
-        {wrappee.getTransform().m_offset, {1, 1}},
-        wrappee.m_size + 2.f * Vector2f{thickness, thickness}
-    },
+    Widget(BaseLayoutBox(wrappee.getLayoutBox()->getPosition() - Vec2d(thickness, thickness), wrappee.getLayoutBox()->getSize() + 2 * Vec2d(thickness, thickness))),
     m_wrappee(&wrappee),
     m_title(title),
     m_thickness(thickness),
+    m_wrappee_stolen_layout_box(wrappee.getLayoutBox().clone()),
     m_vertex_array(sf::Quads, 4),
     m_status(status_t::DEFAULT),
     m_frame_texture(&frame_texture),
@@ -17,14 +14,13 @@ Frame::Frame(Widget &wrappee, const char *title, float thickness, FrameTexture &
 {
     updateVertexArray();
 
-    wrappee.setTransform
-    (
-        Transform
-        {
-            Vector2f{thickness, thickness},
-            wrappee.m_transf.m_scale
-        }
-    );
+    Vec2d wrappee_pos = wrappee.getLayoutBox()->getPosition() + Vec2d(thickness, thickness);
+    Vec2d wrappee_size = wrappee.getLayoutBox()->getSize();
+
+    delete wrappee.getLayoutBox();
+    BaseLayoutBox *new_wrappee_box = new BaseLayoutBox(wrappee_pos);
+    new_wrappee_box->setResizable(true);
+    wrappee.setLayoutBox(new_wrappee_box);
 
     m_close_btn.onResize(thickness, thickness);
     m_close_btn.m_transf.m_offset = {m_size.x - thickness, 0};
@@ -32,6 +28,8 @@ Frame::Frame(Widget &wrappee, const char *title, float thickness, FrameTexture &
 
 void Frame::updateVertexArray()
 {
+    Vec2d m_sise = getLayoutBox()->getSize();
+
     m_vertex_array[0].position = {0, 0};
     m_vertex_array[1].position = {m_size.x, 0};
     m_vertex_array[2].position = {m_size.x, m_size.y};

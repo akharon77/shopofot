@@ -7,11 +7,11 @@
 //     m_focused_rect(focused_rect)
 // {}
 
-Button::Button(const Vector2f &pos, float width, float height, const ButtonTexture &btn_texture) :
-    Widget({pos, Vector2f{width, height}}, {width, height}),
+Button::Button(const LayoutBox &box, const ButtonTexture &btn_texture) :
+    Widget(box),
     m_status(DEFAULT),
-    m_width(width),
-    m_height(height),
+    m_width(box.getSize().x),
+    m_height(box.getSize().y),
     m_btn_texture(btn_texture),
     m_vertex_array(sf::Quads, 4)
 {
@@ -33,15 +33,16 @@ void Button::setRect(const sf::IntRect &rect)
  
 void Button::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     sf::VertexArray buf_vertex_array(m_vertex_array);
     for (int32_t i = 0; i < 4; ++i)
-    {
-        Vector2f pos = buf_vertex_array[i].position = top_transf.rollbackTransform(m_vertex_array[i].position);
-        Vector2f pos1 = pos;
-    }
+        buf_vertex_array[i].position = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(m_vertex_array[i].position)));
 
     target.draw(buf_vertex_array, m_btn_texture.m_texture);
 
@@ -50,10 +51,14 @@ void Button::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
 bool Button::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
 
     if (EPS < pos.x && pos.x < 1 - EPS &&
         EPS < pos.y && pos.y < 1 - EPS)
@@ -71,10 +76,14 @@ bool Button::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> 
 
 bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
 
     if (m_status == PRESSED)
     {
@@ -100,12 +109,16 @@ bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform>
 
 bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     bool res = false;
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
 
     if (m_status == DEFAULT            &&
         EPS < pos.x && pos.x < 1 - EPS &&

@@ -58,6 +58,8 @@ class Frame : public Widget
     float m_width;
     float m_height;
 
+    LayoutBox *m_wrappee_stolen_layout_box;
+
     sf::VertexArray m_vertex_array;
 
     status_t m_status;
@@ -67,8 +69,6 @@ class Frame : public Widget
 
     sf::Texture *m_texture;
     sf::IntRect  m_rect;
-
-    // CloseButton m_close_btn;
 
     interactive_t m_interactive;
 
