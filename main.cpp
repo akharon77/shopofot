@@ -6,7 +6,7 @@
 #include "window.hpp"
 #include "canvas.hpp"
 #include "universal_layout_box.hpp"
-// #include "frame.hpp"
+#include "frame.hpp"
 
 // #include "button.hpp"
 // #include "scrollbar.hpp"
@@ -73,11 +73,11 @@ int main()
     //     &btn_texture_config
     // };
 
-    // FrameTexture frame_texture_config
-    // {
-    //     &btn_texture_config,
-    //     &btn_texture_config
-    // };
+    FrameTexture frame_texture_config
+    {
+        // &btn_texture_config,
+        // &btn_texture_config
+    };
 
     // CanvasManagerTexture canv_manager_texture_config
     // {
@@ -201,7 +201,9 @@ int main()
     // menu.addButton(filt_ver_btn_lst);
 
     UniversalLayoutBox sample_box(10_cm, 10_cm);
+    sample_box.setPosition(Vec2d(1_cm, 1_cm));
     Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
+    Frame frame(canvas, "lol", 1_cm, frame_texture_config);
 
     sf::Image cat_img;
     cat_img.loadFromFile("cat.jpg");
@@ -218,7 +220,8 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            adaptSfEvent(event, canvas, transf_list);
+            // adaptSfEvent(event, canvas, transf_list);
+            adaptSfEvent(event, frame, transf_list);
             // adaptSfEvent(event, &toolbar_frame, transf_list);
         }
 
@@ -227,7 +230,8 @@ int main()
 
         window.clear(sf::Color::Black);
 
-        canvas.draw(window, transf_list);
+        // canvas.draw(window, transf_list);
+        frame.draw(window, transf_list);
         // menu.draw(window, transf_list);
         // toolbar_frame.draw(window, transf_list);
 

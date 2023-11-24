@@ -4,35 +4,37 @@
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include "button.hpp"
+// #include "button.hpp"
+#include "units.hpp"
+#include "widget.hpp"
 
 struct FrameTexture
 {
-    ButtonTexture *m_close_btn_texture;
-    ButtonTexture *m_full_btn_texture;
+    // ButtonTexture *m_close_btn_texture;
+    // ButtonTexture *m_full_btn_texture;
 };
 
 class Frame : public Widget
 {
-    class CloseButton : public Button
-    {
-        Container *m_container;
-        int32_t    m_close_id;
+    // class CloseButton : public Button
+    // {
+    //     Container *m_container;
+    //     int32_t    m_close_id;
 
-    public:
-        CloseButton(const ButtonTexture &btn_texture) :
-            Button({0, 0}, 0, 0, btn_texture)
-        {};
+    // public:
+    //     CloseButton(const ButtonTexture &btn_texture) :
+    //         Button({0, 0}, 0, 0, btn_texture)
+    //     {};
 
-        ~CloseButton() = default;
-        CloseButton(const CloseButton &rhs) = delete;
-        CloseButton& operator = (const CloseButton& rhs) = delete;
+    //     ~CloseButton() = default;
+    //     CloseButton(const CloseButton &rhs) = delete;
+    //     CloseButton& operator = (const CloseButton& rhs) = delete;
 
-        void setContainer(Container &container);
-        void setCloseId(int32_t id);
+    //     void setContainer(Container &container);
+    //     void setCloseId(int32_t id);
 
-        virtual bool onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
-    };
+    //     virtual bool onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+    // };
 
     enum class status_t : uint8_t
     {
@@ -53,17 +55,17 @@ class Frame : public Widget
 
     const char *m_title;
 
-    float m_thickness;
+    Length m_thickness;
 
-    float m_width;
-    float m_height;
+    double m_width;
+    double m_height;
 
     LayoutBox *m_wrappee_stolen_layout_box;
 
     sf::VertexArray m_vertex_array;
 
     status_t m_status;
-    Vector2f m_hold_pos;
+    Vec2d    m_hold_pos;
 
     FrameTexture *m_frame_texture;
 
@@ -72,20 +74,20 @@ class Frame : public Widget
 
     interactive_t m_interactive;
 
-    CloseButton m_close_btn;
+    // CloseButton m_close_btn;
 
     void updateVertexArray();
 
 public:
-    Frame(Widget &wrappee, const char *title, float thickness, FrameTexture &frame_texture);
+    Frame(Widget &wrappee, const char *title, const Length &thickness, FrameTexture &frame_texture);
 
     ~Frame() = default;
     Frame& operator = (const Frame &rhs) = delete;
     Frame(const Frame &rhs) = delete;
 
-    void setClosable(bool flag);
-    void setCloseId(int32_t id);
-    void setContainer(Container &container);
+    // void setClosable(bool flag);
+    // void setCloseId(int32_t id);
+    // void setContainer(Container &container);
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 

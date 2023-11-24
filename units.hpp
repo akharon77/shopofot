@@ -19,76 +19,106 @@ static constexpr double CentimetersPerInch = 2.54;
 static constexpr double MillimitersPerCentimeter = 10;
 
 struct Length {
-  double value;
-  Unit unit;
+    double value;
+    Unit unit;
 
-  Length() : Length(0, Unit::Pixel) {}
-  Length(double val, Unit type) : value(val), unit(type) {}
+    Length() : Length(0, Unit::Pixel)
+    {}
 
-  Length(const Length &other) : Length(other.value, other.unit) {}
+    Length(double val, Unit type) : value(val), unit(type)
+    {}
 
-  Length &operator=(const Length &other) {
-    this->value = other.value;
-    this->unit = other.unit;
-    return *this;
-  }
+    Length(const Length &other) : Length(other.value, other.unit)
+    {}
 
-  operator double() const {
-    switch (unit) {
-    case Unit::Pixel:
-      return value;
-    case Unit::Centimeter:
-      return value / CentimetersPerInch * PixelsPerInch;
-    case Unit::Millimeter:
-      return value / MillimitersPerCentimeter / CentimetersPerInch *
-             PixelsPerInch;
-    case Unit::Inch:
-      return value * PixelsPerInch;
+    Length &operator=(const Length &other)
+    {
+        value = other.value;
+        unit  = other.unit;
 
-    case Unit::Percent:
-    default:
-      return 0;
+        return *this;
     }
-  }
+
+    operator double() const
+    {
+        switch (unit)
+        {
+            case Unit::Pixel:
+                return value;
+
+            case Unit::Centimeter:
+                return value / CentimetersPerInch * PixelsPerInch;
+
+            case Unit::Millimeter:
+                return value / MillimitersPerCentimeter / CentimetersPerInch * PixelsPerInch;
+
+            case Unit::Inch:
+                return value * PixelsPerInch;
+
+            case Unit::Percent:
+            default:
+                return 0;
+        }
+    }
 };
 
-enum class Align {
-  // clang-format off
-  TopLeft,    TopCenter,    TopRight,
-  CenterLeft, Center,       CenterRight,
-  BottomLeft, BottomCenter, BottomRight,
-  // clang-format on
-  Free
+enum class Align
+{
+    TopLeft,    TopCenter,    TopRight,
+    CenterLeft, Center,       CenterRight,
+    BottomLeft, BottomCenter, BottomRight,
+    Free
 };
 
-inline Length operator""_per(long double val) {
-  return Length(val, Unit::Percent);
+inline Length operator""_per(long double val)
+{
+    return Length(val, Unit::Percent);
 }
-inline Length operator""_px(long double val) {
-  return Length(val, Unit::Pixel);
-}
-inline Length operator""_cm(long double val) {
-  return Length(val, Unit::Centimeter);
-}
-inline Length operator""_mm(long double val) {
-  return Length(val, Unit::Millimeter);
-}
-inline Length operator""_in(long double val) { return Length(val, Unit::Inch); }
 
-inline Length operator""_per(unsigned long long val) {
-  return Length(val, Unit::Percent);
+inline Length operator""_px(long double val)
+{
+    return Length(val, Unit::Pixel);
 }
-inline Length operator""_px(unsigned long long val) {
-  return Length(val, Unit::Pixel);
+
+inline Length operator""_cm(long double val)
+{
+    return Length(val, Unit::Centimeter);
 }
-inline Length operator""_cm(unsigned long long val) {
-  return Length(val, Unit::Centimeter);
+
+inline Length operator""_mm(long double val)
+{
+    return Length(val, Unit::Millimeter);
 }
-inline Length operator""_mm(unsigned long long val) {
-  return Length(val, Unit::Millimeter);
+
+inline Length operator""_in(long double val)
+{
+    return Length(val, Unit::Inch);
 }
-inline Length operator""_in(unsigned long long val) {
-  return Length(val, Unit::Inch);
+
+inline Length operator""_per(unsigned long long val)
+{
+    return Length(val, Unit::Percent);
+}
+
+inline Length operator""_px(unsigned long long val)
+{
+    return Length(val, Unit::Pixel);
+}
+
+inline Length operator""_cm(unsigned long long val)
+{
+    return Length(val, Unit::Centimeter);
+}
+
+inline Length operator""_mm(unsigned long long val)
+{
+    return Length(val, Unit::Millimeter);
+}
+
+inline Length operator""_in(unsigned long long val)
+{
+    return Length(val, Unit::Inch);
 }
 
 #endif /* Units.h */
+

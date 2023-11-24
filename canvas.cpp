@@ -98,6 +98,7 @@ void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 bool Canvas::onResize(float width, float height)
 {
     m_size = Vec2d(width, height);
+    getLayoutBox().setSize(m_size);
     m_width = width;
     m_height = height;
 

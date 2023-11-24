@@ -73,15 +73,15 @@ class UniversalLayoutBox : public LayoutBox
         {}
 
         UniversalLayoutBox(const Length &width, const Length &height,
-                Align align = Align::Free, bool resizable = true)
-            : m_align(align), m_posX(0_px), m_posY(0_px), m_resizable(resizable),
+            Align align = Align::Free, bool resizable = true) :
+            m_align(align), m_posX(0_px), m_posY(0_px), m_resizable(resizable),
             m_width(width), m_height(height), m_paddingTop(0_px),
             m_paddingBottom(0_px), m_paddingLeft(0_px), m_paddingRight(0_px),
             m_parentSize(1, 1)
         {}
 
-        UniversalLayoutBox(const UniversalLayoutBox &other)
-            : m_align(other.m_align), m_posX(other.m_posX), m_posY(other.m_posY),
+        UniversalLayoutBox(const UniversalLayoutBox &other) :
+            m_align(other.m_align), m_posX(other.m_posX), m_posY(other.m_posY),
             m_resizable(other.m_resizable), m_width(other.m_width),
             m_height(other.m_height), m_paddingTop(other.m_paddingTop),
             m_paddingBottom(other.m_paddingBottom),
@@ -103,7 +103,7 @@ class UniversalLayoutBox : public LayoutBox
          * @brief Update horizontal and vertical padding
          *
          * @param[in] top_bottom  New vertical padding value
-         * @param[in] left_right	New horizontal padding value
+         * @param[in] left_right  New horizontal padding value
          */
         void setPadding(const Length &top_bottom, const Length &left_right)
         {
@@ -113,7 +113,7 @@ class UniversalLayoutBox : public LayoutBox
         /**
          * @brief Update all padding values separately
          *
-         * @param[in] top	    New top padding value
+         * @param[in] top	  New top padding value
          * @param[in] bottom  New bottom padding value
          * @param[in] left	  New left padding value
          * @param[in] right	  New right padding value

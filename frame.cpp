@@ -1,7 +1,8 @@
 #include "frame.hpp"
+#include "universal_layout_box.hpp"
 
-Frame::Frame(Widget &wrappee, const char *title, float thickness, FrameTexture &frame_texture) :
-    Widget(BaseLayoutBox(wrappee.getLayoutBox()->getPosition() - Vec2d(thickness, thickness), wrappee.getLayoutBox()->getSize() + 2 * Vec2d(thickness, thickness))),
+Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameTexture &frame_texture) :
+    Widget(UniversalLayoutBox()),
     m_wrappee(&wrappee),
     m_title(title),
     m_thickness(thickness),
@@ -9,26 +10,34 @@ Frame::Frame(Widget &wrappee, const char *title, float thickness, FrameTexture &
     m_vertex_array(sf::Quads, 4),
     m_status(status_t::DEFAULT),
     m_frame_texture(&frame_texture),
-    m_close_btn(*frame_texture.m_close_btn_texture),
+    // m_close_btn(*frame_texture.m_close_btn_texture),
     m_interactive(interactive_t::DEFAULT)
 {
     updateVertexArray();
 
-    Vec2d wrappee_pos = wrappee.getLayoutBox()->getPosition() + Vec2d(thickness, thickness);
-    Vec2d wrappee_size = wrappee.getLayoutBox()->getSize();
+    // TODO
+    // There should be special frame layoutbox, which will rebroadcast resizing right way,
+    // but now there is wrong solution
+    
+    Vec2d wrappee_pos  = wrappee.getLayoutBox().getPosition();
+    Vec2d wrappee_size = wrappee.getLayoutBox().getSize();
 
-    delete wrappee.getLayoutBox();
-    BaseLayoutBox *new_wrappee_box = new BaseLayoutBox(wrappee_pos);
-    new_wrappee_box->setResizable(true);
-    wrappee.setLayoutBox(new_wrappee_box);
+    getLayoutBox().setPosition(wrappee_pos);
+    getLayoutBox().setSize(wrappee_size + 2 * Vec2d(thickness, thickness));
 
-    m_close_btn.onResize(thickness, thickness);
-    m_close_btn.m_transf.m_offset = {m_size.x - thickness, 0};
+    UniversalLayoutBox *new_wrappee_box = new UniversalLayoutBox();
+    new_wrappee_box->setSize(wrappee_size);
+    new_wrappee_box->setAlignment(Align::Center);
+    new_wrappee_box->onParentUpdate(getLayoutBox());
+    wrappee.setLayoutBox(*new_wrappee_box);
+
+    // m_close_btn.onResize(thickness, thickness);
+    // m_close_btn.m_transf.m_offset = {m_size.x - thickness, 0};
 }
 
 void Frame::updateVertexArray()
 {
-    Vec2d m_sise = getLayoutBox()->getSize();
+    m_size = getLayoutBox().getSize();
 
     m_vertex_array[0].position = {0, 0};
     m_vertex_array[1].position = {m_size.x, 0};
@@ -38,40 +47,48 @@ void Frame::updateVertexArray()
 
 void Frame::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     sf::VertexArray buf_vertex_array(m_vertex_array);
     for (int32_t i = 0; i < buf_vertex_array.getVertexCount(); ++i)
-        buf_vertex_array[i].position = top_transf.rollbackTransform(m_vertex_array[i].position);
+        buf_vertex_array[i].position = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(m_vertex_array[i].position)));
 
     target.draw(buf_vertex_array);
     m_wrappee->draw(target, transf_list);
 
-    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-        m_close_btn.draw(target, transf_list);
+    // if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+    //     m_close_btn.draw(target, transf_list);
 
     transf_list.PopBack();
 }
 
 bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     bool res = false;
 
-    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-    {
-        res = res || m_close_btn.onMousePressed(key, x, y, transf_list);
-        if (res)
-        {
-            transf_list.PopBack();
-            return true;
-        }
-    }
+    // if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+    // {
+    //     res = res || m_close_btn.onMousePressed(key, x, y, transf_list);
+    //     if (res)
+    //     {
+    //         transf_list.PopBack();
+    //         return true;
+    //     }
+    // }
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
 
     if (EPS < pos.x && pos.x < m_size.x    - EPS &&
         EPS < pos.y && pos.y < m_thickness - EPS)
@@ -109,22 +126,26 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
 
 bool Frame::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     bool res = false;
 
-    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-    {
-        res = res || m_close_btn.onMouseReleased(key, x, y, transf_list);
-        if (res)
-        {
-            transf_list.PopBack();
-            return true;
-        }
-    }
+    // if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+    // {
+    //     res = res || m_close_btn.onMouseReleased(key, x, y, transf_list);
+    //     if (res)
+    //     {
+    //         transf_list.PopBack();
+    //         return true;
+    //     }
+    // }
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
 
     if (m_status != status_t::DEFAULT)
     {
@@ -145,51 +166,59 @@ bool Frame::onResize(float width, float height)
     if (!res)
         return false;
 
-    m_size = {width, height};
+    m_size = Vec2d(width, height);
+    getLayoutBox().setSize(m_size);
+    m_wrappee->getLayoutBox().onParentUpdate(getLayoutBox());
     // printf("frame size: %f %f\n", width, height);
-    m_close_btn.m_transf.m_offset = {width - m_thickness, 0};
+    // m_close_btn.m_transf.m_offset = {width - m_thickness, 0};
     updateVertexArray();
     return true;
 }
 
 bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // cringe for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
     
     bool res = false;
 
-    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-    {
-        res = res || m_close_btn.onMouseMoved(x, y, transf_list);
-        if (res)
-        {
-            transf_list.PopBack();
-            return true;
-        }
-    }
+    // if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+    // {
+    //     res = res || m_close_btn.onMouseMoved(x, y, transf_list);
+    //     if (res)
+    //     {
+    //         transf_list.PopBack();
+    //         return true;
+    //     }
+    // }
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
 
     if (m_status == status_t::HOLD)
     {
-        Vector2f delta_hold_pos = pos - m_hold_pos;
-        m_transf.m_offset += Vector2f{delta_hold_pos.x * m_transf.m_scale.x, delta_hold_pos.y * m_transf.m_scale.y};
+        Vec2d delta_hold_pos = pos - m_hold_pos;
+        Vec2d new_pos = getLayoutBox().getPosition() + delta_hold_pos * top_transf.getScale();
+        // cringe for compatibility only
+        getLayoutBox().setPosition(new_pos);
         res = true;
     }
 
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_HOR)
     {
-        Vector2f delta_hold_pos = pos - m_hold_pos;
-        onResize(m_size.x + delta_hold_pos.x * m_transf.m_scale.x, m_size.y);
+        Vec2d delta_hold_pos = pos - m_hold_pos;
+        onResize(m_size.x + delta_hold_pos.x * top_transf.getScale().x, m_size.y);
         m_hold_pos.x = m_size.x;
         res = true;
     }
 
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_VER)
     {
-        Vector2f delta_hold_pos = pos - m_hold_pos;
-        onResize(m_size.x, m_size.y + delta_hold_pos.y * m_transf.m_scale.y);
+        Vec2d delta_hold_pos = pos - m_hold_pos;
+        onResize(m_size.x, m_size.y + delta_hold_pos.y * top_transf.getScale().y);
         m_hold_pos.y = m_size.y;
         res = true;
     }
@@ -215,40 +244,40 @@ bool Frame::onTime(float d_seconds)
     m_wrappee->onTime(d_seconds);
 }
 
-void Frame::setClosable(bool flag)
-{
-    if (flag)
-        m_interactive = (interactive_t) ((uint8_t) m_interactive | (uint8_t) interactive_t::CLOSABLE);
-    else
-        m_interactive = (interactive_t) ((uint8_t) m_interactive & ~((uint8_t) interactive_t::CLOSABLE));
-}
-
-void Frame::CloseButton::setContainer(Container &container)
-{
-    m_container = &container;
-}
-
-void Frame::CloseButton::setCloseId(int32_t id)
-{
-    m_close_id = id;
-}
-
-void Frame::setContainer(Container &container)
-{
-    m_close_btn.setContainer(container);
-}
-
-void Frame::setCloseId(int32_t id)
-{
-    m_close_btn.setCloseId(id);
-}
-
-bool Frame::CloseButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
-{
-    bool flag = Button::onMousePressed(key, x, y, transf_list);
-    if (flag)
-        m_container->close(m_close_id);
-
-    return flag;
-}
+// void Frame::setClosable(bool flag)
+// {
+//     if (flag)
+//         m_interactive = (interactive_t) ((uint8_t) m_interactive | (uint8_t) interactive_t::CLOSABLE);
+//     else
+//         m_interactive = (interactive_t) ((uint8_t) m_interactive & ~((uint8_t) interactive_t::CLOSABLE));
+// }
+// 
+// void Frame::CloseButton::setContainer(Container &container)
+// {
+//     m_container = &container;
+// }
+// 
+// void Frame::CloseButton::setCloseId(int32_t id)
+// {
+//     m_close_id = id;
+// }
+// 
+// void Frame::setContainer(Container &container)
+// {
+//     m_close_btn.setContainer(container);
+// }
+// 
+// void Frame::setCloseId(int32_t id)
+// {
+//     m_close_btn.setCloseId(id);
+// }
+// 
+// bool Frame::CloseButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+// {
+//     bool flag = Button::onMousePressed(key, x, y, transf_list);
+//     if (flag)
+//         m_container->close(m_close_id);
+// 
+//     return flag;
+// }
 
