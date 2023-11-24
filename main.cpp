@@ -5,7 +5,7 @@
 
 #include "window.hpp"
 #include "canvas.hpp"
-#include "base_layout_box.hpp"
+#include "universal_layout_box.hpp"
 // #include "frame.hpp"
 
 // #include "button.hpp"
@@ -39,7 +39,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_WIDTH), "shopofot");
 
     List<Transform> transf_list;
-    transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{SCREEN_WIDTH, SCREEN_HEIGHT}});
+    // transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{SCREEN_WIDTH, SCREEN_HEIGHT}});
+    transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{2, 2}});
 
     // sf::Texture button_texture;
     // button_texture.loadFromFile("mols_ctrl_texture.png");
@@ -199,7 +200,7 @@ int main()
     // menu.addButton(file_ver_btn_lst);
     // menu.addButton(filt_ver_btn_lst);
 
-    BaseLayoutBox sample_box(Vec2d(0.5, 0.5), Vec2d(0.5, 0.5));
+    UniversalLayoutBox sample_box(10_cm, 10_cm);
     Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
 
     sf::Image cat_img;

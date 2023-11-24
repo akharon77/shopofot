@@ -5,4 +5,6 @@
 // #include "transform_stack.hpp"
 #include "vector2d.hpp"
 
+#include <cmath>
+
 #endif  // MATH_HPP

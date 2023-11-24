@@ -14,7 +14,7 @@
 
 #include "units.hpp"
 #include "layout_box.hpp"
-#include "math.h"
+#include "math.hpp"
 
 /**
  * @brief Universal layout box for almost any feasible case.
@@ -197,19 +197,19 @@ class UniversalLayoutBox : public LayoutBox
          *
          ****************************************************************************/
 
-        virtual void onParentUpdate(const plug::LayoutBox &parent_box) override;
+        virtual void onParentUpdate(const LayoutBox &parent_box) override;
 
-        virtual plug::Vec2d getSize() const override;
+        virtual Vec2d getSize() const override;
 
-        virtual plug::Vec2d getPosition() const override;
+        virtual Vec2d getPosition() const override;
 
-        virtual bool setSize(const plug::Vec2d &size) override;
+        virtual bool setSize(const Vec2d &size) override;
 
-        virtual bool setPosition(const plug::Vec2d &position) override;
+        virtual bool setPosition(const Vec2d &position) override;
 
-        virtual plug::LayoutBox *clone(void) const override
+        virtual LayoutBox *clone(void) const override
         {
-            return new LayoutBox(*this);
+            return new UniversalLayoutBox(*this);
         }
 
     private:
@@ -226,7 +226,7 @@ class UniversalLayoutBox : public LayoutBox
         Length m_paddingLeft;
         Length m_paddingRight;
 
-        plug::Vec2d m_parentSize;
+        Vec2d m_parentSize;
 };
 
 #endif  // UNIVERSAL_LAYOUT_BOX_HPP
