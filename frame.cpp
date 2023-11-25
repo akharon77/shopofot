@@ -38,12 +38,12 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
 
 void Frame::updateVertexArray()
 {
-    m_size = getLayoutBox().getSize();
+    Vec2d size = getLayoutBox().getSize();
 
-    m_vertex_array[0].position = {0, 0};
-    m_vertex_array[1].position = {m_size.x, 0};
-    m_vertex_array[2].position = {m_size.x, m_size.y};
-    m_vertex_array[3].position = {0, m_size.y};
+    m_vertex_array[0].position = {0,      0};
+    m_vertex_array[1].position = {size.x, 0};
+    m_vertex_array[2].position = {size.x, size.y};
+    m_vertex_array[3].position = {0,      size.y};
 }
 
 void Frame::draw(sf::RenderTarget &target, List<Transform> &transf_list)
@@ -93,6 +93,8 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
     // }
 
     Vec2d pos = top_transf.restore(Vec2d(x, y));
+    // cringe for compatibility only
+    Vec2d m_size = getLayoutBox().getSize();
 
     if (EPS < pos.x && pos.x < m_size.x    - EPS &&
         EPS < pos.y && pos.y < m_thickness - EPS)
@@ -103,7 +105,7 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
         res = true;
     }
 
-    if (EPS + m_wrappee->m_size.x + m_thickness < pos.x && pos.x < m_size.x - EPS &&
+    if (EPS + m_wrappee->getLayoutBox().getSize().x + m_thickness < pos.x && pos.x < m_size.x - EPS &&
         EPS + m_thickness < pos.y && pos.y < m_size.y - EPS)
     {
         m_status = (status_t) ((uint8_t) m_status | (uint8_t) status_t::HOLD_HOR);
@@ -113,7 +115,7 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
     }
 
     if (EPS + m_thickness < pos.x && pos.x < m_size.x - EPS &&
-        EPS + m_thickness + m_wrappee->m_size.y  < pos.y && pos.y < m_size.y)
+        EPS + m_thickness + m_wrappee->getLayoutBox().getSize().y  < pos.y && pos.y < m_size.y)
     {
         m_status = (status_t) ((uint8_t) m_status | (uint8_t) status_t::HOLD_VER);
         m_hold_pos = pos;
@@ -170,8 +172,8 @@ bool Frame::onResize(float width, float height)
     if (!res)
         return false;
 
-    m_size = Vec2d(width, height);
-    getLayoutBox().setSize(m_size);
+    // m_size = Vec2d(width, height);
+    getLayoutBox().setSize(Vec2d(width, height));
     m_wrappee->getLayoutBox().onParentUpdate(getLayoutBox());
     // printf("frame size: %f %f\n", width, height);
     // m_close_btn.m_transf.m_offset = {width - m_thickness, 0};
@@ -206,7 +208,6 @@ bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
     {
         Vec2d delta_hold_pos = pos - m_hold_pos;
         Vec2d new_pos = getLayoutBox().getPosition() + delta_hold_pos * top_transf.getScale();
-        // cringe for compatibility only
         getLayoutBox().setPosition(new_pos);
         res = true;
     }
@@ -214,16 +215,16 @@ bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_HOR)
     {
         Vec2d delta_hold_pos = pos - m_hold_pos;
-        onResize(m_size.x + delta_hold_pos.x * top_transf.getScale().x, m_size.y);
-        m_hold_pos.x = m_size.x;
+        onResize(getLayoutBox().getSize().x + delta_hold_pos.x * top_transf.getScale().x, getLayoutBox().getSize().y);
+        m_hold_pos.x = getLayoutBox().getSize().x;
         res = true;
     }
 
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_VER)
     {
         Vec2d delta_hold_pos = pos - m_hold_pos;
-        onResize(m_size.x, m_size.y + delta_hold_pos.y * top_transf.getScale().y);
-        m_hold_pos.y = m_size.y;
+        onResize(getLayoutBox().getSize().x, getLayoutBox().getSize().y + delta_hold_pos.y * top_transf.getScale().y);
+        m_hold_pos.y = getLayoutBox().getSize().y;
         res = true;
     }
 

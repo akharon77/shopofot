@@ -57,8 +57,9 @@ class Frame : public Widget
 
     Length m_thickness;
 
-    double m_width;
-    double m_height;
+    // now deprecated
+    // double m_width;
+    // double m_height;
 
     LayoutBox *m_wrappee_stolen_layout_box;
 
