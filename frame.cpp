@@ -13,8 +13,6 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
     // m_close_btn(*frame_texture.m_close_btn_texture),
     m_interactive(interactive_t::DEFAULT)
 {
-    updateVertexArray();
-
     // TODO
     // There should be special frame layoutbox, which will rebroadcast resizing right way,
     // but now there is wrong solution
@@ -25,11 +23,14 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
     getLayoutBox().setPosition(wrappee_pos);
     getLayoutBox().setSize(wrappee_size + 2 * Vec2d(thickness, thickness));
 
-    UniversalLayoutBox *new_wrappee_box = new UniversalLayoutBox();
+    UniversalLayoutBox *new_wrappee_box = new UniversalLayoutBox(0_px, 0_px);
+    new_wrappee_box->onParentUpdate(getLayoutBox());
     new_wrappee_box->setSize(wrappee_size);
     new_wrappee_box->setAlignment(Align::Center);
     new_wrappee_box->onParentUpdate(getLayoutBox());
     wrappee.setLayoutBox(*new_wrappee_box);
+
+    updateVertexArray();
 
     // m_close_btn.onResize(thickness, thickness);
     // m_close_btn.m_transf.m_offset = {m_size.x - thickness, 0};
@@ -56,7 +57,10 @@ void Frame::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
     sf::VertexArray buf_vertex_array(m_vertex_array);
     for (int32_t i = 0; i < buf_vertex_array.getVertexCount(); ++i)
-        buf_vertex_array[i].position = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(m_vertex_array[i].position)));
+    {
+        Vector2f pos = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(m_vertex_array[i].position)));
+        buf_vertex_array[i].position = pos;
+    }
 
     target.draw(buf_vertex_array);
     m_wrappee->draw(target, transf_list);

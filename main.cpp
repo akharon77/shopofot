@@ -40,7 +40,7 @@ int main()
 
     List<Transform> transf_list;
     // transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{SCREEN_WIDTH, SCREEN_HEIGHT}});
-    transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{2, 2}});
+    transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{1, 1}});
 
     // sf::Texture button_texture;
     // button_texture.loadFromFile("mols_ctrl_texture.png");
