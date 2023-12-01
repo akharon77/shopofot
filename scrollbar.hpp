@@ -40,7 +40,7 @@ protected:
 
         scroll_button_t m_type;
         status_t m_status;
-        Vector2f m_hold_pos;
+        Vec2d m_hold_pos;
         ScrollBar *m_scrollbar;
 
     public:
@@ -59,10 +59,13 @@ protected:
 
     Widget *m_wrappee;
 
-    float m_thickness;
+    double m_thickness;
 
-    float m_width;
-    float m_height;
+    LayoutBox *m_wrappee_stolen_layout_box;
+
+    // visible area params
+    double m_width;
+    double m_height;
 
     bool m_is_ver;
     bool m_is_hor;
@@ -77,12 +80,37 @@ protected:
     // ScrollDeltaButton m_btn_left;
     // ScrollDeltaButton m_btn_right;
 
+    double m_hor_per;
+    double m_ver_per;
+
+    static double clip(double perc);
+
 public:
+    enum scrollable_t
+    {
+        SCROLLABLE_NONE       = 0x00,
+        SCROLLABLE_VERTICAL   = 0x01,
+        SCROLLABLE_HORIZONTAL = 0x02
+    };
+
     ScrollBar(Widget &wrappee, float thickness, float width, bool is_hor, float height, bool is_ver, ScrollBarTexture &texture);
 
     ~ScrollBar() = default;
     ScrollBar& operator = (const ScrollBar &rhs) = default;
     ScrollBar(const ScrollBar &rhs) = default;
+
+    Vec2d getPercentageCovering() const;
+    Vec2d getPercentageOffset  () const;
+
+    void setPercentageOffset   (const Vec2d &perc);
+    void deltaPercentageOffset (const Vec2d &delta);
+
+    double getThickness() const;
+
+    Vec2d getVisibleAreaSize() const;
+    Vec2d getWrappeeSize() const;
+
+    const LayoutBox& getWrappeeBox() const;
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 

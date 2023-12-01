@@ -15,9 +15,6 @@
 
 class Canvas : public Widget
 {
-    float m_width;
-    float m_height;
-
     sf::VertexArray   m_vertex_arr;
 
     void updateVertexArray();

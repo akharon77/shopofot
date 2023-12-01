@@ -203,7 +203,7 @@ int main()
     UniversalLayoutBox sample_box(10_cm, 10_cm);
     sample_box.setPosition(Vec2d(1_cm, 1_cm));
     Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
-    Frame frame(canvas, "lol", 1_cm, frame_texture_config);
+    Frame frame(canvas, "lol", 0.5_cm, frame_texture_config);
 
     sf::Image cat_img;
     cat_img.loadFromFile("cat.jpg");

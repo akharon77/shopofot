@@ -2,7 +2,7 @@
 #include "universal_layout_box.hpp"
 
 Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameTexture &frame_texture) :
-    Widget(UniversalLayoutBox()),
+    Widget(UniversalLayoutBox(0_px, 0_px)),
     m_wrappee(&wrappee),
     m_title(title),
     m_thickness(thickness),
@@ -24,7 +24,7 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
     getLayoutBox().setSize(wrappee_size + 2 * Vec2d(thickness, thickness));
 
     UniversalLayoutBox *new_wrappee_box = new UniversalLayoutBox(0_px, 0_px);
-    new_wrappee_box->onParentUpdate(getLayoutBox());
+    // new_wrappee_box->onParentUpdate(getLayoutBox());
     new_wrappee_box->setSize(wrappee_size);
     new_wrappee_box->setAlignment(Align::Center);
     new_wrappee_box->onParentUpdate(getLayoutBox());

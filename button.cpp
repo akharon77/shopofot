@@ -10,8 +10,8 @@
 Button::Button(const LayoutBox &box, const ButtonTexture &btn_texture) :
     Widget(box),
     m_status(DEFAULT),
-    m_width(box.getSize().x),
-    m_height(box.getSize().y),
+    // m_width(box.getSize().x),
+    // m_height(box.getSize().y),
     m_btn_texture(btn_texture),
     m_vertex_array(sf::Quads, 4)
 {
@@ -139,5 +139,14 @@ bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 
     transf_list.PopBack();
     return res;
+}
+
+bool Button::onResize(float width, float height)
+{
+    // m_size = {width, height};
+    getLayoutBox().setSize(Vec2d(width, height));
+    // m_transf.m_scale = m_size;
+    // m_width = width;
+    // m_height = height;
 }
 

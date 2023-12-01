@@ -15,12 +15,6 @@ struct ButtonTexture
     sf::IntRect  m_default_rect;
     sf::IntRect  m_pressed_rect;
     sf::IntRect  m_focused_rect;
-
-    // ButtonTexture(const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect);
-
-    // ~ButtonTexture() = default;
-    // ButtonTexture(const ButtonTexture &rhs) = default;
-    // ButtonTexture& operator = (const ButtonTexture &rhs) = default;
 };
 
 class Button : public Widget
@@ -41,8 +35,8 @@ protected:
 
     void setRect(const sf::IntRect &rect);
 
-    float m_width;
-    float m_height;
+    // float m_width;
+    // float m_height;
 
 public:
     Button(const LayoutBox &box, const ButtonTexture &btn_texture);
@@ -61,13 +55,7 @@ public:
     virtual bool onKeyboardPressed  (KeyboardKey key) {};
     virtual bool onKeyboardReleased (KeyboardKey key) {};
 
-    virtual bool onResize(float width, float height)
-    {
-        m_size = {width, height};
-        m_transf.m_scale = m_size;
-        m_width = width;
-        m_height = height;
-    };
+    virtual bool onResize(float width, float height);
 
     virtual bool onTime (float d_seconds) {};
 };

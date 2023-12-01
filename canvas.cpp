@@ -4,8 +4,6 @@
 
 Canvas::Canvas(const LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette) :
     Widget(box),
-    m_width (box.getSize().x),  // TODO: where is this used?
-    m_height(box.getSize().y),
     m_canv_width(canv_width),
     m_canv_height(canv_height),
     m_vertex_arr(sf::Quads, 4),
@@ -94,15 +92,9 @@ void Canvas::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     transf_list.PopBack();
 }
 
-// deprecated
 bool Canvas::onResize(float width, float height)
 {
-    m_size = Vec2d(width, height);
-    getLayoutBox().setSize(m_size);
-    m_width = width;
-    m_height = height;
-
-    return true;
+    return getLayoutBox().setSize(Vec2d(width, height));
 }
 
 bool Canvas::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) 

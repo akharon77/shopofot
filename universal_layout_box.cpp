@@ -51,9 +51,9 @@ static double clampToZero(double val)
     return val;
 }
 
-void UniversalLayoutBox::onParentUpdate(const LayoutBox &parent_box)
+void UniversalLayoutBox::onParentUpdate(const Vec2d &parent_size)
 {
-    m_parentSize = parent_box.getSize();
+    m_parentSize = parent_size;
 
     if (m_align == Align::Free)
     {
@@ -94,6 +94,11 @@ void UniversalLayoutBox::onParentUpdate(const LayoutBox &parent_box)
     m_posY = fromPixels(pos.y + pad_top,  m_posY.unit, m_parentSize.y);
 }
 
+void UniversalLayoutBox::onParentUpdate(const LayoutBox &parent_box)
+{
+    onParentUpdate(parent_box.getSize());
+}
+
 bool UniversalLayoutBox::setSize(const Vec2d &size)
 {
     if (!m_resizable)
@@ -109,15 +114,16 @@ bool UniversalLayoutBox::setSize(const Vec2d &size)
 
 bool UniversalLayoutBox::setPosition(const Vec2d &position)
 {
-    if (m_align != Align::Free)
-    {
-        return false;
-    }
+    prev_posX = m_posX;
+    prev_posY = m_posY;
 
     m_posX = fromPixels(position.x, m_posX.unit, m_parentSize.x);
     m_posY = fromPixels(position.y, m_posY.unit, m_parentSize.y);
 
-    return true;
+    if (m_align != Align::Free)
+        onParentUpdate(m_parentSize);
+
+    return prev_posX != m_posX && prev_posY != m_posY;
 }
 
 Vec2d UniversalLayoutBox::getSize() const
