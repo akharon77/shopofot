@@ -2,10 +2,12 @@
 
 #include <SFML/Graphics/RenderTexture.hpp>
 
+#include "universal_layout_box.hpp"
 #include "scrollbar.hpp"
 #include "window.hpp"
 
 ScrollBar::ScrollButton::ScrollButton(ScrollBar &scrollbar, scroll_button_t btn_type, ButtonTexture &btn_texture) :
+    Button(UniversalLayoutBox(), btn_texture),
     m_type(btn_type),
     m_status(DEFAULT),
     m_hold_pos{0, 0},
@@ -14,14 +16,14 @@ ScrollBar::ScrollButton::ScrollButton(ScrollBar &scrollbar, scroll_button_t btn_
     UniversalLayoutBox box(0_px, 0_px);
 
     double scrollbar_thickness = scrollbar.getThickness();
-    box.setPosition(scrollbar_thickness, scrollbar_thickness);
+    box.setPosition(Vec2d(scrollbar_thickness, scrollbar_thickness));
 
     if (btn_type == VER)
-        box.setAlignment(CenterRight);
+        box.setAlignment(Align::CenterRight);
     else
-        box.setAlignment(BottomCenter);
+        box.setAlignment(Align::BottomCenter);
 
-    setLayoutBox(box.clone());
+    setLayoutBox(box);
 }
 
 bool ScrollBar::ScrollButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
@@ -92,7 +94,7 @@ bool ScrollBar::ScrollButton::onMouseMoved(int32_t x, int32_t y, List<Transform>
 
 // ==========================================
 
-ScrollBar::ScrollBar(Widget &wrappee, float thickness, float width, float height, scrollable_t type, ScrollBarTexture &texture) :
+ScrollBar::ScrollBar(Widget &wrappee, const Length &thickness, const Length &width, const Length &height, scrollable_t type, ScrollBarTexture &texture) :
     Widget(UniversalLayoutBox(0_px, 0_px)),
     m_wrappee(&wrappee),
     m_thickness(thickness),
@@ -117,7 +119,8 @@ ScrollBar::ScrollBar(Widget &wrappee, float thickness, float width, float height
     Vec2d add_size(m_is_ver ? thickness : 0, m_is_hor ? thickness : 0);
     getLayoutBox().setSize(wrappee_size + add_size);
 
-    wrappee.setLayoutBox(new UniversalLayoutBox(wrappee_size.x, wrappee_size.y));
+    wrappee.setLayoutBox(UniversalLayoutBox(Length(wrappee_size.x, Unit::Pixel),
+                                            Length(wrappee_size.y, Unit::Pixel)));
 
     m_btn_ver.onParentUpdate(getLayoutBox());
     m_btn_hor.onParentUpdate(getLayoutBox());
@@ -148,8 +151,8 @@ void ScrollBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
     for (int32_t i = 0; i < 4; ++i)
     {
-        vertex_arr[i].position  = static_cast<Vector2f>(top_transf.apply(static_cast<Vector2f>(vertex_arr[i].position)));
-        vertex_arr[i].texCoords = static_cast<Vector2f>(top_transf.apply(static_cast<Vector2f>(vertex_arr[i].texCoords)));
+        vertex_arr[i].position  = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(vertex_arr[i].position)));
+        vertex_arr[i].texCoords = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(vertex_arr[i].texCoords)));
     }
 
     target.draw(vertex_arr, &fake_target.getTexture());
@@ -261,10 +264,14 @@ bool ScrollBar::onResize(float width, float height)
 
 bool ScrollBar::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    Vector2f pos = top_transf.applyTransform({x, y});
+    Vec2d pos = top_transf.restore(Vec2d(x, y));
 
     m_wrappee->onMouseMoved(x, y, transf_list);
 
@@ -338,12 +345,12 @@ void ScrollBar::deltaPercentageOffset(const Vec2d &delta)
     m_ver_per = perc_offset.y = clip(perc_offset.y);
 
     // button position
-    for (LayoutBox *pref_box : {&m_btn_ver, &m_btn_hor})
+    for (LayoutBox *pref_box : {&m_btn_ver.getLayoutBox(), &m_btn_hor.getLayoutBox()})
     {
         Vec2d prev_pos      = pref_box->getPosition();
         Vec2d btn_pref_size = pref_box->getSize();
 
-        prev_pos = perc_offset * (own_size - pref_box->getSize() - 2 * m_thickness);
+        prev_pos = perc_offset * (own_size - pref_box->getSize() - 2 * Vec2d(m_thickness, m_thickness));
         pref_box->setPosition(prev_pos);
     }
 

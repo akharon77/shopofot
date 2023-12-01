@@ -93,7 +93,7 @@ public:
         SCROLLABLE_HORIZONTAL = 0x02
     };
 
-    ScrollBar(Widget &wrappee, float thickness, float width, bool is_hor, float height, bool is_ver, ScrollBarTexture &texture);
+    ScrollBar(Widget &wrappee, const Length &thickness, const Length &width, const Length &height, scrollable_t type, ScrollBarTexture &texture);
 
     ~ScrollBar() = default;
     ScrollBar& operator = (const ScrollBar &rhs) = default;
