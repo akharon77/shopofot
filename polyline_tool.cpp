@@ -15,10 +15,10 @@ void PolyLineToolWidget::draw(sf::RenderTarget &target, List<Transform> &transf_
 
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
     sf::VertexArray arr(m_arr);
-    arr.append(sf::Vertex(m_pos));
+    arr.append(sf::Vertex(static_cast<Vector2f>(m_pos)));
 
     for (int32_t i = 0; i < arr.getVertexCount(); ++i)
-        arr[i].position = top_transf.rollbackTransform(arr[i].position);
+        arr[i].position = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(arr[i].position)));
 
     target.draw(arr);
 }
@@ -29,8 +29,7 @@ void PolyLineTool::onMainButton(MouseType key, Vector2f pos, Canvas &canvas)
     {
         if (m_widget.m_status == PolyLineToolWidget::ACTIVE)
         {
-            // printf("%f %f %f %f\n", pos.x, pos.y, m_widget.m_arr[0].position.x, m_widget.m_arr[0].position.y);
-            if (m_widget.m_arr.getVertexCount() > 0 && len(pos - m_widget.m_arr[0].position) < 2 * EPS)
+            if (m_widget.m_arr.getVertexCount() > 0 && static_cast<Vec2d>(pos - m_widget.m_arr[0].position).length() < 2 * EPS)
             {
                 m_widget.m_arr.append(pos);
                 onConfirm(pos, canvas);
@@ -41,18 +40,18 @@ void PolyLineTool::onMainButton(MouseType key, Vector2f pos, Canvas &canvas)
             m_widget.m_status = PolyLineToolWidget::ACTIVE;
         }
 
-        m_widget.m_pos = pos;
+        m_widget.m_pos = static_cast<Vec2d>(pos);
     }
     else if (m_widget.m_status == PolyLineToolWidget::ACTIVE)
     {
         m_widget.m_arr.append(pos);
-        m_widget.m_pos = pos;
+        m_widget.m_pos = static_cast<Vec2d>(pos);
     }
 }
 
 void PolyLineTool::onMove(Vector2f pos, Canvas &canvas)
 {
-    m_widget.m_pos = pos;
+    m_widget.m_pos = static_cast<Vec2d>(pos);
 }
 
 void PolyLineTool::onConfirm(Vector2f pos, Canvas &canvas)

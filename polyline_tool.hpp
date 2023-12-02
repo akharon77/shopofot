@@ -2,6 +2,7 @@
 #define POLYLINE_TOOL_HPP
 
 #include "tool.hpp"
+#include "universal_layout_box.hpp"
 
 class PolyLineToolWidget : public Widget
 {
@@ -15,9 +16,10 @@ public:
     status_t m_status;
 
     sf::VertexArray m_arr;
-    Vector2f m_pos;
+    Vec2d m_pos;
 
     PolyLineToolWidget() :
+        Widget(UniversalLayoutBox(0_px, 0_px)),
         m_arr(sf::LineStrip),
         m_status(DEFAULT)
     {}
