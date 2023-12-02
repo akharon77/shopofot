@@ -2,6 +2,7 @@
 #define LINE_TOOL_HPP
 
 #include "tool.hpp"
+#include "universal_layout_box.hpp"
 
 class LineToolWidget : public Widget
 {
@@ -14,10 +15,11 @@ public:
 
     status_t m_status;
 
-    Vector2f m_first_pos;
-    Vector2f m_second_pos;
+    Vec2d m_first_pos;
+    Vec2d m_second_pos;
 
     LineToolWidget() :
+        Widget(UniversalLayoutBox(0_px, 0_px)),
         m_status(DEFAULT)
     {}
 

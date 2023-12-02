@@ -14,8 +14,8 @@
 // 
 // #include "ver_btn_list.hpp"
 // #include "text_btn.hpp"
-// 
-// #include "line_tool.hpp"
+ 
+#include "line_tool.hpp"
 // #include "brush.hpp"
 // #include "square_tool.hpp"
 // #include "polyline_tool.hpp"
@@ -45,8 +45,8 @@ int main()
     sf::Texture button_texture;
     button_texture.loadFromFile("mols_ctrl_texture.png");
 
-    // sf::Font font;
-    // font.loadFromFile("anon_pro.ttf");
+    sf::Font font;
+    font.loadFromFile("anon_pro.ttf");
 
     ButtonTexture btn_texture_config
     {
@@ -85,7 +85,7 @@ int main()
     //     &frame_texture_config
     // };
     
-    // LineTool line_tool;
+    LineTool line_tool;
     // SquareTool square_tool;
     // BrushTool brush_tool;
     // PolyLineTool polyline_tool;
@@ -95,6 +95,7 @@ int main()
     ToolPalette tool_palette;
     // ToolBar toolbar({0.2, 0.2}, 0.05, 0.05, tool_palette, 2);
 
+    tool_palette.addTool(&line_tool);
     // sf::Texture line_tool_btn_texture;
     // line_tool_btn_texture.loadFromFile("line_tool_btn_texture.png");
     // ButtonTexture line_tool_btn_texture_config
