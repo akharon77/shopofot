@@ -2,6 +2,7 @@
 #define SQUARE_TOOL_HPP
 
 #include "tool.hpp"
+#include "universal_layout_box.hpp"
 
 class SquareToolWidget : public Widget
 {
@@ -13,10 +14,11 @@ public:
     };
 
     status_t m_status;
-    Vector2f m_hold_pos;
-    Vector2f m_pos;
+    Vec2d m_hold_pos;
+    Vec2d m_pos;
 
     SquareToolWidget() :
+        Widget(UniversalLayoutBox(0_px, 0_px)),
         m_status(DEFAULT)
     {}
 
