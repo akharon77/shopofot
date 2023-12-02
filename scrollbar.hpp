@@ -57,6 +57,22 @@ protected:
         virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) override;
     };
 
+    class ScrollDeltaButton : public Button
+    {
+        Vec2d m_delta;
+        ScrollBar &m_scrollbar;
+
+    public:
+        ScrollDeltaButton(ScrollBar &scrollbar, const Vec2d &delta, ButtonTexture &btn_texture);
+
+        ~ScrollDeltaButton() = default;
+
+        ScrollDeltaButton(const ScrollDeltaButton &rhs) = default;
+        ScrollDeltaButton& operator = (const ScrollDeltaButton& rhs) = default;
+
+        virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+    };
+
     Widget *m_wrappee;
 
     double m_thickness;
@@ -73,12 +89,13 @@ protected:
     ScrollBarTexture *m_texture;
 
     ScrollButton m_btn_ver;
-    // ScrollDeltaButton m_btn_up;
-    // ScrollDeltaButton m_btn_down;
-
     ScrollButton m_btn_hor;
-    // ScrollDeltaButton m_btn_left;
-    // ScrollDeltaButton m_btn_right;
+
+    ScrollDeltaButton m_btn_up;
+    ScrollDeltaButton m_btn_down;
+
+    ScrollDeltaButton m_btn_left;
+    ScrollDeltaButton m_btn_right;
 
     double m_hor_per;
     double m_ver_per;
