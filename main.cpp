@@ -16,7 +16,7 @@
 // #include "text_btn.hpp"
  
 #include "line_tool.hpp"
-// #include "brush.hpp"
+#include "brush.hpp"
 #include "square_tool.hpp"
 // #include "polyline_tool.hpp"
 // #include "polygon_tool.hpp"
@@ -87,7 +87,7 @@ int main()
     
     LineTool line_tool;
     SquareTool square_tool;
-    // BrushTool brush_tool;
+    BrushTool brush_tool;
     // PolyLineTool polyline_tool;
     // PolygonTool polygon_tool;
     // LineEditTool line_edit_tool(font, 0.05);
@@ -119,6 +119,7 @@ int main()
     // };
     // toolbar.addButton(square_tool_btn_texture_config, tool_palette.addTool(&square_tool));
 
+    tool_palette.addTool(&brush_tool);
     // sf::Texture brush_tool_btn_texture;
     // brush_tool_btn_texture.loadFromFile("brush_tool_btn_texture.png");
     // ButtonTexture brush_tool_btn_texture_config

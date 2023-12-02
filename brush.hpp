@@ -2,6 +2,7 @@
 #define BRUSH_TOOL_HPP
 
 #include "tool.hpp"
+#include "universal_layout_box.hpp"
 
 class BrushToolWidget : public Widget
 {
@@ -9,6 +10,7 @@ class BrushToolWidget : public Widget
 
 public:
     BrushToolWidget() :
+        Widget(UniversalLayoutBox(0_px, 0_px)),
         m_shape(2)
     {
         m_shape.setFillColor(sf::Color::Red);
@@ -40,7 +42,7 @@ class BrushTool : public Tool
     };
 
     status_t m_status;
-    Vector2f m_prev_pos;
+    Vec2d m_prev_pos;
 
     BrushToolWidget m_widget;
 
