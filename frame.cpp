@@ -10,7 +10,7 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
     m_vertex_array(sf::Quads, 4),
     m_status(status_t::DEFAULT),
     m_frame_texture(&frame_texture),
-    // m_close_btn(*frame_texture.m_close_btn_texture),
+    m_close_btn(*frame_texture.m_close_btn_texture),
     m_interactive(interactive_t::DEFAULT)
 {
     // TODO
@@ -24,7 +24,6 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
     getLayoutBox().setSize(wrappee_size + 2 * Vec2d(thickness, thickness));
 
     UniversalLayoutBox *new_wrappee_box = new UniversalLayoutBox(0_px, 0_px);
-    // new_wrappee_box->onParentUpdate(getLayoutBox());
     new_wrappee_box->setSize(wrappee_size);
     new_wrappee_box->setAlignment(Align::Center);
     new_wrappee_box->onParentUpdate(getLayoutBox());
@@ -32,8 +31,8 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
 
     updateVertexArray();
 
-    // m_close_btn.onResize(thickness, thickness);
-    // m_close_btn.m_transf.m_offset = {m_size.x - thickness, 0};
+    m_close_btn.onResize(thickness, thickness);
+    m_close_btn.getLayoutBox().setPosition(Vec2d(wrappee_size.x + thickness, 0));
 }
 
 void Frame::updateVertexArray()
@@ -65,8 +64,8 @@ void Frame::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     target.draw(buf_vertex_array);
     m_wrappee->draw(target, transf_list);
 
-    // if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-    //     m_close_btn.draw(target, transf_list);
+    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+        m_close_btn.draw(target, transf_list);
 
     transf_list.PopBack();
 }
@@ -82,15 +81,15 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
 
     bool res = false;
 
-    // if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-    // {
-    //     res = res || m_close_btn.onMousePressed(key, x, y, transf_list);
-    //     if (res)
-    //     {
-    //         transf_list.PopBack();
-    //         return true;
-    //     }
-    // }
+    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+    {
+        res = res || m_close_btn.onMousePressed(key, x, y, transf_list);
+        if (res)
+        {
+            transf_list.PopBack();
+            return true;
+        }
+    }
 
     Vec2d pos = top_transf.restore(Vec2d(x, y));
     // cringe for compatibility only
@@ -141,15 +140,15 @@ bool Frame::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> 
 
     bool res = false;
 
-    // if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-    // {
-    //     res = res || m_close_btn.onMouseReleased(key, x, y, transf_list);
-    //     if (res)
-    //     {
-    //         transf_list.PopBack();
-    //         return true;
-    //     }
-    // }
+    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+    {
+        res = res || m_close_btn.onMouseReleased(key, x, y, transf_list);
+        if (res)
+        {
+            transf_list.PopBack();
+            return true;
+        }
+    }
 
     Vec2d pos = top_transf.restore(Vec2d(x, y));
 
@@ -172,11 +171,9 @@ bool Frame::onResize(float width, float height)
     if (!res)
         return false;
 
-    // m_size = Vec2d(width, height);
     getLayoutBox().setSize(Vec2d(width, height));
     m_wrappee->getLayoutBox().onParentUpdate(getLayoutBox());
-    // printf("frame size: %f %f\n", width, height);
-    // m_close_btn.m_transf.m_offset = {width - m_thickness, 0};
+    m_close_btn.getLayoutBox().setPosition(Vec2d(width - m_thickness, 0));
     updateVertexArray();
     return true;
 }
@@ -192,15 +189,15 @@ bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
     
     bool res = false;
 
-    // if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-    // {
-    //     res = res || m_close_btn.onMouseMoved(x, y, transf_list);
-    //     if (res)
-    //     {
-    //         transf_list.PopBack();
-    //         return true;
-    //     }
-    // }
+    if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
+    {
+        res = res || m_close_btn.onMouseMoved(x, y, transf_list);
+        if (res)
+        {
+            transf_list.PopBack();
+            return true;
+        }
+    }
 
     Vec2d pos = top_transf.restore(Vec2d(x, y));
 
@@ -249,40 +246,40 @@ bool Frame::onTime(float d_seconds)
     m_wrappee->onTime(d_seconds);
 }
 
-// void Frame::setClosable(bool flag)
-// {
-//     if (flag)
-//         m_interactive = (interactive_t) ((uint8_t) m_interactive | (uint8_t) interactive_t::CLOSABLE);
-//     else
-//         m_interactive = (interactive_t) ((uint8_t) m_interactive & ~((uint8_t) interactive_t::CLOSABLE));
-// }
-// 
-// void Frame::CloseButton::setContainer(Container &container)
-// {
-//     m_container = &container;
-// }
-// 
-// void Frame::CloseButton::setCloseId(int32_t id)
-// {
-//     m_close_id = id;
-// }
-// 
-// void Frame::setContainer(Container &container)
-// {
-//     m_close_btn.setContainer(container);
-// }
-// 
-// void Frame::setCloseId(int32_t id)
-// {
-//     m_close_btn.setCloseId(id);
-// }
-// 
-// bool Frame::CloseButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
-// {
-//     bool flag = Button::onMousePressed(key, x, y, transf_list);
-//     if (flag)
-//         m_container->close(m_close_id);
-// 
-//     return flag;
-// }
+void Frame::setClosable(bool flag)
+{
+    if (flag)
+        m_interactive = (interactive_t) ((uint8_t) m_interactive | (uint8_t) interactive_t::CLOSABLE);
+    else
+        m_interactive = (interactive_t) ((uint8_t) m_interactive & ~((uint8_t) interactive_t::CLOSABLE));
+}
+
+void Frame::CloseButton::setContainer(Container &container)
+{
+    m_container = &container;
+}
+
+void Frame::CloseButton::setCloseId(int32_t id)
+{
+    m_close_id = id;
+}
+
+void Frame::setContainer(Container &container)
+{
+    m_close_btn.setContainer(container);
+}
+
+void Frame::setCloseId(int32_t id)
+{
+    m_close_btn.setCloseId(id);
+}
+
+bool Frame::CloseButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+{
+    bool flag = Button::onMousePressed(key, x, y, transf_list);
+    if (flag)
+        m_container->close(m_close_id);
+
+    return flag;
+}
 

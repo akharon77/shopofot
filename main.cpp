@@ -75,8 +75,8 @@ int main()
 
     FrameTexture frame_texture_config
     {
-        // &btn_texture_config,
-        // &btn_texture_config
+        &btn_texture_config,
+        &btn_texture_config
     };
 
     // CanvasManagerTexture canv_manager_texture_config
@@ -205,6 +205,7 @@ int main()
     Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
     ScrollBar scrollbar(canvas, 20_px, 200_px, 200_px, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
     Frame frame(scrollbar, "lol", 10_px, frame_texture_config);
+    frame.setClosable(true);
 
     sf::Image cat_img;
     cat_img.loadFromFile("cat.jpg");
