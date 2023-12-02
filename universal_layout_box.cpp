@@ -114,16 +114,13 @@ bool UniversalLayoutBox::setSize(const Vec2d &size)
 
 bool UniversalLayoutBox::setPosition(const Vec2d &position)
 {
-    prev_posX = m_posX;
-    prev_posY = m_posY;
+    if (m_align != Align::Free)
+        return false;
 
     m_posX = fromPixels(position.x, m_posX.unit, m_parentSize.x);
     m_posY = fromPixels(position.y, m_posY.unit, m_parentSize.y);
 
-    if (m_align != Align::Free)
-        onParentUpdate(m_parentSize);
-
-    return prev_posX != m_posX && prev_posY != m_posY;
+    return true;
 }
 
 Vec2d UniversalLayoutBox::getSize() const

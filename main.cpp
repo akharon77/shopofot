@@ -8,8 +8,8 @@
 #include "universal_layout_box.hpp"
 #include "frame.hpp"
 
-// #include "button.hpp"
-// #include "scrollbar.hpp"
+#include "button.hpp"
+#include "scrollbar.hpp"
 // #include "menu.hpp"
 // 
 // #include "ver_btn_list.hpp"
@@ -42,29 +42,29 @@ int main()
     // transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{SCREEN_WIDTH, SCREEN_HEIGHT}});
     transf_list.PushBack(Transform{Vec2d{0, 0}, Vec2d{1, 1}});
 
-    // sf::Texture button_texture;
-    // button_texture.loadFromFile("mols_ctrl_texture.png");
+    sf::Texture button_texture;
+    button_texture.loadFromFile("mols_ctrl_texture.png");
 
     // sf::Font font;
     // font.loadFromFile("anon_pro.ttf");
 
-    // ButtonTexture btn_texture_config
-    // {
-    //     &button_texture,
-    //     {57,  0,  57, 52},
-    //     {57, 52,  57, 52},
-    //     {57, 104, 57, 52}
-    // };
+    ButtonTexture btn_texture_config
+    {
+        &button_texture,
+        {57,  0,  57, 52},
+        {57, 52,  57, 52},
+        {57, 104, 57, 52}
+    };
 
-    // ScrollBarTexture scrollbar_texture_config
-    // {
-    //     &button_texture,
-    //     &btn_texture_config,
-    //     &btn_texture_config,
-    //     &btn_texture_config,
-    //     &btn_texture_config,
-    //     &btn_texture_config
-    // };
+    ScrollBarTexture scrollbar_texture_config
+    {
+        &button_texture,
+        &btn_texture_config,
+        &btn_texture_config,
+        &btn_texture_config,
+        &btn_texture_config,
+        &btn_texture_config
+    };
 
     // TextButtonTexture text_btn_texture_config
     // {
@@ -200,10 +200,11 @@ int main()
     // menu.addButton(file_ver_btn_lst);
     // menu.addButton(filt_ver_btn_lst);
 
-    UniversalLayoutBox sample_box(10_cm, 10_cm);
-    sample_box.setPosition(Vec2d(1_cm, 1_cm));
+    UniversalLayoutBox sample_box(400_px, 400_px);
+    sample_box.setPosition(Vec2d(0_px, 0_px));
     Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
-    Frame frame(canvas, "lol", 0.5_cm, frame_texture_config);
+    ScrollBar scrollbar(canvas, 20_px, 200_px, 200_px, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
+    Frame frame(scrollbar, "lol", 10_px, frame_texture_config);
 
     sf::Image cat_img;
     cat_img.loadFromFile("cat.jpg");

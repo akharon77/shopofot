@@ -89,6 +89,14 @@ Vec2d normalize(const Vec2d &vec)
     return vec / len;
 }
 
+Vec2d operator - (const Vec2d &vec)
+{
+    Vec2d res(0, 0);
+    res -= vec;
+
+    return res;
+}
+
 Vec2d operator + (const Vec2d &lhs, const Vec2d &rhs)
 {
     Vec2d res = lhs;

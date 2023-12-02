@@ -14,14 +14,8 @@ ScrollBar::ScrollButton::ScrollButton(ScrollBar &scrollbar, scroll_button_t btn_
     m_scrollbar(&scrollbar)
 {
     UniversalLayoutBox box(0_px, 0_px);
-
     double scrollbar_thickness = scrollbar.getThickness();
     box.setPosition(Vec2d(scrollbar_thickness, scrollbar_thickness));
-
-    if (btn_type == VER)
-        box.setAlignment(Align::CenterRight);
-    else
-        box.setAlignment(Align::BottomCenter);
 
     setLayoutBox(box);
 }
@@ -99,8 +93,8 @@ ScrollBar::ScrollBar(Widget &wrappee, const Length &thickness, const Length &wid
     m_wrappee(&wrappee),
     m_thickness(thickness),
     m_wrappee_stolen_layout_box(wrappee.getLayoutBox().clone()),
-    m_width(width),
-    m_height(height),
+    m_width(-1),
+    m_height(-1),
     m_is_ver(type & SCROLLABLE_VERTICAL),
     m_is_hor(type & SCROLLABLE_HORIZONTAL),
     m_texture(&texture),
@@ -114,19 +108,16 @@ ScrollBar::ScrollBar(Widget &wrappee, const Length &thickness, const Length &wid
     Vec2d wrappee_pos  = wrappee.getLayoutBox().getPosition();
     Vec2d wrappee_size = wrappee.getLayoutBox().getSize();
 
-    getLayoutBox().setPosition(wrappee_pos);
-
-    Vec2d add_size(m_is_ver ? thickness : 0, m_is_hor ? thickness : 0);
-    getLayoutBox().setSize(wrappee_size + add_size);
-
     wrappee.setLayoutBox(UniversalLayoutBox(Length(wrappee_size.x, Unit::Pixel),
                                             Length(wrappee_size.y, Unit::Pixel)));
 
-    m_btn_ver.onParentUpdate(getLayoutBox());
-    m_btn_hor.onParentUpdate(getLayoutBox());
-    setPercentageOffset(Vec2d(0, 0));
-}
+    Vec2d add_size(m_is_ver ? thickness : 0, m_is_hor ? thickness : 0);
+    Vec2d whole_size = Vec2d(width, height) + add_size;
+    onResize(whole_size.x, whole_size.y);
 
+    setPercentageOffset(Vec2d(0, 0));
+    getLayoutBox().setPosition(wrappee_pos);
+}
 void ScrollBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
     // TODO: make more based and less cringe
@@ -221,52 +212,68 @@ bool ScrollBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transfo
 
 bool ScrollBar::onResize(float width, float height)
 {
-    float pos_ver = (m_btn_ver.m_transf.m_offset.y - m_thickness) / (m_height - 2 * m_thickness - m_btn_ver.m_size.y);
-    float pos_hor = (m_btn_hor.m_transf.m_offset.x - m_thickness) / (m_width - 2 * m_thickness - m_btn_hor.m_size.x);
+    Vec2d prev_visible_area_size = Vec2d(m_width, m_height);
 
-    //if (m_is_hor)
-    //{
-        float prev = m_width;
-        m_width = width - m_thickness;
-        if (m_width > m_wrappee->m_size.x + EPS || m_width < 3 * m_thickness - EPS)
-        {
-            m_width = prev;
-            return false;
-        }
-    //}
+    m_width  = std::max(m_thickness, width  - (m_is_ver ? m_thickness : 0));
+    m_height = std::max(m_thickness, height - (m_is_hor ? m_thickness : 0));
 
-    //if (m_is_ver)
-    //{
-        //float prev = m_height;
-        prev = m_height;
-        m_height = height - m_thickness;
-        if (m_height > m_wrappee->m_size.y + EPS || m_height < 3 * m_thickness + EPS)
-        {
-            m_height = prev;
-            return false;
-        }
-    //}
+    if (prev_visible_area_size == Vec2d(m_width, m_height))
+        return false;
+
+    getLayoutBox().setSize(Vec2d(width, height));
+    m_btn_ver.onParentUpdate(getLayoutBox());
+    m_btn_hor.onParentUpdate(getLayoutBox());
+    updateButtonsSizes();
+    updateComponentsPositionsByPercents();
     
-    m_size = {width + (m_is_ver ? m_thickness : 0), height + (m_is_hor ? m_thickness : 0)};
-    // printf("scrollbar size: %f %f\n", m_size.x, m_size.y);
-    // printf("scrollbar width height: %f %f\n", m_width, m_height);
-
-    m_btn_ver = ScrollButton(*this, VER, *m_texture->m_btn_scroll);
-    m_btn_ver.m_transf.m_offset.y += pos_ver * (m_height - 2 * m_thickness - m_btn_ver.m_size.y);
-    m_wrappee->m_transf.m_offset.y = -pos_ver * (m_wrappee->m_size.y - m_height);
-
-    m_btn_hor = ScrollButton(*this, HOR, *m_texture->m_btn_scroll);
-    m_btn_hor.m_transf.m_offset.x += pos_hor * (m_width - 2 * m_thickness - m_btn_hor.m_size.x);
-    m_wrappee->m_transf.m_offset.x = -pos_hor * (m_wrappee->m_size.x - m_width);
-
     return true;
+
+    // float pos_ver = (m_btn_ver.m_transf.m_offset.y - m_thickness) / (m_height - 2 * m_thickness - m_btn_ver.m_size.y);
+    // float pos_hor = (m_btn_hor.m_transf.m_offset.x - m_thickness) / (m_width - 2 * m_thickness - m_btn_hor.m_size.x);
+
+    // //if (m_is_hor)
+    // //{
+    //     float prev = m_width;
+    //     m_width = width - m_thickness;
+    //     if (m_width > m_wrappee->m_size.x + EPS || m_width < 3 * m_thickness - EPS)
+    //     {
+    //         m_width = prev;
+    //         return false;
+    //     }
+    // //}
+
+    // //if (m_is_ver)
+    // //{
+    //     //float prev = m_height;
+    //     prev = m_height;
+    //     m_height = height - m_thickness;
+    //     if (m_height > m_wrappee->m_size.y + EPS || m_height < 3 * m_thickness + EPS)
+    //     {
+    //         m_height = prev;
+    //         return false;
+    //     }
+    // //}
+    // 
+    // m_size = {width + (m_is_ver ? m_thickness : 0), height + (m_is_hor ? m_thickness : 0)};
+    // // printf("scrollbar size: %f %f\n", m_size.x, m_size.y);
+    // // printf("scrollbar width height: %f %f\n", m_width, m_height);
+
+    // m_btn_ver = ScrollButton(*this, VER, *m_texture->m_btn_scroll);
+    // m_btn_ver.m_transf.m_offset.y += pos_ver * (m_height - 2 * m_thickness - m_btn_ver.m_size.y);
+    // m_wrappee->m_transf.m_offset.y = -pos_ver * (m_wrappee->m_size.y - m_height);
+
+    // m_btn_hor = ScrollButton(*this, HOR, *m_texture->m_btn_scroll);
+    // m_btn_hor.m_transf.m_offset.x += pos_hor * (m_width - 2 * m_thickness - m_btn_hor.m_size.x);
+    // m_wrappee->m_transf.m_offset.x = -pos_hor * (m_wrappee->m_size.x - m_width);
+
+    // return true;
 }
 
 bool ScrollBar::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 {
     // TODO: make more based and less cringe
     // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
 
     transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
@@ -335,33 +342,58 @@ void ScrollBar::setPercentageOffset(const Vec2d &perc)
 
 void ScrollBar::deltaPercentageOffset(const Vec2d &delta)
 {
-    Vec2d own_size(m_width, m_height);
-    Vec2d wrappee_size = m_wrappee->getLayoutBox().getSize();
-
     Vec2d perc_offset = getPercentageOffset();
     perc_offset += delta;
 
     m_hor_per = perc_offset.x = clip(perc_offset.x);
     m_ver_per = perc_offset.y = clip(perc_offset.y);
 
-    // button position
-    for (LayoutBox *pref_box : {&m_btn_ver.getLayoutBox(), &m_btn_hor.getLayoutBox()})
-    {
-        Vec2d prev_pos      = pref_box->getPosition();
-        Vec2d btn_pref_size = pref_box->getSize();
+    updateComponentsPositionsByPercents();
+}
 
-        prev_pos = perc_offset * (own_size - pref_box->getSize() - 2 * Vec2d(m_thickness, m_thickness));
-        pref_box->setPosition(prev_pos);
-    }
+Vec2d ScrollBar::getPrefferedButtonsSizes() const
+{
+    Vec2d perc_cov = getPercentageCovering();
+    Vec2d own_size(m_width, m_height);
+    Vec2d buttons_sizes = (own_size - 2 * Vec2d(m_thickness, m_thickness)) * perc_cov;
+
+    buttons_sizes.x = std::min(buttons_sizes.x, 0.5 * own_size.x);
+    buttons_sizes.y = std::min(buttons_sizes.y, 0.5 * own_size.y);
+
+    return buttons_sizes;
+}
+
+void ScrollBar::updateButtonsSizes()
+{
+    Vec2d pref_btns_sizes = getPrefferedButtonsSizes();
+    m_btn_ver.getLayoutBox().setSize(Vec2d(m_thickness, pref_btns_sizes.y));
+    m_btn_hor.getLayoutBox().setSize(Vec2d(pref_btns_sizes.x, m_thickness));
+}
+
+void ScrollBar::updateComponentsPositionsByPercents()
+{
+    Vec2d perc_offset(m_hor_per, m_ver_per);
+    Vec2d pref_btns_sizes = getPrefferedButtonsSizes();
+
+    // button position
+    LayoutBox &btn_ver_box = m_btn_ver.getLayoutBox();
+    double prev_pos_y = perc_offset.y * (m_height - pref_btns_sizes.y - 2 * m_thickness);
+    btn_ver_box.setPosition(Vec2d(m_width, m_thickness + prev_pos_y));
+
+    LayoutBox &btn_hor_box = m_btn_hor.getLayoutBox();
+    double prev_pos_x = perc_offset.x * (m_width - pref_btns_sizes.x - 2 * m_thickness);
+    btn_hor_box.setPosition(Vec2d(m_thickness + prev_pos_x, m_height));
 
     // wrappee fake position
+    Vec2d wrappee_size = m_wrappee->getLayoutBox().getSize();
+    Vec2d own_size(m_width, m_height);
     m_wrappee->getLayoutBox().setPosition(-perc_offset * (wrappee_size - own_size));
 }
 
-const LayoutBox& ScrollBar::getWrappeeBox() const
-{
-    return m_wrappee->getLayoutBox();
-}
+// const LayoutBox& ScrollBar::getWrappeeBox() const
+// {
+//     return m_wrappee->getLayoutBox();
+// }
 
 double ScrollBar::clip(double perc)
 {

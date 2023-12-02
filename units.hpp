@@ -67,6 +67,10 @@ enum class Align
     TopLeft,    TopCenter,    TopRight,
     CenterLeft, Center,       CenterRight,
     BottomLeft, BottomCenter, BottomRight,
+    Top,
+    Bottom,
+    Right,
+    Left,
     Free
 };
 

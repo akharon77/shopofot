@@ -85,8 +85,11 @@ protected:
 
     static double clip(double perc);
 
+    void updateButtonsSizes();
+    void updateComponentsPositionsByPercents();
+
 public:
-    enum scrollable_t
+    enum scrollable_t : uint16_t
     {
         SCROLLABLE_NONE       = 0x00,
         SCROLLABLE_VERTICAL   = 0x01,
@@ -99,6 +102,8 @@ public:
     ScrollBar& operator = (const ScrollBar &rhs) = default;
     ScrollBar(const ScrollBar &rhs) = default;
 
+    Vec2d getPrefferedButtonsSizes() const;
+
     Vec2d getPercentageCovering() const;
     Vec2d getPercentageOffset  () const;
 
@@ -110,7 +115,7 @@ public:
     Vec2d getVisibleAreaSize() const;
     Vec2d getWrappeeSize() const;
 
-    const LayoutBox& getWrappeeBox() const;
+    // const LayoutBox& getWrappeeBox() const;
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 
