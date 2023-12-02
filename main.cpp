@@ -11,7 +11,7 @@
 #include "button.hpp"
 #include "scrollbar.hpp"
 // #include "menu.hpp"
-// 
+ 
 // #include "ver_btn_list.hpp"
 // #include "text_btn.hpp"
  
@@ -19,9 +19,9 @@
 #include "brush.hpp"
 #include "square_tool.hpp"
 #include "polyline_tool.hpp"
-// #include "polygon_tool.hpp"
+#include "polygon_tool.hpp"
 // #include "line_edit_tool.hpp"
-// 
+ 
 // #include "filter_plugins/brightness_filter.hpp"
 // #include "blackwhite_filter.hpp"
 // #include "onecolor_filter.hpp"
@@ -89,7 +89,7 @@ int main()
     SquareTool square_tool;
     BrushTool brush_tool;
     PolyLineTool polyline_tool;
-    // PolygonTool polygon_tool;
+    PolygonTool polygon_tool;
     // LineEditTool line_edit_tool(font, 0.05);
 
     ToolPalette tool_palette;
@@ -143,6 +143,7 @@ int main()
     // };
     // toolbar.addButton(polyline_tool_btn_texture_config, tool_palette.addTool(&polyline_tool));
 
+    tool_palette.addTool(&polygon_tool);
     // sf::Texture polygon_tool_btn_texture;
     // polygon_tool_btn_texture.loadFromFile("polygon_tool_btn_texture.png");
     // ButtonTexture polygon_tool_btn_texture_config

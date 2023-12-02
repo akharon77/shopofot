@@ -15,11 +15,11 @@ void PolygonToolWidget::draw(sf::RenderTarget &target, List<Transform> &transf_l
 
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
     sf::VertexArray arr(m_arr);
-    arr.append(m_pos);
+    arr.append(static_cast<Vector2f>(m_pos));
     arr.append(arr[0]);
 
     for (int32_t i = 0; i < arr.getVertexCount(); ++i)
-        arr[i].position = top_transf.rollbackTransform(arr[i].position);
+        arr[i].position = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(arr[i].position)));
 
     target.draw(arr);
 }
@@ -29,18 +29,18 @@ void PolygonTool::onMainButton(MouseType key, Vector2f pos, Canvas &canvas)
     if (key == MouseType::PRESSED)
     {
         m_widget.m_status = PolygonToolWidget::ACTIVE;
-        m_widget.m_pos = pos;
+        m_widget.m_pos = static_cast<Vec2d>(pos);
     }
     else if (m_widget.m_status == PolygonToolWidget::ACTIVE && key == MouseType::RELEASED)
     {
         m_widget.m_arr.append(pos);
-        m_widget.m_pos = pos;
+        m_widget.m_pos = static_cast<Vec2d>(pos);
     }
 }
 
 void PolygonTool::onMove(Vector2f pos, Canvas &canvas)
 {
-    m_widget.m_pos = pos;
+    m_widget.m_pos = static_cast<Vec2d>(pos);
 }
 
 void PolygonTool::onConfirm(Vector2f pos, Canvas &canvas)
