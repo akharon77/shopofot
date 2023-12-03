@@ -33,7 +33,7 @@ class CanvasManager : public Widget, public Container
     List<CanvasWindow*> m_canv_window_lst;
 
 public:
-    CanvasManager(Vector2f pos, Vector2f size, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasManagerTexture &canv_manager_texture);
+    CanvasManager(const LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasManagerTexture &canv_manager_texture);
 
     ~CanvasManager() = default;
     CanvasManager& operator = (const CanvasManager &rhs) = delete;

@@ -31,7 +31,7 @@
 
 // #include "line_edit.hpp"
 
-// #include "canvas_manager.hpp"
+#include "canvas_manager.hpp"
 // #include "toolbar.hpp"
 
 int main()
@@ -79,11 +79,11 @@ int main()
         &btn_texture_config
     };
 
-    // CanvasManagerTexture canv_manager_texture_config
-    // {
-    //     &scrollbar_texture_config,
-    //     &frame_texture_config
-    // };
+    CanvasManagerTexture canv_manager_texture_config
+    {
+        &scrollbar_texture_config,
+        &frame_texture_config
+    };
     
     LineTool line_tool;
     SquareTool square_tool;
@@ -189,7 +189,12 @@ int main()
     // int32_t green_blue_filter_id     = filter_palette.addFilter(green_blue_filter);
     // int32_t negative_filter_id       = filter_palette.addFilter(negative_filter);
 
-    // CanvasManager canv_manager({0, 0}, {1, 1}, tool_palette, filter_palette, canv_manager_texture_config);
+    UniversalLayoutBox sample_box(1000_px, 1000_px);
+    sample_box.setPosition(Vec2d(0_px, 0_px));
+
+    CanvasManager canv_manager(sample_box, tool_palette, filter_palette, canv_manager_texture_config);
+    canv_manager.addCanvas(1024, 640);
+    canv_manager.addCanvas(1024, 640);
 
     // FileVerticalButtonList file_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
 
@@ -201,28 +206,29 @@ int main()
     // filt_ver_btn_lst.addFilter("Green&Blue", green_blue_filter_id);
     // filt_ver_btn_lst.addFilter("Negative",   negative_filter_id);
     
-    UniversalLayoutBox sample_box(400_px, 400_px);
-
     // Menu menu(canv_manager);
     // menu.addButton(file_ver_btn_lst);
     // menu.addButton(filt_ver_btn_lst);
 
-    sample_box.setPosition(Vec2d(0_px, 0_px));
-    Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
-    ScrollBar scrollbar(canvas, 20_px, 200_px, 200_px, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
-    Menu menu(scrollbar);
+    // Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
+    // ScrollBar scrollbar(canvas, 20_px, 200_px, 200_px, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
+
+    Menu menu(canv_manager);
+
     Button testButton1(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
     Button testButton2(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
     Button testButton3(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+
     menu.addButton(testButton1);
     menu.addButton(testButton2);
     menu.addButton(testButton3);
-    Frame frame(menu, "lol", 10_px, frame_texture_config);
-    frame.setClosable(true);
 
-    sf::Image cat_img;
-    cat_img.loadFromFile("cat.jpg");
-    canvas.loadFromImage(cat_img);
+    // Frame frame(menu, "lol", 10_px, frame_texture_config);
+    // frame.setClosable(true);
+
+    // sf::Image cat_img;
+    // cat_img.loadFromFile("cat.jpg");
+    // canvas.loadFromImage(cat_img);
 
     sf::Clock globalClock;
 
@@ -236,7 +242,7 @@ int main()
                 window.close();
 
             // adaptSfEvent(event, canvas, transf_list);
-            adaptSfEvent(event, frame, transf_list);
+            adaptSfEvent(event, menu, transf_list);
             // adaptSfEvent(event, &toolbar_frame, transf_list);
         }
 
@@ -246,7 +252,7 @@ int main()
         window.clear(sf::Color::Black);
 
         // canvas.draw(window, transf_list);
-        frame.draw(window, transf_list);
+        menu.draw(window, transf_list);
         // menu.draw(window, transf_list);
         // toolbar_frame.draw(window, transf_list);
 

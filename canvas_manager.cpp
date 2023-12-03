@@ -1,7 +1,8 @@
 #include "canvas_manager.hpp"
+#include "universal_layout_box.hpp"
 
-CanvasManager::CanvasManager(Vector2f pos, Vector2f size, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasManagerTexture &canv_manager_texture) :
-    Widget(Transform{pos, Vector2f{1, 1}}, size),
+CanvasManager::CanvasManager(const LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasManagerTexture &canv_manager_texture) :
+    Widget(box),
     m_tool_palette(&tool_palette),
     m_filter_palette(&filter_palette),
     m_texture(&canv_manager_texture)
@@ -9,9 +10,15 @@ CanvasManager::CanvasManager(Vector2f pos, Vector2f size, ToolPalette &tool_pale
 
 void CanvasManager::addCanvas(int32_t canv_width, int32_t canv_height)
 {
-    Canvas    *canvas    = new Canvas(m_size / 2.f, m_size.x, m_size.y, canv_width, canv_height, *m_tool_palette, *m_filter_palette);
-    ScrollBar *scrollbar = new ScrollBar(*canvas, 0.01, 0.3, true, 0.3, true, *m_texture->m_scrollbar_texture);
-    Frame     *frame     = new Frame(*scrollbar, "hello", 0.02, *m_texture->m_frame_texture);
+    Vec2d own_size = getLayoutBox().getSize();
+
+    UniversalLayoutBox canv_base_box(0_px, 0_px);
+    canv_base_box.setSize(own_size);
+    canv_base_box.setPosition(own_size / 2);
+
+    Canvas    *canvas    = new Canvas(canv_base_box, canv_width, canv_height, *m_tool_palette, *m_filter_palette);
+    ScrollBar *scrollbar = new ScrollBar(*canvas, 1_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), *m_texture->m_scrollbar_texture);
+    Frame     *frame     = new Frame(*scrollbar, "hello", 8_mm, *m_texture->m_frame_texture);
     
     sf::Image cat_img;
     cat_img.loadFromFile("cat.jpg");
@@ -40,7 +47,11 @@ bool CanvasManager::close(int32_t id)
 
 void CanvasManager::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_canv_window_lst.GetTail();
@@ -59,7 +70,11 @@ void CanvasManager::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
 bool CanvasManager::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_canv_window_lst.GetHead();
@@ -92,7 +107,11 @@ bool CanvasManager::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Tran
 
 bool CanvasManager::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_canv_window_lst.GetHead();
@@ -122,7 +141,11 @@ bool CanvasManager::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Tra
 
 bool CanvasManager::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_canv_window_lst.GetHead();
