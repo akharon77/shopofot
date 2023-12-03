@@ -1,35 +1,60 @@
 #include "menu.hpp"
 
 Menu::Menu(Widget &wrappee) :
-    Widget
-    {
-        {wrappee.m_transf.m_offset, {1, 1}},
-        wrappee.m_size
-    },
+    Widget(UniversalLayoutBox(0_px, 0_px)),
+    // {
+    //     {wrappee.m_transf.m_offset, {1, 1}},
+    //     wrappee.m_size
+    // },
     m_wrappee(&wrappee),
+    m_wrappee_stolen_layout_box(wrappee.getLayoutBox().clone()),
     m_right_corner(0),
     m_max_height(0)
 {
-    wrappee.m_transf.m_offset = {0, 0};
+    Vec2d wrappee_pos  = wrappee.getLayoutBox().getPosition();
+    Vec2d wrappee_size = wrappee.getLayoutBox().getSize();
+
+    getLayoutBox().setPosition(wrappee_pos);
+    getLayoutBox().setSize(wrappee_size);
+
+    UniversalLayoutBox new_wrappee_box(0_px, 0_px);
+    new_wrappee_box.setSize(wrappee_size);
+    wrappee.setLayoutBox(new_wrappee_box);
 }
 
 void Menu::addButton(Button &btn)
 {
-    btn.m_transf.m_offset = {m_right_corner, 0};
-    m_right_corner += btn.m_size.x;
+    Vec2d btn_size = btn.getLayoutBox().getSize();
+    btn.setLayoutBox(UniversalLayoutBox(0_px, 0_px));
+    btn.getLayoutBox().setSize(btn_size);
+    btn.getLayoutBox().setPosition(Vec2d(m_right_corner, 0));
+    // btn.m_transf.m_offset = {m_right_corner, 0};
+    m_right_corner += btn_size.x;
     m_btn_list.PushBack(&btn);
 
-    if (btn.m_size.y > m_max_height + EPS)
+    if (btn_size.y > m_max_height + EPS)
     {
-        m_max_height = btn.m_size.y;
-        m_wrappee->m_transf.m_offset.y = m_max_height;
-        m_size.y = m_wrappee->m_size.y + m_max_height;
+        m_max_height = btn_size.y;
+
+        Vec2d prev_wrappee_pos = m_wrappee->getLayoutBox().getPosition();
+        prev_wrappee_pos.y = m_max_height;
+        m_wrappee->getLayoutBox().setPosition(prev_wrappee_pos);
+        // m_wrappee->m_transf.m_offset.y = m_max_height;
+
+        Vec2d prev_size = getLayoutBox().getSize();
+        prev_size.y = m_wrappee->getLayoutBox().getSize().y + m_max_height;
+        getLayoutBox().setSize(prev_size);
+        // m_size.y = m_wrappee->m_size.y + m_max_height;
     }
 }
 
 void Menu::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     m_wrappee->draw(target, transf_list);
@@ -50,7 +75,11 @@ void Menu::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
 bool Menu::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     bool res = false;
@@ -75,7 +104,11 @@ bool Menu::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &t
 
 bool Menu::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_btn_list.GetHead();
@@ -98,7 +131,11 @@ bool Menu::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &
 
 bool Menu::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_btn_list.GetHead();
@@ -126,7 +163,8 @@ bool Menu::onResize(float width, float height)
 
     bool res = m_wrappee->onResize(width, height - m_max_height);
 
-    m_size = {width, height};
+    // m_size = {width, height};
+    getLayoutBox().setSize(Vec2d(width, height));
 
     return res;
 }

@@ -10,7 +10,7 @@
 
 #include "button.hpp"
 #include "scrollbar.hpp"
-// #include "menu.hpp"
+#include "menu.hpp"
  
 // #include "ver_btn_list.hpp"
 // #include "text_btn.hpp"
@@ -201,15 +201,23 @@ int main()
     // filt_ver_btn_lst.addFilter("Green&Blue", green_blue_filter_id);
     // filt_ver_btn_lst.addFilter("Negative",   negative_filter_id);
     
+    UniversalLayoutBox sample_box(400_px, 400_px);
+
     // Menu menu(canv_manager);
     // menu.addButton(file_ver_btn_lst);
     // menu.addButton(filt_ver_btn_lst);
 
-    UniversalLayoutBox sample_box(400_px, 400_px);
     sample_box.setPosition(Vec2d(0_px, 0_px));
     Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
     ScrollBar scrollbar(canvas, 20_px, 200_px, 200_px, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
-    Frame frame(scrollbar, "lol", 10_px, frame_texture_config);
+    Menu menu(scrollbar);
+    Button testButton1(UniversalLayoutBox(30_px, 10_px), btn_texture_config);
+    Button testButton2(UniversalLayoutBox(30_px, 10_px), btn_texture_config);
+    Button testButton3(UniversalLayoutBox(30_px, 10_px), btn_texture_config);
+    menu.addButton(testButton1);
+    menu.addButton(testButton2);
+    menu.addButton(testButton3);
+    Frame frame(menu, "lol", 10_px, frame_texture_config);
     frame.setClosable(true);
 
     sf::Image cat_img;

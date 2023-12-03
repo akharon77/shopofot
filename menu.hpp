@@ -4,14 +4,16 @@
 #include "list.hpp"
 #include "widget.hpp"
 #include "button.hpp"
+#include "universal_layout_box.hpp"
 
 class Menu : public Widget
 {
     Widget *m_wrappee;
+    LayoutBox *m_wrappee_stolen_layout_box;
     List<Button*> m_btn_list;
 
-    float m_right_corner;
-    float m_max_height;
+    double m_right_corner;
+    double m_max_height;
 
 public:
     Menu(Widget &wrappee);
