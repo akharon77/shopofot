@@ -12,7 +12,7 @@
 #include "scrollbar.hpp"
 #include "menu.hpp"
  
-// #include "ver_btn_list.hpp"
+#include "ver_btn_list.hpp"
 #include "text_btn.hpp"
  
 #include "line_tool.hpp"

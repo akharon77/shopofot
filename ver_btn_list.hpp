@@ -4,6 +4,7 @@
 #include "list.hpp"
 #include "widget.hpp"
 #include "text_btn.hpp"
+#include "layout_box.hpp"
 
 class VerticalButtonList : public TextButton
 {
@@ -17,10 +18,10 @@ class VerticalButtonList : public TextButton
 
     List<Button*> m_btn_lst;
 
-    float m_bottom;
+    double m_bottom;
 
 public:
-    VerticalButtonList(Vector2f pos, float width, float height, const char *str, TextButtonTexture &m_btn_texture);
+    VerticalButtonList(const LayoutBox &box, const char *str, TextButtonTexture &m_btn_texture);
 
     ~VerticalButtonList() = default;
     VerticalButtonList& operator = (const VerticalButtonList &rhs) = delete;
