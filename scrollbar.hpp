@@ -28,8 +28,8 @@ protected:
         HOR
     };
 
-    friend class ScrollButton;
-    friend class ScrollDeltaButton;
+    // friend class ScrollButton;
+    // friend class ScrollDeltaButton;
 
     class ScrollButton : public Button
     {
@@ -132,8 +132,6 @@ public:
 
     Vec2d getVisibleAreaSize() const;
     Vec2d getWrappeeSize() const;
-
-    // const LayoutBox& getWrappeeBox() const;
 
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 

@@ -12,6 +12,10 @@ void TextButton::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
     Button::draw(target, transf_list);
 
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
     transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 

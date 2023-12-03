@@ -61,9 +61,6 @@ class Widget
     LayoutBox *m_layout_box;
 
 public:
-    Transform m_transf;
-    Vec2d     m_size;
-
     Widget(const LayoutBox &box);
 
     virtual void onParentUpdate(const LayoutBox &parent_box);
@@ -86,9 +83,6 @@ public:
     virtual bool onTime (float d_seconds) = 0;
 
     virtual bool onResize(float width, float height) = 0;
-
-    // virtual Transform getTransform() const {assert(0);}
-    // virtual Transform setTransform(const Transform &transf) {assert(0);}
 };
 
 void adaptSfEvent(sf::Event event, Widget &widget, List<Transform> &transf_list);
