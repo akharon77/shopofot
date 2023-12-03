@@ -1,7 +1,7 @@
 #include "text_btn.hpp"
 
-TextButton::TextButton(const Vector2f &pos, float width, float height, const char *str, TextButtonTexture &btn_texture) :  // sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture) : 
-    Button(pos, width, height, *btn_texture.m_btn_texture)
+TextButton::TextButton(const LayoutBox &box, const char *str, TextButtonTexture &btn_texture) :
+    Button(box, *btn_texture.m_btn_texture)
 {
     m_text.setFont(*btn_texture.m_font);
     m_text.setString(str);
@@ -12,13 +12,14 @@ void TextButton::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
     Button::draw(target, transf_list);
 
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
-    Vector2f pos = top_transf.rollbackTransform({0, 0});
+    Vec2d pos = top_transf.apply(Vec2d(0, 0));
     
-    m_text.setPosition(pos);
+    m_text.setPosition(static_cast<Vector2f>(pos));
     target.draw(m_text);
 
     transf_list.PopBack();
 }
+

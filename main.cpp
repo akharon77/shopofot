@@ -13,7 +13,7 @@
 #include "menu.hpp"
  
 // #include "ver_btn_list.hpp"
-// #include "text_btn.hpp"
+#include "text_btn.hpp"
  
 #include "line_tool.hpp"
 #include "brush.hpp"
@@ -211,9 +211,9 @@ int main()
     Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
     ScrollBar scrollbar(canvas, 20_px, 200_px, 200_px, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
     Menu menu(scrollbar);
-    Button testButton1(UniversalLayoutBox(30_px, 10_px), btn_texture_config);
-    Button testButton2(UniversalLayoutBox(30_px, 10_px), btn_texture_config);
-    Button testButton3(UniversalLayoutBox(30_px, 10_px), btn_texture_config);
+    Button testButton1(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+    Button testButton2(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+    Button testButton3(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
     menu.addButton(testButton1);
     menu.addButton(testButton2);
     menu.addButton(testButton3);

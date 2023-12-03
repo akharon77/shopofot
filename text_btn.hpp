@@ -17,7 +17,7 @@ class TextButton : public Button
     sf::Text m_text;
 
 public:
-    TextButton(const Vector2f &pos, float width, float height, const char *str, TextButtonTexture &btn_texture);  // sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture);
+    TextButton(const LayoutBox &box, const char *str, TextButtonTexture &btn_texture);
 
     ~TextButton() = default;
     TextButton& operator = (const TextButton &rhs) = default;
@@ -26,5 +26,5 @@ public:
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 };
 
-#endif
+#endif // TEXT_BTN_HPP
 
