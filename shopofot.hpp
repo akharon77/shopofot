@@ -28,9 +28,6 @@ public:
 
 class FilterVerticalButtonList : public VerticalButtonList
 {
-    float m_width;
-    float m_height;
-
     CanvasManager *m_canv_manager;
     TextButtonTexture *m_btn_texture;
 
@@ -47,9 +44,6 @@ public:
 
 class FileVerticalButtonList : public VerticalButtonList
 {
-    float m_width;
-    float m_height;
-
     CanvasManager *m_canv_manager;
     TextButtonTexture *m_btn_texture;
 

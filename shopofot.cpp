@@ -24,8 +24,6 @@ bool ButtonFilterApply::onMousePressed(MouseKey key, int32_t x, int32_t y, List<
 
 FilterVerticalButtonList::FilterVerticalButtonList(const LayoutBox &box, CanvasManager &canv_manager, TextButtonTexture &btn_texture) :
     VerticalButtonList(box, "Filter", btn_texture),
-    m_width(width),
-    m_height(height),
     m_canv_manager(&canv_manager),
     m_btn_texture(&btn_texture)
 {}
@@ -68,9 +66,9 @@ FileVerticalButtonList::FileVerticalButtonList(const LayoutBox &box, CanvasManag
     m_canv_manager(&canv_manager),
     m_btn_texture(&btn_texture)
 {
-    UniversalLayoutBox box(0_px, 0_px);
-    box.setSize(getLayoutBox().getSize());
-    Button *btn = new ButtonNewCanvasWindow(box, *m_btn_texture, *m_canv_manager);
+    UniversalLayoutBox sample_box(0_px, 0_px);
+    sample_box.setSize(getLayoutBox().getSize());
+    Button *btn = new ButtonNewCanvasWindow(sample_box, *m_btn_texture, *m_canv_manager);
     addButton(*btn);
 }
 
