@@ -108,7 +108,7 @@ namespace plug
         F15,
         Pause,
 
-        KeyCount,
+        KeyCount
     };
 } // namespace plug
 

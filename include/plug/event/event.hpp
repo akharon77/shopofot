@@ -3,9 +3,9 @@
 
 #include <cstddef>
 
-#include "event/key_code.hpp"
-#include "event/mouse_button.hpp"
-#include "math.hpp"
+#include "plug/event/key_code.hpp"
+#include "plug/event/mouse_button.hpp"
+#include "plug/math.hpp"
 
 namespace plug
 {
