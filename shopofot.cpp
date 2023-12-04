@@ -1,6 +1,8 @@
 #include "shopofot.hpp"
-ButtonFilterApply::ButtonFilterApply(Vector2f pos, float width, float height, const char *str, TextButtonTexture &btn_texture, CanvasManager &canv_manager, int32_t filt_id) :  //sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture, Canvas &canvas, int32_t filt_id) :
-    TextButton(pos, width, height, str, btn_texture),
+#include "universal_layout_box.hpp"
+
+ButtonFilterApply::ButtonFilterApply(const LayoutBox &box, const char *str, TextButtonTexture &btn_texture, CanvasManager &canv_manager, int32_t filt_id) :
+    TextButton(box, str, btn_texture),
     m_canv_manager(&canv_manager),
     m_filt_id(filt_id)
 {}
@@ -20,8 +22,8 @@ bool ButtonFilterApply::onMousePressed(MouseKey key, int32_t x, int32_t y, List<
     return res;
 }
 
-FilterVerticalButtonList::FilterVerticalButtonList(Vector2f pos, float width, float height, CanvasManager &canv_manager, TextButtonTexture &btn_texture) :
-    VerticalButtonList(pos, width, height, "Filter", btn_texture),
+FilterVerticalButtonList::FilterVerticalButtonList(const LayoutBox &box, CanvasManager &canv_manager, TextButtonTexture &btn_texture) :
+    VerticalButtonList(box, "Filter", btn_texture),
     m_width(width),
     m_height(height),
     m_canv_manager(&canv_manager),
@@ -30,7 +32,9 @@ FilterVerticalButtonList::FilterVerticalButtonList(Vector2f pos, float width, fl
 
 void FilterVerticalButtonList::addFilter(const char *str, int32_t filt_id)
 {
-    Button *btn = new ButtonFilterApply({0, 0}, m_width, m_height, str, *m_btn_texture, *m_canv_manager, filt_id);
+    UniversalLayoutBox box(0_px, 0_px);
+    box.setSize(getLayoutBox().getSize());
+    Button *btn = new ButtonFilterApply(box, str, *m_btn_texture, *m_canv_manager, filt_id);
     addButton(*btn);
 }
 
@@ -45,8 +49,8 @@ FilterVerticalButtonList::~FilterVerticalButtonList()
     while (pop_btn != nullptr);
 }
 
-ButtonNewCanvasWindow::ButtonNewCanvasWindow(Vector2f pos, float width, float height, TextButtonTexture &btn_texture, CanvasManager &canv_manager) :
-    TextButton(pos, width, height, "New canvas", btn_texture),
+ButtonNewCanvasWindow::ButtonNewCanvasWindow(const LayoutBox &box, TextButtonTexture &btn_texture, CanvasManager &canv_manager) :
+    TextButton(box, "New canvas", btn_texture),
     m_canv_manager(&canv_manager)
 {}
 
@@ -59,14 +63,14 @@ bool ButtonNewCanvasWindow::onMousePressed(MouseKey key, int32_t x, int32_t y, L
     return res;
 }
 
-FileVerticalButtonList::FileVerticalButtonList(Vector2f pos, float width, float height, CanvasManager &canv_manager, TextButtonTexture &btn_texture) :
-    VerticalButtonList(pos, width, height, "File", btn_texture),
-    m_width(width),
-    m_height(height),
+FileVerticalButtonList::FileVerticalButtonList(const LayoutBox &box, CanvasManager &canv_manager, TextButtonTexture &btn_texture) :
+    VerticalButtonList(box, "File", btn_texture),
     m_canv_manager(&canv_manager),
     m_btn_texture(&btn_texture)
 {
-    Button *btn = new ButtonNewCanvasWindow({0, 0}, m_width, m_height, *m_btn_texture, *m_canv_manager);
+    UniversalLayoutBox box(0_px, 0_px);
+    box.setSize(getLayoutBox().getSize());
+    Button *btn = new ButtonNewCanvasWindow(box, *m_btn_texture, *m_canv_manager);
     addButton(*btn);
 }
 

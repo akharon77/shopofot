@@ -11,7 +11,7 @@ class ButtonFilterApply : public TextButton
     int32_t m_filt_id;
 
 public:
-    ButtonFilterApply(Vector2f pos, float width, float height, const char *str, TextButtonTexture &btn_texture, CanvasManager &canv_manager, int32_t filt_id);  //sf::Font &font, int32_t char_size, const ButtonTexture &btn_texture, Canvas &canvas, int32_t filt_id) :
+    ButtonFilterApply(const LayoutBox &box, const char *str, TextButtonTexture &btn_texture, CanvasManager &canv_manager, int32_t filt_id);
 
     virtual bool onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
 };
@@ -21,7 +21,7 @@ class ButtonNewCanvasWindow : public TextButton
     CanvasManager *m_canv_manager;
 
 public:
-    ButtonNewCanvasWindow(Vector2f pos, float width, float height, TextButtonTexture &btn_texture, CanvasManager &canv_manager);
+    ButtonNewCanvasWindow(const LayoutBox &box, TextButtonTexture &btn_texture, CanvasManager &canv_manager);
 
     virtual bool onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
 };
@@ -35,7 +35,7 @@ class FilterVerticalButtonList : public VerticalButtonList
     TextButtonTexture *m_btn_texture;
 
 public:
-    FilterVerticalButtonList(Vector2f pos, float width, float height, CanvasManager &canv_manager, TextButtonTexture &btn_texture);
+    FilterVerticalButtonList(const LayoutBox &box, CanvasManager &canv_manager, TextButtonTexture &btn_texture);
 
     void addFilter(const char *str, int32_t filt_id);
 
@@ -54,7 +54,7 @@ class FileVerticalButtonList : public VerticalButtonList
     TextButtonTexture *m_btn_texture;
 
 public:
-    FileVerticalButtonList(Vector2f pos, float width, float height, CanvasManager &canv_manager, TextButtonTexture &btn_texture);
+    FileVerticalButtonList(const LayoutBox &box, CanvasManager &canv_manager, TextButtonTexture &btn_texture);
     ~FileVerticalButtonList();
 
     FileVerticalButtonList& operator = (FileVerticalButtonList &rhs) = delete;
