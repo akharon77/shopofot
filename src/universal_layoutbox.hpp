@@ -9,11 +9,10 @@
  *
  * @copyright Copyright MeerkatBoss (c) 2023
  */
-#ifndef UNIVERSAL_LAYOUT_BOX_HPP
-#define UNIVERSAL_LAYOUT_BOX_HPP
+#ifndef UNIVERSAL_LAYOUTBOX_HPP
+#define UNIVERSAL_LAYOUTBOX_HPP
 
 #include "units.hpp"
-#include "layout_box.hpp"
 #include "math.hpp"
 
 /**
@@ -231,5 +230,5 @@ private:
     Vec2d m_parentSize;
 };
 
-#endif  // UNIVERSAL_LAYOUT_BOX_HPP
+#endif  // UNIVERSAL_LAYOUTBOX_HPP
 

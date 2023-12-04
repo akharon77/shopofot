@@ -2,10 +2,10 @@
 #define WIDGET_HPP
 
 #include "event.hpp"
-#include "list.hpp"
+#include "layoutbox.hpp"
+#include "util/list.hpp"
 #include "math.hpp"
 #include "plug/widget.hpp"
-#include "ui/layout_box.hpp"
 
 class Container
 {
@@ -20,8 +20,8 @@ class Widget : public plug::Widget
 public:
     explicit Widget(const LayoutBox &box);
 
-    Widget(const Widget &rhs) = delete;
-    Widget& operator = (const Widget &rhs) = delete;
+    Widget(const Widget &rhs);
+    Widget& operator = (const Widget &rhs);
 
     ~Widget() override;
 

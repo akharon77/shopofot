@@ -9,7 +9,6 @@
 
 namespace plug
 {
-
     enum EventType
     {
         Tick              = 0,
@@ -17,7 +16,9 @@ namespace plug
         MousePressed      = 2,
         MouseReleased     = 3,
         KeyboardPressed   = 4,
-        KeyboardReleased  = 5
+        KeyboardReleased  = 5,
+
+        EventsCount
     };
 
     class Event

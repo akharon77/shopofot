@@ -12,5 +12,12 @@ using KeyboardPressedEvent  = plug::KeyboardPressedEvent;
 using KeyboardReleasedEvent = plug::KeyboardReleasedEvent;
 using TickEvent             = plug::TickEvent;
 
+enum PersonalEvents // : EventType
+{
+    Resize = 0
+}
+
+operator EventType(PersonalEvents event);
+
 #endif  // EVENT_HPP
 
