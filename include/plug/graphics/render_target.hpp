@@ -11,7 +11,7 @@ namespace plug
     public:
         virtual ~RenderTarget(void) = default;
 
-        virtual void draw  (const VertexArray &array) = 0;
+        virtual void draw  (const VertexArray &array)                         = 0;
         virtual void draw  (const VertexArray &array, const Texture &texture) = 0;
 
         virtual void clear(Color color) = 0;

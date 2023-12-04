@@ -1,6 +1,4 @@
-#include <cmath>
-
-#include "vector2d.hpp"
+#include "math/vec2d.hpp"
 
 Vec2d::Vec2d(const double x_, const double y_) : x(x_), y(y_)
 {}

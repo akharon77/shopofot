@@ -1,9 +1,9 @@
-#ifndef LIST_H
-#define LIST_H
+#ifndef LIST_LIST_HPP
+#define LIST_LIST_HPP
 
 #include <stdint.h>
 
-#include "buf_list.hpp"
+#include "list/buf_list.hpp"
 
 template<typename T>
 class List
@@ -158,5 +158,5 @@ uint32_t List<T>::GetSize() const
 //     return BufferListGet(lst->free_buf, anch);
 // }
 
-#endif  // LIST_H
+#endif  // LIST_LIST_HPP
  

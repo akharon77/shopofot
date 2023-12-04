@@ -1,5 +1,5 @@
-#ifndef NODE_STRUCT_H
-#define NODE_STRUCT_H
+#ifndef LIST_NODE_STRUCT_H
+#define LIST_NODE_STRUCT_H
 
 #include <stdint.h>
 
@@ -12,4 +12,4 @@ struct Node
     int32_t prev;
 };
 
-#endif  // NODE_STRUCT_H
+#endif  // LIST_NODE_STRUCT_H
