@@ -13,6 +13,7 @@ int32_t VerticalButtonList::addButton(Button &btn)
     Vec2d prev_btn_size = btn.getLayoutBox().getSize();
 
     btn.setLayoutBox(UniversalLayoutBox(0_px, 0_px));
+    btn.getLayoutBox().setSize(prev_btn_size);
     btn.getLayoutBox().setPosition(Vec2d(0, own_size.y + m_bottom));
 
     m_bottom += prev_btn_size.y;

@@ -27,12 +27,12 @@
 // #include "onecolor_filter.hpp"
 // #include "negative_filter.hpp"
 
-// #include "shopofot.hpp"
+#include "shopofot.hpp"
 
 // #include "line_edit.hpp"
 
 #include "canvas_manager.hpp"
-// #include "toolbar.hpp"
+#include "toolbar.hpp"
 
 int main()
 {
@@ -66,12 +66,12 @@ int main()
         &btn_texture_config
     };
 
-    // TextButtonTexture text_btn_texture_config
-    // {
-    //     &font,
-    //     16,
-    //     &btn_texture_config
-    // };
+    TextButtonTexture text_btn_texture_config
+    {
+        &font,
+        16,
+        &btn_texture_config
+    };
 
     FrameTexture frame_texture_config
     {
@@ -93,67 +93,67 @@ int main()
     // LineEditTool line_edit_tool(font, 0.05);
 
     ToolPalette tool_palette;
-    // ToolBar toolbar({0.2, 0.2}, 0.05, 0.05, tool_palette, 2);
+    ToolBar toolbar(30_px, 30_px, tool_palette, 2);
 
-    tool_palette.addTool(&line_tool);
-    // sf::Texture line_tool_btn_texture;
-    // line_tool_btn_texture.loadFromFile("line_tool_btn_texture.png");
-    // ButtonTexture line_tool_btn_texture_config
-    // {
-    //     &line_tool_btn_texture,
-    //     {57,  0,  57, 52},
-    //     {57, 52,  57, 52},
-    //     {57, 104, 57, 52}
-    // };
-    // toolbar.addButton(line_tool_btn_texture_config, tool_palette.addTool(&line_tool));
+    // tool_palette.addTool(&line_tool);
+    sf::Texture line_tool_btn_texture;
+    line_tool_btn_texture.loadFromFile("line_tool_btn_texture.png");
+    ButtonTexture line_tool_btn_texture_config
+    {
+        &line_tool_btn_texture,
+        {57,  0,  57, 52},
+        {57, 52,  57, 52},
+        {57, 104, 57, 52}
+    };
+    toolbar.addButton(line_tool_btn_texture_config, tool_palette.addTool(&line_tool));
 
-    tool_palette.addTool(&square_tool);
-    // sf::Texture square_tool_btn_texture;
-    // square_tool_btn_texture.loadFromFile("square_tool_btn_texture.png");
-    // ButtonTexture square_tool_btn_texture_config
-    // {
-    //     &square_tool_btn_texture,
-    //     {57,  0,  57, 52},
-    //     {57, 52,  57, 52},
-    //     {57, 104, 57, 52}
-    // };
-    // toolbar.addButton(square_tool_btn_texture_config, tool_palette.addTool(&square_tool));
+    // tool_palette.addTool(&square_tool);
+    sf::Texture square_tool_btn_texture;
+    square_tool_btn_texture.loadFromFile("square_tool_btn_texture.png");
+    ButtonTexture square_tool_btn_texture_config
+    {
+        &square_tool_btn_texture,
+        {57,  0,  57, 52},
+        {57, 52,  57, 52},
+        {57, 104, 57, 52}
+    };
+    toolbar.addButton(square_tool_btn_texture_config, tool_palette.addTool(&square_tool));
 
-    tool_palette.addTool(&brush_tool);
-    // sf::Texture brush_tool_btn_texture;
-    // brush_tool_btn_texture.loadFromFile("brush_tool_btn_texture.png");
-    // ButtonTexture brush_tool_btn_texture_config
-    // {
-    //     &brush_tool_btn_texture,
-    //     {57,  0,  57, 52},
-    //     {57, 52,  57, 52},
-    //     {57, 104, 57, 52}
-    // };
-    // toolbar.addButton(brush_tool_btn_texture_config, tool_palette.addTool(&brush_tool));
+    // tool_palette.addTool(&brush_tool);
+    sf::Texture brush_tool_btn_texture;
+    brush_tool_btn_texture.loadFromFile("brush_tool_btn_texture.png");
+    ButtonTexture brush_tool_btn_texture_config
+    {
+        &brush_tool_btn_texture,
+        {57,  0,  57, 52},
+        {57, 52,  57, 52},
+        {57, 104, 57, 52}
+    };
+    toolbar.addButton(brush_tool_btn_texture_config, tool_palette.addTool(&brush_tool));
     
-    tool_palette.addTool(&polyline_tool);
-    // sf::Texture polyline_tool_btn_texture;
-    // polyline_tool_btn_texture.loadFromFile("polyline_tool_btn_texture.png");
-    // ButtonTexture polyline_tool_btn_texture_config
-    // {
-    //     &polyline_tool_btn_texture,
-    //     {57,  0,  57, 52},
-    //     {57, 52,  57, 52},
-    //     {57, 104, 57, 52}
-    // };
-    // toolbar.addButton(polyline_tool_btn_texture_config, tool_palette.addTool(&polyline_tool));
+    // tool_palette.addTool(&polyline_tool);
+    sf::Texture polyline_tool_btn_texture;
+    polyline_tool_btn_texture.loadFromFile("polyline_tool_btn_texture.png");
+    ButtonTexture polyline_tool_btn_texture_config
+    {
+        &polyline_tool_btn_texture,
+        {57,  0,  57, 52},
+        {57, 52,  57, 52},
+        {57, 104, 57, 52}
+    };
+    toolbar.addButton(polyline_tool_btn_texture_config, tool_palette.addTool(&polyline_tool));
 
-    tool_palette.addTool(&polygon_tool);
-    // sf::Texture polygon_tool_btn_texture;
-    // polygon_tool_btn_texture.loadFromFile("polygon_tool_btn_texture.png");
-    // ButtonTexture polygon_tool_btn_texture_config
-    // {
-    //     &polygon_tool_btn_texture,
-    //     {57,  0,  57, 52},
-    //     {57, 52,  57, 52},
-    //     {57, 104, 57, 52}
-    // };
-    // toolbar.addButton(polygon_tool_btn_texture_config, tool_palette.addTool(&polygon_tool));
+    // tool_palette.addTool(&polygon_tool);
+    sf::Texture polygon_tool_btn_texture;
+    polygon_tool_btn_texture.loadFromFile("polygon_tool_btn_texture.png");
+    ButtonTexture polygon_tool_btn_texture_config
+    {
+        &polygon_tool_btn_texture,
+        {57,  0,  57, 52},
+        {57, 52,  57, 52},
+        {57, 104, 57, 52}
+    };
+    toolbar.addButton(polygon_tool_btn_texture_config, tool_palette.addTool(&polygon_tool));
 
     // sf::Texture line_edit_tool_btn_texture;
     // line_edit_tool_btn_texture.loadFromFile("line_edit_tool_btn_texture.png");
@@ -166,7 +166,7 @@ int main()
     // };
     // toolbar.addButton(line_edit_tool_btn_texture_config, tool_palette.addTool(&line_edit_tool));
 
-    // Frame toolbar_frame(toolbar, "toolbar", 0.01, frame_texture_config);
+    Frame toolbar_frame(toolbar, "toolbar", 10_px, frame_texture_config);
 
     // BrightnessFilter brightness_filter_pos;
     // brightness_filter_pos.setBrightnessDelta(0.05);
@@ -190,15 +190,15 @@ int main()
     // int32_t negative_filter_id       = filter_palette.addFilter(negative_filter);
 
     UniversalLayoutBox sample_box(1000_px, 1000_px);
-    sample_box.setPosition(Vec2d(0_px, 0_px));
+    // sample_box.setPosition(Vec2d(0_px, 0_px));
 
     CanvasManager canv_manager(sample_box, tool_palette, filter_palette, canv_manager_texture_config);
-    canv_manager.addCanvas(1024, 640);
-    canv_manager.addCanvas(1024, 640);
+    // canv_manager.addCanvas(1024, 640);
+    // canv_manager.addCanvas(1024, 640);
 
-    // FileVerticalButtonList file_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
+    FileVerticalButtonList file_ver_btn_lst(UniversalLayoutBox(50_px, 30_px), canv_manager, text_btn_texture_config);
 
-    // FilterVerticalButtonList filt_ver_btn_lst({0, 0}, 0.08, 0.05, canv_manager, text_btn_texture_config);
+    FilterVerticalButtonList filt_ver_btn_lst(UniversalLayoutBox(50_px, 30_px), canv_manager, text_btn_texture_config);
     // filt_ver_btn_lst.addFilter("Light+",     brightness_filter_pos_id);
     // filt_ver_btn_lst.addFilter("Light-",     brightness_filter_neg_id);
     // filt_ver_btn_lst.addFilter("B/W",        blackwhite_filter_id);
@@ -206,22 +206,22 @@ int main()
     // filt_ver_btn_lst.addFilter("Green&Blue", green_blue_filter_id);
     // filt_ver_btn_lst.addFilter("Negative",   negative_filter_id);
     
-    // Menu menu(canv_manager);
-    // menu.addButton(file_ver_btn_lst);
-    // menu.addButton(filt_ver_btn_lst);
+    Menu menu(canv_manager);
+    menu.addButton(file_ver_btn_lst);
+    menu.addButton(filt_ver_btn_lst);
 
     // Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
     // ScrollBar scrollbar(canvas, 20_px, 200_px, 200_px, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
 
-    Menu menu(canv_manager);
+    // Menu menu(canv_manager);
 
-    Button testButton1(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
-    Button testButton2(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
-    Button testButton3(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+    // Button testButton1(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+    // Button testButton2(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+    // Button testButton3(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
 
-    menu.addButton(testButton1);
-    menu.addButton(testButton2);
-    menu.addButton(testButton3);
+    // menu.addButton(testButton1);
+    // menu.addButton(testButton2);
+    // menu.addButton(testButton3);
 
     // Frame frame(menu, "lol", 10_px, frame_texture_config);
     // frame.setClosable(true);
@@ -241,20 +241,17 @@ int main()
             if (event.type == sf::Event::Closed)
                 window.close();
 
-            // adaptSfEvent(event, canvas, transf_list);
-            adaptSfEvent(event, menu, transf_list);
-            // adaptSfEvent(event, &toolbar_frame, transf_list);
+            adaptSfEvent(event, menu,          transf_list);
+            adaptSfEvent(event, toolbar_frame, transf_list);
         }
 
-        // menu.onTime(globalClock.getElapsedTime().asSeconds());
+        menu.onTime(globalClock.getElapsedTime().asSeconds());
         globalClock.restart();
 
         window.clear(sf::Color::Black);
 
-        // canvas.draw(window, transf_list);
-        menu.draw(window, transf_list);
-        // menu.draw(window, transf_list);
-        // toolbar_frame.draw(window, transf_list);
+        menu         .draw(window, transf_list);
+        toolbar_frame.draw(window, transf_list);
 
         window.display();
     }
