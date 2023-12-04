@@ -15,50 +15,49 @@ class Container
 
 class Widget : public plug::Widget
 {
-    LayoutBox *m_layout_box;
+    plug::LayoutBox *m_layout_box;
 
 public:
-    explicit Widget(const LayoutBox &box);
+    explicit Widget(const plug::LayoutBox &box);
 
     Widget(const Widget &rhs);
     Widget& operator = (const Widget &rhs);
 
     ~Widget() override;
 
-    virtual void draw(TransformStack &stack, RenderTarget &target) override;
+    virtual void draw(plug::TransformStack &stack, plug::RenderTarget &target) override;
 
-    virtual void onEvent(const Event &event, EHC &context) override;
+    virtual void onEvent(const plug::Event &event, plug::EHC &context) override;
 
-    virtual void onParentUpdate(const LayoutBox &parent_box) override;
+    virtual void onParentUpdate(const plug::LayoutBox &parent_box) override;
 
-    virtual       LayoutBox &getLayoutBox()                     override;
-    virtual const LayoutBox &getLayoutBox() const               override;
-    virtual       void       setLayoutBox(const LayoutBox &box) override;
+    virtual       plug::LayoutBox &getLayoutBox()                     override;
+    virtual const plug::LayoutBox &getLayoutBox() const               override;
+
+    virtual void setLayoutBox(const plug::LayoutBox &box) override;
 
     virtual bool onTime (double d_seconds) {};
 
-    virtual bool onMouseMoved (double x, double y, EHC &context) {};
+    virtual bool onMouseMoved (double x, double y, plug::EHC &context) {};
 
-    virtual bool onMousePressed  (MouseButton key, double x, double y, EHC &context) {};
-    virtual bool onMouseReleased (MouseButton key, double x, double y, EHC &context) {};
+    virtual bool onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) {};
+    virtual bool onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) {};
 
-    virtual bool onKeyboardPressed  (KeyCode key) {};
-    virtual bool onKeyboardReleased (KeyCode key) {};
+    virtual bool onKeyboardPressed  (plug::KeyCode key) {};
+    virtual bool onKeyboardReleased (plug::KeyCode key) {};
 
     virtual bool onResize(double width, double height) {};
 
 protected:
-    virtual bool covers(TransformStack &stack, const Vec2d &position) const override;
+    virtual bool covers(plug::TransformStack &stack, const plug::Vec2d &position) const override;
 
-    virtual void onTick             (const TickEvent             &event, EHC &context) override;
-    virtual void onMouseMove        (const MouseMoveEvent        &event, EHC &context) override;
-    virtual void onMousePressed     (const MousePressedEvent     &event, EHC &context) override;
-    virtual void onMouseReleased    (const MouseReleasedEvent    &event, EHC &context) override;
-    virtual void onKeyboardPressed  (const KeyboardPressedEvent  &event, EHC &context) override;
-    virtual void onKeyboardReleased (const KeyboardReleasedEvent &event, EHC &context) override;
+    virtual void onTick             (const plug::TickEvent             &event, plug::EHC &context) override;
+    virtual void onMouseMove        (const plug::MouseMoveEvent        &event, plug::EHC &context) override;
+    virtual void onMousePressed     (const plug::MousePressedEvent     &event, plug::EHC &context) override;
+    virtual void onMouseReleased    (const plug::MouseReleasedEvent    &event, plug::EHC &context) override;
+    virtual void onKeyboardPressed  (const plug::KeyboardPressedEvent  &event, plug::EHC &context) override;
+    virtual void onKeyboardReleased (const plug::KeyboardReleasedEvent &event, plug::EHC &context) override;
 };
-
-void adaptSfEvent(sf::Event event, Widget &widget, List<Transform> &transf_list);
 
 #endif  // WIDGET_HPP
 

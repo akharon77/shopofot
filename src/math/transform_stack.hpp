@@ -2,11 +2,11 @@
 #define MATH_TRANSFORM_STACK_HPP
 
 #include "list.hpp"
-#include "math/transform.hpp"
+#include "plug/math/transform.hpp"
 
 class TransformStack : public plug::TransformStack
 {
-    List<Transform> m_lst;
+    List<plug::Transform> m_lst;
 
 public:
     TransformStack();
@@ -15,13 +15,13 @@ public:
 
     ~TransformStack() = default;
 
-    virtual void enter (const Transform &transform) override;
-    virtual void leave ()                           override;
+    virtual void enter (const plug::Transform &transform) override;
+    virtual void leave ()                                 override;
 
-    virtual Transform top() const override;
+    virtual plug::Transform top() const override;
 
-    virtual Vec2d apply   (const Vec2d &vec) const override;
-    virtual Vec2d restore (const Vec2d &vec) const override;
+    virtual plug::Vec2d apply   (const plug::Vec2d &vec) const override;
+    virtual plug::Vec2d restore (const plug::Vec2d &vec) const override;
 }
 
 #endif  // MATH_TRANSFORM_STACK_HPP

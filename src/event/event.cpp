@@ -1,7 +1,7 @@
-#include "event.hpp"
+#include "event/event.hpp"
 
-operator EventType(PersonalEvents event)
+operator plug::EventType(PersonalEvents event)
 {
-    return static_cast<EventType>(event + EventType::EventsCount);
+    return static_cast<plug::EventType>(event + plug::EventType::EventsCount);
 }
 

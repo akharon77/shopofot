@@ -65,7 +65,7 @@
  * Free alignment does not constrain layout box position
  *
  */
-class UniversalLayoutBox : public LayoutBox
+class UniversalLayoutBox : public plug::LayoutBox
 {
 public:
     UniversalLayoutBox() : UniversalLayoutBox(100_per, 100_per)
@@ -196,23 +196,23 @@ public:
      *
      ****************************************************************************/
 
-    virtual void onParentUpdate(const LayoutBox &parent_box) override;
+    virtual void onParentUpdate(const plug::LayoutBox &parent_box) override;
 
-    virtual Vec2d getSize() const override;
+    virtual plug::Vec2d getSize() const override;
 
-    virtual Vec2d getPosition() const override;
+    virtual plug::Vec2d getPosition() const override;
 
-    virtual bool setSize(const Vec2d &size) override;
+    virtual bool setSize(const plug::Vec2d &size) override;
 
-    virtual bool setPosition(const Vec2d &position) override;
+    virtual bool setPosition(const plug::Vec2d &position) override;
 
-    virtual LayoutBox *clone(void) const override
+    virtual plug::LayoutBox *clone(void) const override
     {
         return new UniversalLayoutBox(*this);
     }
 
 private:
-    void onParentUpdate(const Vec2d &parent_size);
+    void onParentUpdate(const plug::Vec2d &parent_size);
 
     Align m_align;
     Length m_posX;
@@ -227,7 +227,7 @@ private:
     Length m_paddingLeft;
     Length m_paddingRight;
 
-    Vec2d m_parentSize;
+    plug::Vec2d m_parentSize;
 };
 
 #endif  // UNIVERSAL_LAYOUTBOX_HPP

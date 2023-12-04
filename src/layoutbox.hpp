@@ -3,7 +3,5 @@
 
 #include "plug/layoutbox.hpp"
 
-using LayoutBox = plug::LayoutBox;
-
 #endif  // LAYOUT_BOX_HPP
 
