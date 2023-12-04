@@ -1,7 +1,7 @@
 #include "toggle_button.hpp"
 
-ToggleButton::ToggleButton(Vector2f pos, float width, float height, ButtonTexture &btn_texture) :
-    Button(pos, width, height, btn_texture),
+ToggleButton::ToggleButton(const LayoutBox &box, ButtonTexture &btn_texture) :
+    Button(box, btn_texture),
     m_is_toggled(false)
 {}
 

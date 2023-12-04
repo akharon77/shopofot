@@ -12,7 +12,7 @@ public:
     ToggleButton& operator = (const ToggleButton &rhs) = default;
     ToggleButton(const ToggleButton &rhs) = default;
 
-    ToggleButton(Vector2f pos, float width, float height, ButtonTexture &btn_texture);
+    ToggleButton(const LayoutBox &box, ButtonTexture &btn_texture);
 
     void setToggle(bool flag) { m_is_toggled = flag; if (!flag) setRect(m_btn_texture.m_default_rect);}
 
