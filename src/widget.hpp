@@ -38,16 +38,6 @@ public:
 
     virtual bool onTime (double d_seconds) {};
 
-    virtual bool onMouseMoved (double x, double y, plug::EHC &context) {};
-
-    virtual bool onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) {};
-    virtual bool onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) {};
-
-    virtual bool onKeyboardPressed  (plug::KeyCode key) {};
-    virtual bool onKeyboardReleased (plug::KeyCode key) {};
-
-    virtual bool onResize(double width, double height) {};
-
 protected:
     virtual bool covers(plug::TransformStack &stack, const plug::Vec2d &position) const override;
 
@@ -57,6 +47,18 @@ protected:
     virtual void onMouseReleased    (const plug::MouseReleasedEvent    &event, plug::EHC &context) override;
     virtual void onKeyboardPressed  (const plug::KeyboardPressedEvent  &event, plug::EHC &context) override;
     virtual void onKeyboardReleased (const plug::KeyboardReleasedEvent &event, plug::EHC &context) override;
+    virtual void onResize           (const ResizeEvent                 &event, plug::EHC &context);
+
+    virtual bool onMouseMoved (double x, double y, plug::EHC &context) {};
+
+    virtual bool onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) {};
+    virtual bool onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) {};
+
+    virtual bool onKeyboardPressed  (plug::KeyCode key, plug::EHC &context) {};
+    virtual bool onKeyboardReleased (plug::KeyCode key, plug::EHC &context) {};
+
+    virtual bool onResize(double width, double height, plug::EHC &context) {};
+
 };
 
 #endif  // WIDGET_HPP

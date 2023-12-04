@@ -94,6 +94,12 @@ void Widget::onEvent(const plug::Event &event, plug::EHC &context)
             }
             break;
 
+        case (plug::EventType) PersonalEvents::Resize:
+            {
+                onResize((const ResizeEvent&) event, context);
+            }
+            break;
+
         default:
             break;
     }
@@ -135,5 +141,40 @@ bool Widget::covers(plug::TransformStack &stack, const plug::Vec2d &position) co
     return top_check && right_check && bottom_check && left_check;
 
     return false;
+}
+
+void Widget::onTick(const plug::TickEvent &event, plug::EHC &context)
+{
+    onTime(event.delta_time, context);
+}
+
+void Widget::onMouseMove(const plug::MouseMoveEvent &event, plug::EHC &context)
+{
+    onMouseMoved(event.pos.x, event.pos.y, context);
+}
+
+void Widget::onMousePressed(const plug::MousePressedEvent &event, plug::EHC &context)
+{
+    onMousePressed(event.button_id, event.pos.x, event.pos.y, context);
+}
+
+void Widget::onMouseReleased(const plug::MouseReleasedEvent &event, plug::EHC &context)
+{
+    onMouseReleased(event.button_id, event.pos.x, event.pos.y, context);
+}
+
+void Widget::onKeyboardPressed(const plug::KeyboardPressedEvent &event, plug::EHC &context)
+{
+    onKeyboardPressed(event.key_id, context);
+}
+
+void Widget::onKeyboardReleased(const plug::KeyboardReleasedEvent &event, plug::EHC &context)
+{
+    onKeyboardReleased(event.key_id, context);
+}
+
+void Widget::onResize(const ResizeEvent &event, plug::EHC &context)
+{
+    onResize(event.size.x, event.size.y, context);
 }
 
