@@ -1,7 +1,8 @@
 #include "toolbar.hpp"
+#include "universal_layout_box.hpp"
 
-ToolButton::ToolButton(Vector2f pos, float width, float height, ButtonTexture &btn_texture, ToolPalette &tool_palette, int32_t tool_id) :
-    ToggleButton(pos, width, height, btn_texture),
+ToolButton::ToolButton(const LayoutBox &box, ButtonTexture &btn_texture, ToolPalette &tool_palette, int32_t tool_id) :
+    ToggleButton(box, btn_texture),
     m_tool_palette(&tool_palette),
     m_tool_id(tool_id)
 {}
@@ -15,8 +16,8 @@ bool ToolButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transfo
     return res;
 }
 
-ToolBar::ToolBar(Vector2f pos, float btn_width, float btn_height, ToolPalette &tool_palette, int32_t cnt_x) :
-    Widget({pos, {1, 1}}, {0, 0}),
+ToolBar::ToolBar(double btn_width, double btn_height, ToolPalette &tool_palette, int32_t cnt_x) :
+    Widget(UniversalLayoutBox(0_px, 0_px)),
     m_btn_width(btn_width),
     m_btn_height(btn_height),
     m_tool_palette(&tool_palette),
@@ -31,10 +32,15 @@ void ToolBar::addButton(ButtonTexture &btn_texture, int32_t tool_id)
     int32_t x = cnt % m_cnt_x;
     int32_t y = cnt / m_cnt_x;
 
-    m_size.x = std::max(m_size.x, m_btn_width * (x + 1));
-    m_size.y = std::max(m_size.y, m_btn_height * (y + 1));
+    Vec2d own_size = getLayoutBox().getSize();
+    own_size.x = std::max(own_size.x, m_btn_width  * (x + 1));
+    own_size.y = std::max(own_size.y, m_btn_height * (y + 1));
+    getLayoutBox().setSize(own_size);
 
-    ToolButton *btn = new ToolButton({x * m_btn_width, y * m_btn_height}, m_btn_width, m_btn_height, btn_texture, *m_tool_palette, tool_id);
+    UniversalLayoutBox tool_btn_box(0_px, 0_px);
+    tool_btn_box.setPosition(Vec2d(x * m_btn_width, y * m_btn_height));
+    tool_btn_box.setSize(Vec2d(m_btn_width, m_btn_height));
+    ToolButton *btn = new ToolButton(tool_btn_box, btn_texture, *m_tool_palette, tool_id);
     setToggled(m_btn_list.PushBack(btn));
 }
 
@@ -48,7 +54,11 @@ void ToolBar::setToggled(int32_t id)
 
 void ToolBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_btn_list.GetHead();
@@ -67,7 +77,11 @@ void ToolBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
 
 bool ToolBar::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     // bool res = false;
@@ -96,7 +110,11 @@ bool ToolBar::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform>
 
 bool ToolBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_btn_list.GetHead();
@@ -117,7 +135,11 @@ bool ToolBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform
 
 bool ToolBar::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
 {
-    transf_list.PushBack(m_transf.applyParent(transf_list.Get(transf_list.GetTail())->val));
+    // TODO: make more based and less cringe
+    // for compatibility only
+    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+
+    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
     Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
 
     int32_t anch = m_btn_list.GetHead();

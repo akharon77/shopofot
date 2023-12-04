@@ -10,7 +10,7 @@ class ToolButton : public ToggleButton
     int32_t m_tool_id;
 
 public:
-    ToolButton(Vector2f pos, float width, float height, ButtonTexture &btn_texture, ToolPalette &tool_palette, int32_t tool_id);
+    ToolButton(const LayoutBox &box, ButtonTexture &btn_texture, ToolPalette &tool_palette, int32_t tool_id);
 
     virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
 };
@@ -23,13 +23,13 @@ class ToolBar : public Widget
 
     int32_t m_cnt_x;
 
-    float m_btn_width;
-    float m_btn_height;
+    double m_btn_width;
+    double m_btn_height;
 
 
 public:
     int32_t m_toggled_id;
-    ToolBar(Vector2f pos, float btn_width, float btn_height, ToolPalette &tool_palette, int32_t cnt_x);
+    ToolBar(double btn_width, double btn_height, ToolPalette &tool_palette, int32_t cnt_x);
 
     ~ToolBar() = default;
     ToolBar& operator = (const ToolBar &rhs) = delete;
