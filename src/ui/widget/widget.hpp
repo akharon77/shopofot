@@ -7,6 +7,8 @@
 #include "layout_box.hpp"
 #include "list.hpp"
 #include "transform.hpp"
+#include "plug/widget.hpp"
+
 #include <cassert>
 
 enum class MouseKey
@@ -52,15 +54,15 @@ enum class KeyboardKey : uint32_t
 
 class Container
 {
-public:
-    virtual bool close(int32_t id) = 0;
+    public:
+        virtual bool close(int32_t id) = 0;
 };
 
-class Widget
+class Widget : plug::Widget
 {
     LayoutBox *m_layout_box;
 
-public:
+    public:
     Widget(const LayoutBox &box);
 
     virtual void onParentUpdate(const LayoutBox &parent_box);
