@@ -14,7 +14,6 @@ CanvasView::CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t c
     m_canv_texture(m_sf_canv_texture, canv_width, canv_height),
     m_last_mouse_pos(0, 0)
 {
-    m_canv_texture.create(canv_width, canv_height);
     m_canv_texture.clear(getPlugColor(sf::Color::Black));
 
     m_vertex_arr[0].position = plug::Vec2d(0, 0);

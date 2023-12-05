@@ -6,7 +6,7 @@
 
 RenderTexture::RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t height) :
     m_sf_texture(sf_texture),
-    m_plug_texture(width, height),
+    m_plug_texture(new plug::Texture(width, height)),
     m_flag_upd(true),
     m_width(width),
     m_height(height)
@@ -14,6 +14,19 @@ RenderTexture::RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t
     m_sf_texture.create(width, height);
     m_sf_texture.clear(sf::Color::Transparent);
     m_sf_texture.display();
+}
+
+void RenderTexture::create(size_t width, size_t height)
+{
+    m_sf_texture.create(width, height);
+    m_sf_texture.clear(sf::Color::Transparent);
+    m_sf_texture.display();
+    m_width = width;
+    m_height = height;
+    m_flag_upd = true;
+
+    delete m_plug_texture;
+    m_plug_texture = new plug::Texture(width, height);
 }
 
 const sf::RenderTexture& RenderTexture::getSfTexture()
@@ -33,12 +46,12 @@ const plug::Texture& RenderTexture::getPlugTexture()
             for (size_t x = 0; x < m_width; ++x)
             {
                 sf::Color color = image.getPixel(x, y);
-                m_plug_texture.setPixel(x, y, getPlugColor(color));
+                m_plug_texture->setPixel(x, y, getPlugColor(color));
             }
         }
     }
 
-    return m_plug_texture;
+    return *m_plug_texture;
 }
 
 void RenderTexture::draw(const plug::VertexArray &array)
