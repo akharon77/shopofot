@@ -13,7 +13,7 @@ PROGRAM_OUT		:= $(addsuffix .out, $(PROGRAM_NAME))
 INCLUDE_DIRS	:= include/ src/
 
  SOURCE_DIR		:= src/
- SOURCE_DIRS	:= util/list/ util/sfml/ widget/ universal_layoutbox/ math/transform/ math/transform_stack/ math/vec2d/ ui/button/button/ event/event/ event/event_manager/ graphics/render_texture/ graphics/render_window/ graphics/shapes/
+ SOURCE_DIRS	:= util/list/ util/sfml/ widget/ universal_layoutbox/ math/transform/ math/transform_stack/ math/vec2d/ ui/button/button/ ui/button/text_button/ ui/button/vertical_button_list/ ui/button/toggle_button/ event/event/ event/event_manager/ graphics/render_texture/ graphics/render_window/ graphics/shapes/
 
 BUILD_DIR		:= build/
 BUILD_DIRS		:= obj/
@@ -49,5 +49,6 @@ $(OBJ_DIR)%.o: $(SOURCE_DIR)%.cpp $(BUILD_DIRS_DEP)
 sinclude $(DEP_FILES)
 
 clean:
-	@rm -rf $(BUILD_DIR) $(DEP_FILES) build.log
+	@rm -rf $(OBJECT_FILES) $(DEP_FILES) | tee -a $(BUILD_LOG)
+	@echo [$(shell date -Iseconds)] RM $< | tee -a $(BUILD_LOG)
 

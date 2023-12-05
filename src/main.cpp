@@ -35,7 +35,7 @@
 
 // #include "ui/canvas_view.hpp"
 #include "event/event_manager.hpp"
-#include "ui/button/button.hpp"
+#include "ui/button.hpp"
 #include "universal_layoutbox.hpp"
 #include "util/sfml.hpp"
 #include "math/transform_stack.hpp"
@@ -68,12 +68,12 @@ int main()
     //     &btn_texture_config
     // };
 
-    // TextButtonTexture text_btn_texture_config
-    // {
-    //     &font,
-    //     16,
-    //     &btn_texture_config
-    // };
+    TextButtonTexture text_btn_texture_config
+    {
+        16,
+        getPlugColor(sf::Color::Green),
+        &btn_texture_config
+    };
 
     // FrameTexture frame_texture_config
     // {
@@ -236,7 +236,7 @@ int main()
 
     EventManager event_manager(sf_window, stack);
 
-    Button sample_button(UniversalLayoutBox(5_cm, 5_cm), btn_texture_config);
+    TextButton sample_button(UniversalLayoutBox(5_cm, 5_cm), "ded hui", text_btn_texture_config);
 
     while (sf_window.isOpen())
     {

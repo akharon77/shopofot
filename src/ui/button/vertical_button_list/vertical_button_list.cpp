@@ -39,7 +39,7 @@ void VerticalButtonList::draw(plug::TransformStack &stack, plug::RenderTarget &t
     if (m_status != OPENED)
         return;
 
-    Transform own_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
     stack.enter(own_transf);
 
     int32_t anch = m_btn_lst.GetHead();
@@ -69,7 +69,7 @@ void VerticalButtonList::onMousePressed(plug::MouseButton key, double x, double 
     }
     else if (m_status == OPENED)
     {
-        Transform own_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+        plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
         context.stack.enter(own_transf);
 
         int32_t anch = m_btn_lst.GetHead();
@@ -100,7 +100,7 @@ void VerticalButtonList::onMouseReleased(plug::MouseButton key, double x, double
         return;
     }
 
-    Transform own_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
     context.stack.enter(own_transf);
 
     int32_t anch = m_btn_lst.GetHead();
@@ -121,7 +121,7 @@ void VerticalButtonList::onMouseMoved(double x, double y, plug::EHC &context)
 {
     TextButton::onMouseMoved(x, y, context);
 
-    Transform own_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
     context.stack.enter(own_transf);
 
     int32_t anch = m_btn_lst.GetHead();

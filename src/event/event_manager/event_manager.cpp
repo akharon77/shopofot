@@ -87,7 +87,7 @@ MouseReleasedEvent EventManager::convertMouseReleased(const sf::Event &sf_event)
     return
     {
         getMouseKey(mouse_event.button),
-        Vec2d{mouse_event.x, mouse_event.y},
+        Vec2d((double) mouse_event.x, (double) mouse_event.y),
         m_shiftPressed, m_ctrlPressed, m_altPressed
     };
 }

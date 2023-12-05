@@ -14,7 +14,7 @@
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
-#include <SFML/Window/Window.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include "plug/event.hpp"
 #include "plug/math.hpp"
