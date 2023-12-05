@@ -5,9 +5,8 @@
 
 struct TextButtonTexture
 {
-    double      thickness;
-    plug::Color color;
-
+    // double      thickness;
+    plug::Color    color;
     ButtonTexture *btn_texture;
 };
 

@@ -70,7 +70,6 @@ int main()
 
     TextButtonTexture text_btn_texture_config
     {
-        16,
         getPlugColor(sf::Color::Green),
         &btn_texture_config
     };
@@ -236,7 +235,7 @@ int main()
 
     EventManager event_manager(sf_window, stack);
 
-    TextButton sample_button(UniversalLayoutBox(5_cm, 5_cm), "ded hui", text_btn_texture_config);
+    TextButton sample_button(UniversalLayoutBox(10_cm, 2_cm), "ded hui n nn n n n n lol", text_btn_texture_config);
 
     while (sf_window.isOpen())
     {
