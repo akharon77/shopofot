@@ -17,3 +17,5 @@ vgcore*
 *.txt
 *.swp
 
+build/*
+
