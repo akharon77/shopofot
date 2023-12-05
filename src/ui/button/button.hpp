@@ -1,12 +1,8 @@
 #ifndef BUTTON_HPP
 #define BUTTON_HPP
 
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
-
-#include "widget.hpp"
-#include "vector2d.hpp"
+#include "graphics.hpp"
+#include "math.hpp"
 
 struct ButtonTexture
 {
@@ -35,9 +31,6 @@ protected:
 
     void setRect(const sf::IntRect &rect);
 
-    // float m_width;
-    // float m_height;
-
 public:
     Button(const LayoutBox &box, const ButtonTexture &btn_texture);
 
@@ -45,19 +38,19 @@ public:
     Button& operator = (const Button &rhs) = default;
     Button(const Button &rhs) = default;
 
-    virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
+    virtual void draw(plug::TransformStack &stack, plug::RenderTarget &target) override;
 
-    virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
-    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual bool onTime(double d_seconds, plug::EHC &context) {}
 
-    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual bool onMouseMoved (double x, double y, plug::EHC &context) override;
 
-    virtual bool onKeyboardPressed  (KeyboardKey key) {};
-    virtual bool onKeyboardReleased (KeyboardKey key) {};
+    virtual bool onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) override;
+    virtual bool onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) override;
 
-    virtual bool onResize(float width, float height);
+    virtual bool onKeyboardPressed  (plug::KeyCode key, plug::EHC &context) {}
+    virtual bool onKeyboardReleased (plug::KeyCode key, plug::EHC &context) {}
 
-    virtual bool onTime (float d_seconds) {};
+    virtual bool onResize(double width, double height, plug::EHC &context) override;
 };
 
 #endif  // BUTTON_HPP

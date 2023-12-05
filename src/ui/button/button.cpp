@@ -1,17 +1,8 @@
- #include "button.hpp"
-
-// ButtonTexture::ButtonTexture(const sf::Texture &texture, const sf::IntRect &default_rect, const sf::IntRect &pressed_rect, const sf::IntRect &focused_rect) :
-//     m_texture(&texture),
-//     m_default_rect(default_rect),
-//     m_pressed_rect(pressed_rect),
-//     m_focused_rect(focused_rect)
-// {}
+#include "button.hpp"
 
 Button::Button(const LayoutBox &box, const ButtonTexture &btn_texture) :
     Widget(box),
     m_status(DEFAULT),
-    // m_width(box.getSize().x),
-    // m_height(box.getSize().y),
     m_btn_texture(btn_texture),
     m_vertex_array(sf::Quads, 4)
 {

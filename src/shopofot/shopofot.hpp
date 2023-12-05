@@ -1,9 +1,11 @@
 #ifndef SHOPOFOT_HPP
 #define SHOPOFOT_HPP
 
-#include "canvas_manager.hpp"
-#include "text_btn.hpp"
-#include "ver_btn_list.hpp"
+#include "ui.hpp"
+
+// #include "canvas_manager.hpp"
+// #include "text_btn.hpp"
+// #include "ver_btn_list.hpp"
 
 class ButtonFilterApply : public TextButton
 {
