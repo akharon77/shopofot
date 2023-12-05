@@ -33,14 +33,14 @@ public:
 
     int32_t    GetSize      () const;
 
-    int32_t     GetTail      ();
+    int32_t     GetTail      () const;
 
-    inline Node<T>* Get(int32_t anch)
+    inline Node<T>* Get(int32_t anch) const
     {
         return m_free_buf.Get(anch);
     }
          
-    inline int32_t GetHead()
+    inline int32_t GetHead() const
     {
         return m_free_buf.m_buf[m_dummy_head].next;
     }
@@ -142,7 +142,7 @@ void List<T>::PopFront()
 // }
 
 template<typename T>
-int32_t List<T>::GetTail()
+int32_t List<T>::GetTail() const
 {
     return m_free_buf.m_buf[m_dummy_head].prev;
 }

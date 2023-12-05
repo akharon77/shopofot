@@ -19,10 +19,8 @@ public:
     RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t height);
     ~RenderTexture(void) = default;
 
-    const     plug::Texture& getPlugTexture() const;
-    const sf::RenderTexture& getSfTexture()   const;
-
-    bool create(size_t width, size_t height);
+    const     plug::Texture& getPlugTexture();
+    const sf::RenderTexture& getSfTexture();
 
     virtual void draw (const plug::VertexArray &array) override;
     virtual void draw (const plug::VertexArray &array, const plug::Texture &texture) override;

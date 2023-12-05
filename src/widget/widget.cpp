@@ -1,9 +1,11 @@
-#include "graphics/vertex_array.hpp"
+#include "plug/graphics/vertex_array.hpp"
 #include "math/transform_stack.hpp"
 #include "widget.hpp"
 
+#include <cmath>
+
 Widget::Widget(const Widget &widget) :
-    box_(widget.getLayoutBox().clone()) 
+    m_layout_box(widget.getLayoutBox().clone()) 
 {}
 
 plug::LayoutBox& Widget::getLayoutBox()
@@ -18,8 +20,8 @@ const plug::LayoutBox& Widget::getLayoutBox() const
 
 void Widget::setLayoutBox(const plug::LayoutBox &box)
 {
-    delete box_;
-    box_ = box.clone();
+    delete m_layout_box;
+    m_layout_box = box.clone();
 }
 
 Widget& Widget::operator = (const Widget &widget)
@@ -27,19 +29,19 @@ Widget& Widget::operator = (const Widget &widget)
     if (this == &widget)
         return *this;
 
-    delete box_;
-    box_ = widget.box_->clone();
+    delete m_layout_box;
+    m_layout_box = widget.m_layout_box->clone();
     return *this;
 }
 
 Widget::~Widget()
 {
-    delete box_;
+    delete m_layout_box;
 }
 
 void Widget::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    static VertexArray vertices(plug::PrimitiveType::LinesStrip, 5);
+    static plug::VertexArray vertices(plug::PrimitiveType::LinesStrip, 5);
 
     vertices[0].position = getCorner(Corner::TopLeft,     stack);
     vertices[1].position = getCorner(Corner::TopRight,    stack);
@@ -107,13 +109,13 @@ void Widget::onEvent(const plug::Event &event, plug::EHC &context)
 
 void Widget::onParentUpdate(const plug::LayoutBox &parent_box)
 {
-    box_->onParentUpdate(parent_box);
+    m_layout_box->onParentUpdate(parent_box);
 }
 
 plug::Vec2d Widget::getCorner(Corner corner, const plug::TransformStack &stack) const
 {
     plug::Vec2d direction((corner & 1) ? 0.5 : -0.5, (corner & 2) ? -0.5 : 0.5);
-    plug::Vec2d corner_pos = box_->getPosition() + box_->getSize() * direction;
+    plug::Vec2d corner_pos = m_layout_box->getPosition() + m_layout_box->getSize() * direction;
 
     return stack.top().apply(corner_pos);
 }
@@ -125,7 +127,7 @@ static inline bool isSmall(double a)
 
 bool Widget::covers(plug::TransformStack &stack, const plug::Vec2d &position) const
 {
-    if (isSmall(box_->getSize().x) || isSmall(box_->getSize().y))
+    if (isSmall(m_layout_box->getSize().x) || isSmall(m_layout_box->getSize().y))
         return false;
 
     plug::Vec2d tl = getCorner(TopLeft,     stack);

@@ -31,7 +31,7 @@ public:
 
     void    Clear();
 
-    inline Node<T>* Get(int32_t anch)
+    inline Node<T>* Get(int32_t anch) const
     {
         return m_buf + anch;
     }

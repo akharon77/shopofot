@@ -1,3 +1,5 @@
+#include <cmath>
+
 #include "math/vec2d.hpp"
 
 plug::Vec2d::Vec2d(const double x_, const double y_) : x(x_), y(y_)
@@ -133,8 +135,8 @@ plug::Vec2d operator / (const plug::Vec2d &vec, const double val)
     return res;
 }
 
-plug::Vec2d operator * (const double val, const plug::Vec2d &vec)
-{
-    return vec * val;
-}
+// plug::Vec2d operator * (const double val, const plug::Vec2d &vec)
+// {
+//     return operator*(vec, val);
+// }
 

@@ -4,7 +4,7 @@
 #include <SFML/Window/Mouse.hpp>
 #include <cassert>
 
-#include "event_manager.hpp"
+#include "event/event_manager.hpp"
 
 using namespace plug;
 

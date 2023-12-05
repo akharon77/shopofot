@@ -1,9 +1,8 @@
 #ifndef UI_BUTTON_BUTTON_HPP
 #define UI_BUTTON_BUTTON_HPP
 
-#include "graphics.hpp"
-#include "math.hpp"
-#include "event.hpp"
+#include "widget.hpp"
+#include "graphics/rect.hpp"
 
 struct ButtonTexture
 {

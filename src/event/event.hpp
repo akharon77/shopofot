@@ -2,7 +2,7 @@
 #define EVENT_EVENT_HPP
 
 #include "plug/event.hpp"
-#include "math.hpp"
+#include "plug/math.hpp"
 
 enum PersonalEvents // : EventType
 {

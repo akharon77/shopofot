@@ -2,15 +2,23 @@
 #define WIDGET_HPP
 
 #include "event.hpp"
-#include "layoutbox.hpp"
+#include "plug/layoutbox.hpp"
 #include "util/list.hpp"
-#include "math.hpp"
+#include "plug/math.hpp"
 #include "plug/widget.hpp"
 
 class Container
 {
     public:
         virtual bool close(int32_t id) = 0;
+};
+
+enum Corner
+{
+  TopLeft = 0,
+  TopRight,
+  BottomLeft,
+  BottomRight,
 };
 
 class Widget : public plug::Widget
@@ -38,6 +46,8 @@ public:
 
 protected:
     virtual bool covers(plug::TransformStack &stack, const plug::Vec2d &position) const override;
+
+    plug::Vec2d getCorner(Corner corner, const plug::TransformStack &stack) const;
 
     virtual void onTick             (const plug::TickEvent             &event, plug::EHC &context) override;
     virtual void onMouseMove        (const plug::MouseMoveEvent        &event, plug::EHC &context) override;

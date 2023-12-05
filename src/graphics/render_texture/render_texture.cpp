@@ -6,8 +6,8 @@
 
 RenderTexture::RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t height) :
     m_sf_texture(sf_texture),
-    m_plug_texture(width, height, getPlugColor(sf::Color::Transparent)),
-    m_flag_upd(false),
+    m_plug_texture(width, height),
+    m_flag_upd(true),
     m_width(width),
     m_height(height)
 {
@@ -16,23 +16,17 @@ RenderTexture::RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t
     m_sf_texture.display();
 }
 
-void RenderTexture::create()
-{
-    // TODO
-    return true;
-}
-
-const sf::RenderTexture& RenderTexture::getSfTexture() const
+const sf::RenderTexture& RenderTexture::getSfTexture()
 {
     return m_sf_texture;
 }
 
-const plug::Texture& RenderTexture::getPlugTexture() const
+const plug::Texture& RenderTexture::getPlugTexture()
 {
     if (m_flag_upd)
     {
         m_flag_upd = false;
-        sf::Image image = m_sf_texture->getTexture().copyToImage();
+        sf::Image image = m_sf_texture.getTexture().copyToImage();
 
         for (size_t y = 0; y < m_height; ++y)
         {

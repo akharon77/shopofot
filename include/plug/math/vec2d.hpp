@@ -36,7 +36,7 @@ namespace plug
     Vec2d operator - (const Vec2d &lhs, const Vec2d &rhs);
 
     Vec2d operator * (const Vec2d &vec, const double val);
-    Vec2d operator * (const double val, const Vec2d &vec);
+    // Vec2d operator * (const double val, const Vec2d &vec);
     Vec2d operator * (const Vec2d &lhs, const Vec2d &rhs);
 
     Vec2d operator - (const Vec2d &vec);

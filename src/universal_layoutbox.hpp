@@ -13,7 +13,8 @@
 #define UNIVERSAL_LAYOUTBOX_HPP
 
 #include "universal_layoutbox/units.hpp"
-#include "math.hpp"
+#include "plug/layoutbox.hpp"
+#include "plug/math/vec2d.hpp"
 
 /**
  * @brief Universal layout box for almost any feasible case.

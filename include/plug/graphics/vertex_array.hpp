@@ -1,6 +1,7 @@
 #ifndef PLUG_GRAPHICS_VERTEX_ARRAY_HPP
 #define PLUG_GRAPHICS_VERTEX_ARRAY_HPP
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 

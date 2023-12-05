@@ -9,8 +9,8 @@
  *
  * @copyright Copyright MeerkatBoss (c) 2023
  */
-#ifndef EVENT_MANAGER_HPP
-#define EVENT_MANAGER_HPP
+#ifndef EVENT_EVENT_MANAGER_HPP
+#define EVENT_EVENT_MANAGER_HPP
 
 #include <SFML/System/Clock.hpp>
 #include <SFML/Window/Event.hpp>
@@ -59,5 +59,5 @@ private:
     bool m_altPressed;
 };
 
-#endif  // EVENT_MANAGER_HPP
+#endif  // EVENT_EVENT_MANAGER_HPP
 

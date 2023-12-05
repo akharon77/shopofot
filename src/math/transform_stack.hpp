@@ -3,6 +3,7 @@
 
 #include "util/list.hpp"
 #include "plug/math/transform.hpp"
+#include "plug/math/transform_stack.hpp"
 
 class TransformStack : public plug::TransformStack
 {
