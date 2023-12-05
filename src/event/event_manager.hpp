@@ -26,7 +26,7 @@
 class EventManager
 {
 public:
-    EventManager(sf::Window &window, plug::TransformStack &stack) :
+    EventManager(sf::RenderWindow &window, plug::TransformStack &stack) :
         m_window(window), m_stack(stack), m_shiftPressed(false),
         m_ctrlPressed(false), m_altPressed(false) {}
 
@@ -50,7 +50,7 @@ private:
     plug::KeyboardReleasedEvent convertKeyReleased   (const sf::Event &sf_event) const;
     plug::TickEvent             makeTickEvent        (void);
 
-    sf::Window &m_window;
+    sf::RenderWindow &m_window;
     plug::TransformStack &m_stack;
     sf::Clock m_clock;
 

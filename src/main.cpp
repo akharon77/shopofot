@@ -38,10 +38,13 @@
 #include "ui/button/button.hpp"
 #include "universal_layoutbox.hpp"
 #include "util/sfml.hpp"
+#include "math/transform_stack.hpp"
+#include "graphics/render_window.hpp"
 
 int main()
 {
-    sf::Window sf_window(sf::VideoMode(1024, 720), "shopofot");
+    sf::RenderWindow sf_window(sf::VideoMode(1024, 720), "shopofot");
+    RenderWindow window(sf_window);
 
     TransformStack stack;
 
@@ -235,31 +238,15 @@ int main()
 
     Button sample_button(UniversalLayoutBox(5_cm, 5_cm), btn_texture_config);
 
-    event_manager.sendEvents((plug::Widget*) &sample_button);
+    while (sf_window.isOpen())
+    {
+        event_manager.sendEvents((plug::Widget*) &sample_button);
 
-    // while (window.isOpen())
-    // {
-    //     sf::Event event;
+        sf_window.clear(sf::Color::Black);
+        sample_button.draw(stack, window);
 
-    //     while (window.pollEvent(event))
-    //     {
-    //         if (event.type == sf::Event::Closed)
-    //             window.close();
-
-    //         adaptSfEvent(event, menu,          transf_list);
-    //         adaptSfEvent(event, toolbar_frame, transf_list);
-    //     }
-
-    //     menu.onTime(globalClock.getElapsedTime().asSeconds());
-    //     globalClock.restart();
-
-    //     window.clear(sf::Color::Black);
-
-    //     menu         .draw(window, transf_list);
-    //     toolbar_frame.draw(window, transf_list);
-
-    //     window.display();
-    // }
+        sf_window.display();
+    }
     
     return 0;
 }

@@ -79,7 +79,7 @@ plug::Vec2d normalize(const plug::Vec2d &vec)
     return vec / len;
 }
 
-plug::Vec2d operator - (const plug::Vec2d &vec)
+plug::Vec2d plug::operator - (const plug::Vec2d &vec)
 {
     plug::Vec2d res(0, 0);
     res -= vec;
@@ -87,7 +87,7 @@ plug::Vec2d operator - (const plug::Vec2d &vec)
     return res;
 }
 
-plug::Vec2d operator + (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
+plug::Vec2d plug::operator + (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
 {
     plug::Vec2d res = lhs;
     res += rhs;
@@ -95,7 +95,7 @@ plug::Vec2d operator + (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
     return res;
 }
 
-plug::Vec2d operator - (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
+plug::Vec2d plug::operator - (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
 {
     plug::Vec2d res = lhs;
     res -= rhs;
@@ -103,7 +103,7 @@ plug::Vec2d operator - (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
     return res;
 }
 
-plug::Vec2d operator * (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
+plug::Vec2d plug::operator * (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
 {
     plug::Vec2d res = lhs;
     res *= rhs;
@@ -111,7 +111,7 @@ plug::Vec2d operator * (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
     return res;
 }
 
-plug::Vec2d operator / (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
+plug::Vec2d plug::operator / (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
 {
     plug::Vec2d res = lhs;
     res /= rhs;
@@ -119,7 +119,7 @@ plug::Vec2d operator / (const plug::Vec2d &lhs, const plug::Vec2d &rhs)
     return res;
 }
 
-plug::Vec2d operator * (const plug::Vec2d &vec, const double val)
+plug::Vec2d plug::operator * (const plug::Vec2d &vec, const double val)
 {
     plug::Vec2d res = vec;
     res *= val;
@@ -127,7 +127,7 @@ plug::Vec2d operator * (const plug::Vec2d &vec, const double val)
     return res;
 }
 
-plug::Vec2d operator / (const plug::Vec2d &vec, const double val)
+plug::Vec2d plug::operator / (const plug::Vec2d &vec, const double val)
 {
     plug::Vec2d res = vec;
     res /= val;

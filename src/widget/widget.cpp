@@ -4,6 +4,10 @@
 
 #include <cmath>
 
+Widget::Widget(const plug::LayoutBox &box) :
+    m_layout_box(box.clone())
+{}
+
 Widget::Widget(const Widget &widget) :
     m_layout_box(widget.getLayoutBox().clone()) 
 {}
