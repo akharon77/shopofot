@@ -1,8 +1,8 @@
-#ifndef TOOL_PALETTE_HPP
-#define TOOL_PALETTE_HPP
+#ifndef TOOL_TOOL_PALETTE_HPP
+#define TOOL_TOOL_PALETTE_HPP
 
-#include "list.hpp"
-#include "tool.hpp"
+#include "util/list.hpp"
+#include "tool/tool.hpp"
 
 struct ToolPalette
 {
@@ -40,5 +40,5 @@ struct ToolPalette
     }
 };
 
-#endif  // TOOL_PALETTE_HPP
+#endif  // TOOL_TOOL_PALETTE_HPP
 

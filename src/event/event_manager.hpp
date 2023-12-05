@@ -16,9 +16,9 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Window/Window.hpp>
 
-#include "event.hpp"
-#include "math.hpp"
-#include "widget.hpp"
+#include "plug/event.hpp"
+#include "plug/math.hpp"
+#include "plug/widget.hpp"
 
 /**
  * @brief Converter from SFML events to universal events

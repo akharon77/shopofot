@@ -1,5 +1,5 @@
-#ifndef FILTER_MASK_HPP
-#define FILTER_MASK_HPP
+#ifndef FILTER_FILTER_MASK_HPP
+#define FILTER_FILTER_MASK_HPP
 
 #include <cstdint>
 
@@ -30,5 +30,5 @@ public:
     void invert();
 };
 
-#endif  // FILTER_MASK_HPP
+#endif  // FILTER_FILTER_MASK_HPP
 

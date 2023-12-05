@@ -1,9 +1,10 @@
-#ifndef TOOL_HPP
-#define TOOL_HPP
+#ifndef TOOL_TOOL_HPP
+#define TOOL_TOOL_HPP
 
 #include "widget.hpp"
+#include "math.hpp"
 
-class Canvas;
+class CanvasView;
 
 enum class MouseType
 {
@@ -14,19 +15,19 @@ enum class MouseType
 class Tool
 {
 public:
-    virtual void onMainButton(MouseType key, Vector2f pos, Canvas &canvas)      = 0;
-    virtual void onSecondaryButton(MouseType key, Vector2f pos, Canvas &canvas) = 0;
+    virtual void onMainButton(MouseType key, Vec2d pos, CanvasView &canvas)      = 0;
+    virtual void onSecondaryButton(MouseType key, Vec2d pos, CanvasView &canvas) = 0;
 
-    virtual void onModifier1(MouseType key, Vector2f pos, Canvas &canvas) = 0;
-    virtual void onModifier2(MouseType key, Vector2f pos, Canvas &canvas) = 0;
-    virtual void onModifier3(MouseType key, Vector2f pos, Canvas &canvas) = 0;
+    virtual void onModifier1(MouseType key, Vec2d pos, CanvasView &canvas) = 0;
+    virtual void onModifier2(MouseType key, Vec2d pos, CanvasView &canvas) = 0;
+    virtual void onModifier3(MouseType key, Vec2d pos, CanvasView &canvas) = 0;
 
-    virtual void onMove(Vector2f pos, Canvas &canvas)    = 0;
-    virtual void onConfirm(Vector2f pos, Canvas &canvas) = 0;
-    virtual void onCancel(Vector2f pos, Canvas &canvas)  = 0;
+    virtual void onMove(Vec2d pos, CanvasView &canvas)    = 0;
+    virtual void onConfirm(Vec2d pos, CanvasView &canvas) = 0;
+    virtual void onCancel(Vec2d pos, CanvasView &canvas)  = 0;
 
     virtual Widget* getWidget() = 0;
 };
 
-#endif  // TOOL_HPP
+#endif  // TOOL_TOOL_HPP
 

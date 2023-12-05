@@ -1,8 +1,8 @@
-#ifndef FILTER_PALETTE_HPP
-#define FILTER_PALETTE_HPP
+#ifndef FILTER_FILTER_PALETTE_HPP
+#define FILTER_FILTER_PALETTE_HPP
 
-#include "list.hpp"
-#include "filter.hpp"
+#include "util/list.hpp"
+#include "filter/filter.hpp"
 
 class FilterPalette
 {
@@ -22,5 +22,5 @@ public:
     int32_t loadPlugin(const char *path);
 };
 
-#endif  // FILTER_PALETTE_HPP
+#endif  // FILTER_FILTER_PALETTE_HPP
 

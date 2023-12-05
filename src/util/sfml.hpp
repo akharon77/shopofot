@@ -2,6 +2,7 @@
 #define UTIL_SFML_HPP
 
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 #include <SFML/System/Vector2.hpp>
 
 #include "graphics.hpp"

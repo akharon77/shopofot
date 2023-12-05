@@ -13,6 +13,13 @@ RenderTexture::RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t
 {
     m_sf_texture.create(width, height);
     m_sf_texture.clear(sf::Color::Transparent);
+    m_sf_texture.display();
+}
+
+void RenderTexture::create()
+{
+    // TODO
+    return true;
 }
 
 const sf::RenderTexture& RenderTexture::getSfTexture() const
@@ -46,6 +53,7 @@ void RenderTexture::draw(const plug::VertexArray &array)
     copyToSFMLVertexArray(sf_array, array);
 
     m_sf_texture.draw(sf_array);
+    m_sf_texture.display();
     m_flag_upd = true;
 }
 
@@ -58,12 +66,14 @@ void RenderTexture::draw(const plug::VertexArray &array, const plug::Texture &te
     copyToSFMLTexture(sf_texture, texture);
 
     m_sf_texture.draw(sf_array, &sf_texture);
+    m_sf_texture.display();
     m_flag_upd = true;
 }
 
 void RenderTexture::clear(plug::Color color)
 {
     m_sf_texture.clear(getSFMLColor(color));
+    m_sf_texture.display();
     m_flag_upd = true;
 }
 

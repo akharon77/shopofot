@@ -1,17 +1,17 @@
-#ifndef FILTER_HPP
-#define FILTER_HPP
+#ifndef FILTER_FILTER_HPP
+#define FILTER_FILTER_HPP
 
 #include <cstddef>
-#include "filter_mask.hpp"
+#include "filter/filter_mask.hpp"
 #include "plugin.hpp"
 
-class Canvas;
+class CanvasView;
 
 class Filter : public Plugin
 {
 public:
-    virtual void applyFilter(Canvas &canvas, const FilterMask &mask) = 0;
+    virtual void applyFilter(CanvasView &canvas, const FilterMask &mask) = 0;
 };
 
-#endif  // FILTER_HPP
+#endif  // FILTER_FILTER_HPP
 

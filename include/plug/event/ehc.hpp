@@ -1,7 +1,7 @@
 #ifndef PLUG_EVENT_EHC_HPP
 #define PLUG_EVENT_EHC_HPP
 
-#include "math.hpp"
+#include "plug/math.hpp"
 
 namespace plug
 {
