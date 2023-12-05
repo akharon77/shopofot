@@ -1,8 +1,8 @@
 #ifndef GRAPHICS_SHAPES_HPP
 #define GRAPHICS_SHAPES_HPP
 
-#include "graphics/color.hpp"
-#include "graphics/render_target.hpp"
+#include "color.hpp"
+#include "plug/graphics/render_target.hpp"
 #include "math.hpp"
 
 void drawLine(plug::RenderTarget &target, 
@@ -17,7 +17,7 @@ void drawRectangle(plug::RenderTarget &target,
         const plug::Vec2d &left_up, const plug::Vec2d &right_down,
         const plug::Color color);
 
-void writeText(plug::RenderTarget &target,
+void drawText(plug::RenderTarget &target,
         const plug::Vec2d &pos, 
         const char *text, const double thickness,
         const plug::Color color);
