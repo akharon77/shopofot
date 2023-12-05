@@ -7,8 +7,6 @@ namespace plug
     {
     public:
         explicit Vec2d(const double x = 0, const double y = 0);
-        explicit Vec2d(const Vector2f &rhs);
-        explicit operator Vector2f() const;
 
         ~Vec2d()                             = default;
         Vec2d(const Vec2d &rhs)              = default;

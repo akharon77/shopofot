@@ -1,30 +1,32 @@
 #include "ui/button/button.hpp"
 
-Button::Button(const LayoutBox &box, const ButtonTexture &btn_texture) :
+static const double EPS = 1e-8;
+
+Button::Button(const plug::LayoutBox &box, const ButtonTexture &btn_texture) :
     Widget(box),
+    m_vertex_array(plug::PrimitiveType::Quads, 4),
     m_status(DEFAULT),
-    m_btn_texture(btn_texture),
-    m_vertex_array(plug::PrimitiveType::Quads, 4)
+    m_btn_texture(btn_texture)
 {
-    m_vertex_array[0].position = plug::Vec2d(0, 0);
-    m_vertex_array[1].position = plug::Vec2d(1, 0);
-    m_vertex_array[2].position = plug::Vec2d(1, 1);
-    m_vertex_array[3].position = plug::Vec2d(0, 1);
+    m_vertex_array[0].position = Vec2d(0, 0);
+    m_vertex_array[1].position = Vec2d(1, 0);
+    m_vertex_array[2].position = Vec2d(1, 1);
+    m_vertex_array[3].position = Vec2d(0, 1);
 
     setRect(m_btn_texture.m_default_rect);
 }
 
 void Button::setRect(const Rect &rect)
 {
-    m_vertex_array[0].tex_coords = plug::Vec2d(rect.left, rect.top);
-    m_vertex_array[1].tex_coords = plug::Vec2d(rect.left + rect.width, rect.top);
-    m_vertex_array[2].tex_coords = plug::Vec2d(rect.left + rect.width, rect.top + rect.height);
-    m_vertex_array[3].tex_coords = plug::Vec2d(rect.left, rect.top + rect.height);
+    m_vertex_array[0].tex_coords = Vec2d(rect.left, rect.top);
+    m_vertex_array[1].tex_coords = Vec2d(rect.left + rect.width, rect.top);
+    m_vertex_array[2].tex_coords = Vec2d(rect.left + rect.width, rect.top + rect.height);
+    m_vertex_array[3].tex_coords = Vec2d(rect.left, rect.top + rect.height);
 }
  
 void Button::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     stack.enter(own_transf);
 
     plug::VertexArray buf_vertex_array(m_vertex_array);
@@ -38,10 +40,10 @@ void Button::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 
 void Button::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
-    plug::Vec2d pos = context.stack.restore(plug::Vec2d(x, y));
+    Vec2d pos = context.stack.restore(Vec2d(x, y));
 
     if (EPS < pos.x && pos.x < 1 - EPS &&
         EPS < pos.y && pos.y < 1 - EPS)
@@ -59,10 +61,10 @@ void Button::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC
 
 void Button::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
-    plug::Vec2d pos = context.stack.restore(plug::Vec2d(x, y));
+    Vec2d pos = context.stack.restore(Vec2d(x, y));
 
     if (m_status == PRESSED)
     {
@@ -90,42 +92,33 @@ void Button::onMouseReleased(plug::MouseButton key, double x, double y, plug::EH
 
 void Button::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    context.stack.enter(own_transf);
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-    bool res = false;
-
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
+    Vec2d pos = context.stack.restore(Vec2d(x, y));
 
     if (m_status == DEFAULT            &&
         EPS < pos.x && pos.x < 1 - EPS &&
         EPS < pos.y && pos.y < 1 - EPS)
     {
         m_status = FOCUSED;
-        res = true;
         setRect(m_btn_texture.m_focused_rect);
+        context.overlapped = true;
     }
     else if (m_status != DEFAULT              &&
              !(EPS < pos.x && pos.x < 1 - EPS &&
                EPS < pos.y && pos.y < 1 - EPS))
     {
         m_status = DEFAULT;
-        res = true;
         setRect(m_btn_texture.m_default_rect);
     }
 
-    transf_list.PopBack();
-    return res;
+    context.stack.leave();
 }
 
-bool Button::onResize(float width, float height)
+void Button::onResize(double width, double height, plug::EHC &context)
 {
-    // m_size = {width, height};
     getLayoutBox().setSize(Vec2d(width, height));
-    // m_transf.m_scale = m_size;
-    // m_width = width;
-    // m_height = height;
+    context.stopped = true;
 }
 

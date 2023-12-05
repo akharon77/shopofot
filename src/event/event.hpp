@@ -6,15 +6,13 @@
 
 enum PersonalEvents // : EventType
 {
-    Resize = 0
-}
-
-operator plug::EventType(PersonalEvents event);
+    Resize = 10
+};
 
 struct ResizeEvent : public plug::Event
 {
     ResizeEvent(const plug::Vec2d &new_size) :
-        Event((plug::EventType) PersonalEvents::Resize)
+        Event(PersonalEvents::Resize),
         size(new_size)
     {}
 

@@ -1,9 +1,9 @@
-#ifndef LIST_BUF_LIST_H
-#define LIST_BUF_LIST_H
+#ifndef UTIL_LIST_BUF_LIST_H
+#define UTIL_LIST_BUF_LIST_H
 
 #include <unistd.h>
 
-#include "list/node_struct.hpp"
+#include "util/list/node_struct.hpp"
 
 template<typename T>
 class BufferList
@@ -142,5 +142,5 @@ void BufferList<T>::Clear()
 //     return lst->buf + anch;
 // }
 
-#endif  // LIST_BUF_LIST_H
+#endif  // UTIL_LIST_BUF_LIST_H
 

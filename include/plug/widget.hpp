@@ -3,7 +3,7 @@
 
 #include "plug/event.hpp"
 #include "plug/graphics.hpp"
-#include "plug/layout_box.hpp"
+#include "plug/layoutbox.hpp"
 #include "plug/math.hpp"
 
 namespace plug

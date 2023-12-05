@@ -7,4 +7,8 @@
 
 #include <cmath>
 
+using Vec2d     = plug::Vec2d;
+using Transform = plug::Transform;
+
 #endif  // MATH_HPP
+

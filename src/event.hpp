@@ -7,5 +7,7 @@
 #include "plug/event/key_code.hpp"
 #include "plug/event/mouse_button.hpp"
 
+using EHC = plug::EHC;
+
 #endif  // EVENT_HPP
 

@@ -1,8 +1,8 @@
 #ifndef PLUG_GRAPHICS_RENDER_TARGET_HPP
 #define PLUG_GRAPHICS_RENDER_TARGET_HPP
 
-#include "Plug/Graphics/Texture.h"
-#include "Plug/Graphics/VertexArray.h"
+#include "plug/graphics/texture.hpp"
+#include "plug/graphics/vertex_array.hpp"
 
 namespace plug
 {

@@ -52,7 +52,6 @@ namespace plug
         const size_t width;
         const size_t height;
     };
-
 } // namespace plug
 
 #endif  // PLUG_GRAPHICS_TEXTURE_HPP

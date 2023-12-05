@@ -10,7 +10,7 @@ class RenderWindow : public plug::RenderTarget
     sf::RenderWindow &m_window;
 
 public:
-    RenderWindow(sf::RenderWindow &target) : m_window(window) {}
+    RenderWindow(sf::RenderWindow &window) : m_window(window) {}
     ~RenderWindow(void) = default;
 
     virtual void draw (const plug::VertexArray &array) override;

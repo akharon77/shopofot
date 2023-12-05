@@ -22,7 +22,7 @@ public:
 
     virtual plug::Vec2d apply   (const plug::Vec2d &vec) const override;
     virtual plug::Vec2d restore (const plug::Vec2d &vec) const override;
-}
+};
 
 #endif  // MATH_TRANSFORM_STACK_HPP
 

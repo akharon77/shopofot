@@ -3,6 +3,7 @@
 
 #include "graphics.hpp"
 #include "math.hpp"
+#include "event.hpp"
 
 struct ButtonTexture
 {
@@ -29,10 +30,10 @@ protected:
 
     ButtonTexture m_btn_texture;
 
-    void setRect(const sf::IntRect &rect);
+    void setRect(const Rect &rect);
 
 public:
-    Button(const LayoutBox &box, const ButtonTexture &btn_texture);
+    Button(const plug::LayoutBox &box, const ButtonTexture &btn_texture);
 
     ~Button() = default;
     Button& operator = (const Button &rhs) = default;
@@ -40,17 +41,17 @@ public:
 
     virtual void draw(plug::TransformStack &stack, plug::RenderTarget &target) override;
 
-    virtual bool onTime(double d_seconds, plug::EHC &context) {}
+    virtual void onTime(double d_seconds, plug::EHC &context) {}
 
-    virtual bool onMouseMoved (double x, double y, plug::EHC &context) override;
+    virtual void onMouseMoved (double x, double y, plug::EHC &context) override;
 
-    virtual bool onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) override;
-    virtual bool onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) override;
+    virtual void onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) override;
+    virtual void onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) override;
 
-    virtual bool onKeyboardPressed  (plug::KeyCode key, plug::EHC &context) {}
-    virtual bool onKeyboardReleased (plug::KeyCode key, plug::EHC &context) {}
+    virtual void onKeyboardPressed  (plug::KeyCode key, plug::EHC &context) {}
+    virtual void onKeyboardReleased (plug::KeyCode key, plug::EHC &context) {}
 
-    virtual bool onResize(double width, double height, plug::EHC &context) override;
+    virtual void onResize(double width, double height, plug::EHC &context) override;
 };
 
 #endif  // UI_BUTTON_BUTTON_HPP 
