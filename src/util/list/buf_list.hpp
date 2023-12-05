@@ -9,13 +9,13 @@ template<typename T>
 class BufferList
 {
 public:
-    uint32_t m_size;
-    uint32_t m_cap;
+    int32_t m_size;
+    int32_t m_cap;
 
     int32_t  m_head;
     Node<T> *m_buf;
 
-    BufferList (uint32_t cap = 1);
+    BufferList (int32_t cap = 1);
     ~BufferList();
 
     // TODO
@@ -27,7 +27,7 @@ public:
 
     // Node*   BufferListGet     (BufferList *lst, int32_t anch);
 
-    void    Realloc(uint32_t new_cap);
+    void    Realloc(int32_t new_cap);
 
     void    Clear();
 
@@ -38,7 +38,7 @@ public:
 };
 
 template<typename T>
-BufferList<T>::BufferList(uint32_t cap) :
+BufferList<T>::BufferList(int32_t cap) :
     m_size (cap),
     m_cap  (cap),
     m_head (0),
@@ -67,17 +67,17 @@ void BufferList<T>::Add(int32_t anch)
 }
 
 template<typename T>
-void BufferList<T>::Realloc(uint32_t new_cap)
+void BufferList<T>::Realloc(int32_t new_cap)
 {
     Node<T> *new_buf = new Node<T>[new_cap];  // (Node*) realloc(lst->buf, new_cap * sizeof(Node));
-    for (uint32_t i = 0; i < m_cap; ++i)
+    for (int32_t i = 0; i < m_cap; ++i)
         new_buf[i] = m_buf[i];
 
     delete[] m_buf;
 
     m_buf = new_buf;
     
-    uint32_t ind = m_cap;
+    int32_t ind = m_cap;
 
     m_buf[m_cap - 1].next = ind;
 
@@ -89,10 +89,6 @@ void BufferList<T>::Realloc(uint32_t new_cap)
                 ind + 1,
                 -1
             };
-            //     .val  = NULL,
-            //     .next = ind + 1,
-            //     .prev = -1 
-            // };
 
         ++ind;
     }
@@ -120,19 +116,15 @@ int32_t BufferList<T>::Pop()
 template<typename T>
 void BufferList<T>::Clear()
 {
-    uint32_t cap = m_cap;
+    int32_t cap = m_cap;
 
-    for (uint32_t ind = 0; ind < cap; ++ind)
+    for (int32_t ind = 0; ind < cap; ++ind)
         m_buf[ind] = Node<T>
             {
                 T(),
                 ind + 1,
                 -1
             };
-            //     .val  = NULL,
-            //     .next = ind + 1,
-            //     .prev = -1
-            // };
 
     m_buf[cap - 1].next = -1;
 }

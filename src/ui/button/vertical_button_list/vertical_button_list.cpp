@@ -1,7 +1,7 @@
-#include "universal_layout_box.hpp"
-#include "ver_btn_list.hpp"
+#include "ui/button/vertical_button_list.hpp"
+#include "universal_layoutbox.hpp"
 
-VerticalButtonList::VerticalButtonList(const LayoutBox &box, const char *str, TextButtonTexture &btn_texture) :
+VerticalButtonList::VerticalButtonList(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture) :
     TextButton(box, str, btn_texture),
     m_status(DEFAULT),
     m_bottom(0)
@@ -9,12 +9,12 @@ VerticalButtonList::VerticalButtonList(const LayoutBox &box, const char *str, Te
 
 int32_t VerticalButtonList::addButton(Button &btn)
 {
-    Vec2d own_size = getLayoutBox().getSize();
-    Vec2d prev_btn_size = btn.getLayoutBox().getSize();
+    plug::Vec2d own_size = getLayoutBox().getSize();
+    plug::Vec2d prev_btn_size = btn.getLayoutBox().getSize();
 
     btn.setLayoutBox(UniversalLayoutBox(0_px, 0_px));
     btn.getLayoutBox().setSize(prev_btn_size);
-    btn.getLayoutBox().setPosition(Vec2d(0, own_size.y + m_bottom));
+    btn.getLayoutBox().setPosition(plug::Vec2d(0, own_size.y + m_bottom));
 
     m_bottom += prev_btn_size.y;
     return m_btn_lst.PushBack(&btn);
@@ -32,15 +32,15 @@ Button *VerticalButtonList::popButton()
     return res;
 }
 
-void VerticalButtonList::draw(sf::RenderTarget &target, List<Transform> &transf_list)
+void VerticalButtonList::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    TextButton::draw(target, transf_list);
+    TextButton::draw(stack, target);
 
     if (m_status != OPENED)
         return;
 
-    transf_list.PushBack(Transform(getLayoutBox().getPosition(), Vec2d(1, 1)).combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    stack.enter(own_transf);
 
     int32_t anch = m_btn_lst.GetHead();
     Node<Button*> node = *m_btn_lst.Get(anch);
@@ -48,19 +48,19 @@ void VerticalButtonList::draw(sf::RenderTarget &target, List<Transform> &transf_
     int32_t size = m_btn_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->draw(target, transf_list);
+        node.val->draw(stack, target);
         anch = node.next;
         node = *m_btn_lst.Get(anch);
     }
 
-    transf_list.PopBack();
+    stack.leave();
 }
 
-bool VerticalButtonList::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void VerticalButtonList::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool res = TextButton::onMousePressed(key, x, y, transf_list);
+    TextButton::onMousePressed(key, x, y, context);
 
-    if (res)
+    if (context.stopped)
     {
         if (m_status == OPENED)
             m_status = DEFAULT;
@@ -69,8 +69,8 @@ bool VerticalButtonList::onMousePressed(MouseKey key, int32_t x, int32_t y, List
     }
     else if (m_status == OPENED)
     {
-        transf_list.PushBack(Transform(getLayoutBox().getPosition(), Vec2d(1, 1)).combine(transf_list.Get(transf_list.GetTail())->val));
-        Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+        Transform own_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+        context.stack.enter(own_transf);
 
         int32_t anch = m_btn_lst.GetHead();
         Node<Button*> node = *m_btn_lst.Get(anch);
@@ -78,29 +78,30 @@ bool VerticalButtonList::onMousePressed(MouseKey key, int32_t x, int32_t y, List
         int32_t size = m_btn_lst.GetSize();
         for (int32_t i = 0; i < size; ++i)
         {
-            res = node.val->onMousePressed(key, x, y, transf_list) || res;
+            node.val->onMousePressed(key, x, y, context);
             anch = node.next;
             node = *m_btn_lst.Get(anch);
         }
 
-        transf_list.PopBack();
+        context.stack.leave();
 
-        if (!res)
+        if (!context.stopped)
             m_status = DEFAULT;
     }
-
-    return res;
 }
 
-bool VerticalButtonList::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void VerticalButtonList::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    TextButton::onMouseReleased(key, x, y, transf_list);
+    TextButton::onMouseReleased(key, x, y, context);
 
     if (m_status != OPENED)
-        return true;
+    {
+        context.stopped = true;
+        return;
+    }
 
-    transf_list.PushBack(Transform(getLayoutBox().getPosition(), Vec2d(1, 1)).combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_btn_lst.GetHead();
     Node<Button*> node = *m_btn_lst.Get(anch);
@@ -108,22 +109,20 @@ bool VerticalButtonList::onMouseReleased(MouseKey key, int32_t x, int32_t y, Lis
     int32_t size = m_btn_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onMouseReleased(key, x, y, transf_list);
+        node.val->onMouseReleased(key, x, y, context);
         anch = node.next;
         node = *m_btn_lst.Get(anch);
     }
 
-    transf_list.PopBack();
-
-    return true;
+    context.stack.leave();
 }
 
-bool VerticalButtonList::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+void VerticalButtonList::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    TextButton::onMouseMoved(x, y, transf_list);
+    TextButton::onMouseMoved(x, y, context);
 
-    transf_list.PushBack(Transform(getLayoutBox().getPosition(), Vec2d(1, 1)).combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_btn_lst.GetHead();
     Node<Button*> node = *m_btn_lst.Get(anch);
@@ -131,33 +130,15 @@ bool VerticalButtonList::onMouseMoved(int32_t x, int32_t y, List<Transform> &tra
     int32_t size = m_btn_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onMouseMoved(x, y, transf_list);
+        node.val->onMouseMoved(x, y, context);
         anch = node.next;
         node = *m_btn_lst.Get(anch);
     }
 
-    transf_list.PopBack();
-
-    return true;
+    context.stack.leave();
 }
 
-bool VerticalButtonList::onKeyboardPressed(KeyboardKey key)
-{
-    int32_t anch = m_btn_lst.GetHead();
-    Node<Button*> node = *m_btn_lst.Get(anch);
-
-    int32_t size = m_btn_lst.GetSize();
-    for (int32_t i = 0; i < size; ++i)
-    {
-        node.val->onKeyboardPressed(key);
-        anch = node.next;
-        node = *m_btn_lst.Get(anch);
-    }
-
-    return true; 
-}
-
-bool VerticalButtonList::onKeyboardReleased(KeyboardKey key)
+void VerticalButtonList::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 {
     int32_t anch = m_btn_lst.GetHead();
     Node<Button*> node = *m_btn_lst.Get(anch);
@@ -165,15 +146,13 @@ bool VerticalButtonList::onKeyboardReleased(KeyboardKey key)
     int32_t size = m_btn_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onKeyboardReleased(key);
+        node.val->onKeyboardPressed(key, context);
         anch = node.next;
         node = *m_btn_lst.Get(anch);
     }
-
-    return true;
 }
 
-bool VerticalButtonList::onTime(float d_seconds)
+void VerticalButtonList::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
     int32_t anch = m_btn_lst.GetHead();
     Node<Button*> node = *m_btn_lst.Get(anch);
@@ -181,11 +160,23 @@ bool VerticalButtonList::onTime(float d_seconds)
     int32_t size = m_btn_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onTime(d_seconds);
+        node.val->onKeyboardReleased(key, context);
         anch = node.next;
         node = *m_btn_lst.Get(anch);
     }
+}
 
-    return true;
+void VerticalButtonList::onTime(double d_seconds, plug::EHC &context)
+{
+    int32_t anch = m_btn_lst.GetHead();
+    Node<Button*> node = *m_btn_lst.Get(anch);
+
+    int32_t size = m_btn_lst.GetSize();
+    for (int32_t i = 0; i < size; ++i)
+    {
+        node.val->onTime(d_seconds, context);
+        anch = node.next;
+        node = *m_btn_lst.Get(anch);
+    }
 }
 

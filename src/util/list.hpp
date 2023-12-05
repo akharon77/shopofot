@@ -9,7 +9,7 @@ template<typename T>
 class List
 {
 public:
-    uint32_t      m_size;
+    int32_t      m_size;
 
     int32_t       m_dummy_head;
     BufferList<T> m_free_buf;
@@ -31,7 +31,7 @@ public:
     void        PopBack      ();
     void        PopFront     ();
 
-    uint32_t    GetSize      () const;
+    int32_t    GetSize      () const;
 
     int32_t     GetTail      ();
 
@@ -148,7 +148,7 @@ int32_t List<T>::GetTail()
 }
 
 template<typename T>
-uint32_t List<T>::GetSize() const
+int32_t List<T>::GetSize() const
 {
     return m_size;
 }
