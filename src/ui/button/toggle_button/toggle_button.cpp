@@ -1,36 +1,22 @@
-#include "toggle_button.hpp"
+#include "ui/button/toggle_button.hpp"
 
-ToggleButton::ToggleButton(const LayoutBox &box, ButtonTexture &btn_texture) :
+ToggleButton::ToggleButton(const plug::LayoutBox &box, ButtonTexture &btn_texture) :
     Button(box, btn_texture),
     m_is_toggled(false)
 {}
 
-void ToggleButton::draw(sf::RenderTarget &target, List<Transform> &transf_list)
+void ToggleButton::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
     if (m_is_toggled)
         setRect(m_btn_texture.m_pressed_rect);
 
-    Button::draw(target, transf_list);
+    Button::draw(stack, target);
 }
 
-bool ToggleButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ToggleButton::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool res = Button::onMousePressed(key, x, y, transf_list);
-    if (res)
+    Button::onMousePressed(key, x, y, context);
+    if (context.stopped)
         m_is_toggled = true;
-
-    return res;
-}
-
-bool ToggleButton::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
-{
-    bool res = Button::onMouseReleased(key, x, y, transf_list);
-    return res;
-}
-
-bool ToggleButton::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
-{
-    bool res = Button::onMouseMoved(x, y, transf_list);
-    return res;
 }
 
