@@ -6,25 +6,25 @@ Button::Button(const LayoutBox &box, const ButtonTexture &btn_texture) :
     m_btn_texture(btn_texture),
     m_vertex_array(plug::PrimitiveType::Quads, 4)
 {
-    m_vertex_array[0].position = Vec2d(0, 0);
-    m_vertex_array[1].position = Vec2d(1, 0);
-    m_vertex_array[2].position = Vec2d(1, 1);
-    m_vertex_array[3].position = Vec2d(0, 1);
+    m_vertex_array[0].position = plug::Vec2d(0, 0);
+    m_vertex_array[1].position = plug::Vec2d(1, 0);
+    m_vertex_array[2].position = plug::Vec2d(1, 1);
+    m_vertex_array[3].position = plug::Vec2d(0, 1);
 
     setRect(m_btn_texture.m_default_rect);
 }
 
 void Button::setRect(const Rect &rect)
 {
-    m_vertex_array[0].tex_coords = Vec2d(rect.left,              rect.top);
-    m_vertex_array[1].tex_coords = Vec2d(rect.left + rect.width, rect.top);
-    m_vertex_array[2].tex_coords = Vec2d(rect.left + rect.width, rect.top + rect.height);
-    m_vertex_array[3].tex_coords = Vec2d(rect.left,              rect.top + rect.height);
+    m_vertex_array[0].tex_coords = plug::Vec2d(rect.left, rect.top);
+    m_vertex_array[1].tex_coords = plug::Vec2d(rect.left + rect.width, rect.top);
+    m_vertex_array[2].tex_coords = plug::Vec2d(rect.left + rect.width, rect.top + rect.height);
+    m_vertex_array[3].tex_coords = plug::Vec2d(rect.left, rect.top + rect.height);
 }
  
 void Button::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     stack.enter(own_transf);
 
     plug::VertexArray buf_vertex_array(m_vertex_array);
@@ -36,12 +36,12 @@ void Button::draw(plug::TransformStack &stack, plug::RenderTarget &target)
     stack.leave();
 }
 
-bool Button::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
+void Button::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
-    Vec2d pos = context.stack.restore(Vec2d(x, y));
+    plug::Vec2d pos = context.stack.restore(plug::Vec2d(x, y));
 
     if (EPS < pos.x && pos.x < 1 - EPS &&
         EPS < pos.y && pos.y < 1 - EPS)
@@ -49,35 +49,34 @@ bool Button::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC
         m_status = PRESSED;
         setRect(m_btn_texture.m_pressed_rect);
 
-        transf_list.PopBack();
-        return true;
+        context.stack.leave();
+        context.stopped = true;
+        return;
     }
 
-    transf_list.PopBack();
-    return false;
+    context.stack.leave();
 }
 
-bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void Button::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    context.stack.enter(own_transf);
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
+    plug::Vec2d pos = context.stack.restore(plug::Vec2d(x, y));
 
     if (m_status == PRESSED)
     {
+        context.stopped = true;
+
         if (EPS < pos.x && pos.x < 1 - EPS &&
             EPS < pos.y && pos.y < 1 - EPS)
         {
             m_status = FOCUSED;
             setRect(m_btn_texture.m_focused_rect);
 
-            transf_list.PopBack();
-            return true;
+            context.stack.leave();
+            context.overlapped = true;
+            return;
         }
         else
         {
@@ -86,14 +85,11 @@ bool Button::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform>
         }
     }
 
-    transf_list.PopBack();
-    return false;
+    context.stack.leave();
 }
 
-bool Button::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+void Button::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
     Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
 
     transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
