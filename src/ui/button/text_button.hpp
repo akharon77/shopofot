@@ -1,29 +1,30 @@
 #ifndef UI_BUTTON_TEXT_BUTTON_HPP
 #define UI_BUTTON_TEXT_BUTTON_HPP
 
-#include <SFML/Graphics/Text.hpp>
-
 #include "ui/button/button.hpp"
 
 struct TextButtonTexture
 {
-    sf::Font *m_font;
-    int32_t m_char_size;
-    ButtonTexture *m_btn_texture;
+    double      thickness;
+    plug::Color color;
+
+    ButtonTexture *btn_texture;
 };
 
 class TextButton : public Button
 {
-    sf::Text m_text;
+    double      m_thickness;
+    plug::Color m_color;
+    const char *m_str;
 
 public:
-    TextButton(const LayoutBox &box, const char *str, TextButtonTexture &btn_texture);
+    TextButton(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture);
 
     ~TextButton() = default;
     TextButton& operator = (const TextButton &rhs) = default;
     TextButton(const TextButton &rhs) = default;
 
-    virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
+    virtual void draw(plug::TransformStack &stack, plug::RenderTarget &target) override;
 };
 
 #endif // UI_BUTTON_TEXT_BUTTON_HPP

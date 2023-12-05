@@ -1,12 +1,12 @@
 #include "ui/button/text_button.hpp"
+#include "graphics/shapes.hpp"
 
 TextButton::TextButton(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture) :
-    Button(box, *btn_texture.m_btn_texture)
-{
-    m_text.setFont(*btn_texture.m_font);
-    m_text.setString(str);
-    m_text.setCharacterSize(btn_texture.m_char_size);
-}
+    Button(box, *btn_texture.btn_texture),
+    m_thickness(btn_texture.thickness),
+    m_color(btn_texture.color),
+    m_str(str)
+{}
 
 void TextButton::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
@@ -17,9 +17,8 @@ void TextButton::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 
     Vec2d pos = stack.apply(Vec2d(0, 0));
     
-    m_text.setPosition(sf::Vector2f(pos.x, pos.y));
-    target.draw(m_text);
+    drawText(target, pos, m_str, m_thickness, m_color);
 
-    transf_list.PopBack();
+    stack.leave();
 }
 
