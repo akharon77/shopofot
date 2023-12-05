@@ -26,10 +26,10 @@ CanvasView::CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t c
 
 void CanvasView::updateVertexArray()
 {
-    m_vertex_arr[0].tex_coords = Vec2d(0, 0);
-    m_vertex_arr[1].tex_coords = Vec2d(m_canv_width, 0);
-    m_vertex_arr[2].tex_coords = Vec2d(m_canv_width, m_canv_height);
-    m_vertex_arr[3].tex_coords = Vec2d(0, m_canv_height);
+    m_vertex_arr[0].tex_coords = plug::Vec2d(0, 0);
+    m_vertex_arr[1].tex_coords = plug::Vec2d(m_canv_width, 0);
+    m_vertex_arr[2].tex_coords = plug::Vec2d(m_canv_width, m_canv_height);
+    m_vertex_arr[3].tex_coords = plug::Vec2d(0, m_canv_height);
 }
 
 // sf::Image CanvasView::getImage()

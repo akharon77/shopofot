@@ -7,6 +7,9 @@
 #include "plug/math.hpp"
 #include "plug/widget.hpp"
 
+using Transform = plug::Transform;
+using Vec2d     = plug::Vec2d;
+
 class Container
 {
     public:

@@ -1,13 +1,17 @@
-#include "frame.hpp"
-#include "universal_layout_box.hpp"
+#include "ui/frame.hpp"
+#include "math/transform_stack.hpp"
 
-Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameTexture &frame_texture) :
+static const double EPS = 1e-6;
+static TransformStack FAKE_STACK;
+static plug::EHC FAKE_EHC((plug::TransformStack&) FAKE_STACK, false, false);
+
+Frame::Frame(Widget &wrappee, const char *title, double thickness, FrameTexture &frame_texture) :
     Widget(UniversalLayoutBox(0_px, 0_px)),
     m_wrappee(&wrappee),
     m_title(title),
     m_thickness(thickness),
     m_wrappee_stolen_layout_box(wrappee.getLayoutBox().clone()),
-    m_vertex_array(sf::Quads, 4),
+    m_vertex_array(plug::PrimitiveType::Quads, 4),
     m_status(status_t::DEFAULT),
     m_frame_texture(&frame_texture),
     m_close_btn(*frame_texture.m_close_btn_texture),
@@ -17,11 +21,11 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
     // There should be special frame layoutbox, which will rebroadcast resizing right way,
     // but now there is wrong solution
     
-    Vec2d wrappee_pos  = wrappee.getLayoutBox().getPosition();
-    Vec2d wrappee_size = wrappee.getLayoutBox().getSize();
+    plug::Vec2d wrappee_pos  = wrappee.getLayoutBox().getPosition();
+    plug::Vec2d wrappee_size = wrappee.getLayoutBox().getSize();
 
     getLayoutBox().setPosition(wrappee_pos);
-    getLayoutBox().setSize(wrappee_size + 2 * Vec2d(thickness, thickness));
+    getLayoutBox().setSize(wrappee_size + plug::Vec2d(thickness, thickness) * 2);
 
     UniversalLayoutBox *new_wrappee_box = new UniversalLayoutBox(0_px, 0_px);
     new_wrappee_box->setSize(wrappee_size);
@@ -31,69 +35,59 @@ Frame::Frame(Widget &wrappee, const char *title, const Length &thickness, FrameT
 
     updateVertexArray();
 
-    m_close_btn.onResize(thickness, thickness);
-    m_close_btn.getLayoutBox().setPosition(Vec2d(wrappee_size.x + thickness, 0));
+    m_close_btn.onResize(thickness, thickness, FAKE_EHC);
+    m_close_btn.getLayoutBox().setPosition(plug::Vec2d(wrappee_size.x + thickness, 0));
 }
 
 void Frame::updateVertexArray()
 {
-    Vec2d size = getLayoutBox().getSize();
+    plug::Vec2d size = getLayoutBox().getSize();
 
-    m_vertex_array[0].position = {0,      0};
-    m_vertex_array[1].position = {size.x, 0};
-    m_vertex_array[2].position = {size.x, size.y};
-    m_vertex_array[3].position = {0,      size.y};
+    m_vertex_array[0].position = plug::Vec2d(0,      0);
+    m_vertex_array[1].position = plug::Vec2d(size.x, 0);
+    m_vertex_array[2].position = plug::Vec2d(size.x, size.y);
+    m_vertex_array[3].position = plug::Vec2d(0,      size.y);
 }
 
-void Frame::draw(sf::RenderTarget &target, List<Transform> &transf_list)
+void Frame::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    stack.enter(own_transf);
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-    sf::VertexArray buf_vertex_array(m_vertex_array);
-    for (int32_t i = 0; i < buf_vertex_array.getVertexCount(); ++i)
+    plug::VertexArray buf_vertex_array(m_vertex_array);
+    for (int32_t i = 0; i < buf_vertex_array.getSize(); ++i)
     {
-        Vector2f pos = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(m_vertex_array[i].position)));
+        plug::Vec2d pos = stack.apply(m_vertex_array[i].position);
         buf_vertex_array[i].position = pos;
     }
 
     target.draw(buf_vertex_array);
-    m_wrappee->draw(target, transf_list);
+    m_wrappee->draw(stack, target);
 
     if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
-        m_close_btn.draw(target, transf_list);
+        m_close_btn.draw(stack, target);
 
-    transf_list.PopBack();
+    stack.leave();
 }
 
-bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void Frame::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
-
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-    bool res = false;
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
     {
-        res = res || m_close_btn.onMousePressed(key, x, y, transf_list);
-        if (res)
+        m_close_btn.onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
+        if (context.stopped)
         {
-            transf_list.PopBack();
-            return true;
+            context.stack.leave();
+            return;
         }
     }
 
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
+    plug::Vec2d pos = context.stack.restore(plug::Vec2d(x, y));
     // cringe for compatibility only
-    Vec2d m_size = getLayoutBox().getSize();
+    plug::Vec2d m_size = getLayoutBox().getSize();
 
     if (EPS < pos.x && pos.x < m_size.x    - EPS &&
         EPS < pos.y && pos.y < m_thickness - EPS)
@@ -101,7 +95,7 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
         m_status = status_t::HOLD;
         m_hold_pos = pos;
 
-        res = true;
+        context.stopped = true;
     }
 
     if (EPS + m_wrappee->getLayoutBox().getSize().x + m_thickness < pos.x && pos.x < m_size.x - EPS &&
@@ -110,7 +104,7 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
         m_status = (status_t) ((uint8_t) m_status | (uint8_t) status_t::HOLD_HOR);
         m_hold_pos = pos;
 
-        res = true;
+        context.stopped = true;
     }
 
     if (EPS + m_thickness < pos.x && pos.x < m_size.x - EPS &&
@@ -119,131 +113,116 @@ bool Frame::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &
         m_status = (status_t) ((uint8_t) m_status | (uint8_t) status_t::HOLD_VER);
         m_hold_pos = pos;
 
-        res = true;
+        context.stopped = true;
     }
 
-    res = res || m_wrappee->onMousePressed(key, x, y, transf_list);
+    m_wrappee->onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
 
-    transf_list.PopBack();
-
-    return res;
+    context.stack.leave();
 }
 
-bool Frame::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void Frame::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
-
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-    bool res = false;
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
     {
-        res = res || m_close_btn.onMouseReleased(key, x, y, transf_list);
-        if (res)
+        m_close_btn.onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
+        if (context.stopped)
         {
-            transf_list.PopBack();
-            return true;
+            context.stack.leave();
+            return;
         }
     }
 
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
+    plug::Vec2d pos = context.stack.restore(plug::Vec2d(x, y));
 
     if (m_status != status_t::DEFAULT)
     {
         m_status = status_t::DEFAULT;
-        res = true;
+
+        context.stopped = true;
+        context.stack.leave();
+        return;
     }
 
-    res = res || m_wrappee->onMouseReleased(key, x, y, transf_list);
+    m_wrappee->onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
 
-    transf_list.PopBack();
-
-    return res;
+    context.stack.leave();
 }
 
-bool Frame::onResize(float width, float height)
+void Frame::onResize(double width, double height, plug::EHC &context)
 {
-    bool res = m_wrappee->onResize(width - 2 * m_thickness, height - 2 * m_thickness);
-    if (!res)
-        return false;
+    m_wrappee->onEvent((const plug::Event&) ResizeEvent(Vec2d(width, height)), context);
+    if (!context.stopped)
+        return;
 
-    getLayoutBox().setSize(Vec2d(width, height));
+    getLayoutBox().setSize(plug::Vec2d(width, height));
     m_wrappee->getLayoutBox().onParentUpdate(getLayoutBox());
-    m_close_btn.getLayoutBox().setPosition(Vec2d(width - m_thickness, 0));
+    m_close_btn.getLayoutBox().setPosition(plug::Vec2d(width - m_thickness, 0));
     updateVertexArray();
-    return true;
+    context.stopped = true;
 }
 
-bool Frame::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+void Frame::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // cringe for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
-
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
     
-    bool res = false;
-
     if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
     {
-        res = res || m_close_btn.onMouseMoved(x, y, transf_list);
-        if (res)
+        m_close_btn.onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
+        if (context.overlapped)
         {
-            transf_list.PopBack();
-            return true;
+            context.stack.leave();
+            return;
         }
     }
 
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
+    plug::Vec2d pos = context.stack.restore(plug::Vec2d(x, y));
 
     if (m_status == status_t::HOLD)
     {
-        Vec2d delta_hold_pos = pos - m_hold_pos;
-        Vec2d new_pos = getLayoutBox().getPosition() + delta_hold_pos * top_transf.getScale();
+        plug::Vec2d delta_hold_pos = pos - m_hold_pos;
+        plug::Vec2d new_pos = getLayoutBox().getPosition() + delta_hold_pos * context.stack.top().getScale();
         getLayoutBox().setPosition(new_pos);
-        res = true;
+        context.stopped = true;
     }
 
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_HOR)
     {
-        Vec2d delta_hold_pos = pos - m_hold_pos;
-        onResize(getLayoutBox().getSize().x + delta_hold_pos.x * top_transf.getScale().x, getLayoutBox().getSize().y);
+        plug::Vec2d delta_hold_pos = pos - m_hold_pos;
+        onResize(getLayoutBox().getSize().x + delta_hold_pos.x * context.stack.top().getScale().x, getLayoutBox().getSize().y, FAKE_EHC);
         m_hold_pos.x = getLayoutBox().getSize().x;
-        res = true;
+        context.stopped = true;
     }
 
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_VER)
     {
-        Vec2d delta_hold_pos = pos - m_hold_pos;
-        onResize(getLayoutBox().getSize().x, getLayoutBox().getSize().y + delta_hold_pos.y * top_transf.getScale().y);
+        plug::Vec2d delta_hold_pos = pos - m_hold_pos;
+        onResize(getLayoutBox().getSize().x, getLayoutBox().getSize().y + delta_hold_pos.y * context.stack.top().getScale().y, FAKE_EHC);
         m_hold_pos.y = getLayoutBox().getSize().y;
-        res = true;
+        context.stopped = true;
     }
 
-    res = res || m_wrappee->onMouseMoved(x, y, transf_list);
-
-    transf_list.PopBack();
-    return res;
+    m_wrappee->onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
+    context.stack.leave();
 }
 
-bool Frame::onKeyboardPressed(KeyboardKey key)
+void Frame::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 {
-    m_wrappee->onKeyboardPressed(key);
+    m_wrappee->onEvent((const plug::Event&) plug::KeyboardPressedEvent(key, false, false, false), context);
 }
 
-bool Frame::onKeyboardReleased(KeyboardKey key)
+void Frame::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
-    m_wrappee->onKeyboardReleased(key);
+    m_wrappee->onEvent((const plug::Event&) plug::KeyboardReleasedEvent(key, false, false, false), context);
 }
 
-bool Frame::onTime(float d_seconds)
+void Frame::onTime(double d_seconds, plug::EHC &context)
 {
-    m_wrappee->onTime(d_seconds);
+    m_wrappee->onEvent((const plug::Event&) plug::TickEvent(d_seconds), context);
 }
 
 void Frame::setClosable(bool flag)
@@ -274,12 +253,10 @@ void Frame::setCloseId(int32_t id)
     m_close_btn.setCloseId(id);
 }
 
-bool Frame::CloseButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void Frame::CloseButton::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool flag = Button::onMousePressed(key, x, y, transf_list);
-    if (flag)
+    Button::onMousePressed(key, x, y, context);
+    if (context.stopped)
         m_container->close(m_close_id);
-
-    return flag;
 }
 

@@ -1,13 +1,9 @@
-#ifndef FRAME_HPP
-#define FRAME_HPP
+#ifndef UI_FRAME_HPP
+#define UI_FRAME_HPP
 
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/VertexArray.hpp>
-
-#include "button.hpp"
-#include "units.hpp"
+#include "ui/button.hpp"
 #include "widget.hpp"
-#include "universal_layout_box.hpp"
+#include "universal_layoutbox.hpp"
 
 struct FrameTexture
 {
@@ -34,7 +30,7 @@ class Frame : public Widget
         void setContainer(Container &container);
         void setCloseId(int32_t id);
 
-        virtual bool onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+        virtual void onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context) override;
     };
 
     enum class status_t : uint8_t
@@ -52,27 +48,23 @@ class Frame : public Widget
         FULLABLE = 1 << 1
     };
 
-    Widget *m_wrappee;
+    plug::Widget *m_wrappee;
 
     const char *m_title;
 
-    Length m_thickness;
+    double m_thickness;
 
-    // now deprecated
-    // double m_width;
-    // double m_height;
+    plug::LayoutBox *m_wrappee_stolen_layout_box;
 
-    LayoutBox *m_wrappee_stolen_layout_box;
-
-    sf::VertexArray m_vertex_array;
+    plug::VertexArray m_vertex_array;
 
     status_t m_status;
-    Vec2d    m_hold_pos;
+    plug::Vec2d    m_hold_pos;
 
     FrameTexture *m_frame_texture;
 
-    sf::Texture *m_texture;
-    sf::IntRect  m_rect;
+    plug::Texture *m_texture;
+    Rect  m_rect;
 
     interactive_t m_interactive;
 
@@ -81,7 +73,7 @@ class Frame : public Widget
     void updateVertexArray();
 
 public:
-    Frame(Widget &wrappee, const char *title, const Length &thickness, FrameTexture &frame_texture);
+    Frame(Widget &wrappee, const char *title, double thickness, FrameTexture &frame_texture);
 
     ~Frame() = default;
     Frame& operator = (const Frame &rhs) = delete;
@@ -91,20 +83,20 @@ public:
     void setCloseId(int32_t id);
     void setContainer(Container &container);
 
-    virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
+    virtual void draw(plug::TransformStack &stack, plug::RenderTarget &target) override;
 
-    virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
-    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual void onTime(double d_seconds, plug::EHC &context) override;
 
-    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual void onMouseMoved (double x, double y, plug::EHC &context) override;
 
-    virtual bool onKeyboardPressed  (KeyboardKey key) override;
-    virtual bool onKeyboardReleased (KeyboardKey key) override;
+    virtual void onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) override;
+    virtual void onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) override;
 
-    virtual bool onResize(float width, float height) override;
+    virtual void onKeyboardPressed  (plug::KeyCode key, plug::EHC &context) override;
+    virtual void onKeyboardReleased (plug::KeyCode key, plug::EHC &context) override;
 
-    virtual bool onTime (float d_seconds) override;
+    virtual void onResize(double width, double height, plug::EHC &context) override;
 };
 
-#endif  // FRAME_HPP
+#endif  // UI_FRAME_HPP
 

@@ -15,6 +15,8 @@ static const plug::Color Transparent = plug::Color(0, 0, 0, 0);
 static const size_t SYMBOL_WIDTH  = 7ul;
 static const size_t SYMBOL_HEIGHT = 7ul;
 
+static const double CORRELATION_COEFF = 7.2;
+
 static const bool UNKNOWN[SYMBOL_WIDTH * SYMBOL_HEIGHT] = 
 {
     0, 1, 0, 1, 0, 1, 0,                                     
@@ -558,9 +560,11 @@ static void getSymbolTexture(plug::Color *data, const char symbol, const plug::C
 
 void drawText(plug::RenderTarget &target,
         const plug::Vec2d &pos, 
-        const char *text, const double thickness,
+        const char *text, const double thickness_,
         const plug::Color color)
 {
+    double thickness = thickness_ / CORRELATION_COEFF;
+
     size_t len = strlen(text);
 
     if (len == 0) return;
