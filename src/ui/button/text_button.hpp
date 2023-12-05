@@ -1,9 +1,9 @@
-#ifndef TEXT_BTN_HPP
-#define TEXT_BTN_HPP
+#ifndef UI_BUTTON_TEXT_BUTTON_HPP
+#define UI_BUTTON_TEXT_BUTTON_HPP
 
 #include <SFML/Graphics/Text.hpp>
 
-#include "button.hpp"
+#include "ui/button/button.hpp"
 
 struct TextButtonTexture
 {
@@ -26,5 +26,5 @@ public:
     virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
 };
 
-#endif // TEXT_BTN_HPP
+#endif // UI_BUTTON_TEXT_BUTTON_HPP
 
