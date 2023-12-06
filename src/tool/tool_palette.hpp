@@ -2,18 +2,18 @@
 #define TOOL_TOOL_PALETTE_HPP
 
 #include "util/list.hpp"
-#include "tool/tool.hpp"
+#include "plug/tool.hpp"
 
 struct ToolPalette
 {
     int32_t m_anch;
 
-    List<Tool*> m_list;
+    List<plug::Tool*> m_list;
 
     sf::Color m_foreground_color;
     sf::Color m_background_color;
 
-    Tool *getActiveTool()
+    plug::Tool *getActiveTool()
     {
         if (m_list.GetSize() == 0)
             return nullptr;
@@ -26,7 +26,7 @@ struct ToolPalette
         m_anch = id;
     }
 
-    int32_t addTool(Tool *tool)
+    int32_t addTool(plug::Tool *tool)
     {
         m_anch = m_list.PushBack(tool);
         return m_anch;

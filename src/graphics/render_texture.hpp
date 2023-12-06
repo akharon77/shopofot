@@ -16,8 +16,8 @@ class RenderTexture : public plug::RenderTarget
     size_t m_height;
 
 public:
-    RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t height);
-    ~RenderTexture(void) = default;
+    RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t height, bool clear = true);
+    ~RenderTexture(void) { delete m_plug_texture; }
 
     void create(size_t width, size_t height);
 

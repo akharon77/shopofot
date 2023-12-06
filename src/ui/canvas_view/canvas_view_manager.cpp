@@ -20,11 +20,8 @@ void CanvasViewManager::addCanvas(int32_t canv_width, int32_t canv_height)
     CanvasView *canvas    = new CanvasView(canv_base_box, canv_width, canv_height, *m_tool_palette, *m_filter_palette);
     ScrollBar *scrollbar = new ScrollBar(*canvas, 1_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), *m_texture->m_scrollbar_texture);
     Frame     *frame     = new Frame(*scrollbar, "hello", 8_mm, *m_texture->m_frame_texture);
-    
-    sf::Image cat_img;
-    cat_img.loadFromFile("assets/img/cat.jpg");
 
-    canvas->loadFromImage(cat_img);
+    canvas->loadFromImage("assets/img/cat.jpg");
 
     int32_t id = m_canv_window_lst.PushFront(new CanvasWindow(canvas, scrollbar, frame));
     frame->setClosable(true);

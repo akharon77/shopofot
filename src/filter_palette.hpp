@@ -2,18 +2,18 @@
 #define FILTER_FILTER_PALETTE_HPP
 
 #include "util/list.hpp"
-#include "filter/filter.hpp"
+#include "plug/filter.hpp"
 
 class FilterPalette
 {
-    List<Filter*> m_filter_lst;
-    Filter *m_last_filter;
+    List<plug::Filter*> m_filter_lst;
+    plug::Filter *m_last_filter;
 
 public:
-    size_t addFilter(Filter &filter);
+    size_t addFilter(plug::Filter &filter);
 
-    Filter* getFilter    (size_t filter_id);
-    Filter* getLastFilter();
+    plug::Filter* getFilter    (size_t filter_id);
+    plug::Filter* getLastFilter();
 
     void setLastFilter(size_t filter_id);
 

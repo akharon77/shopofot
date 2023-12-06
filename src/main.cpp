@@ -232,7 +232,7 @@ int main()
 
     EventManager event_manager(sf_window, stack);
 
-    UniversalLayoutBox sample_box(1000_px, 1000_px);
+    UniversalLayoutBox sample_box(640_px, 480_px);
     sample_box.setPosition(Vec2d(0_px, 0_px));
 
     CanvasViewManager canv_manager(sample_box, tool_palette, filter_palette, canv_manager_texture_config);

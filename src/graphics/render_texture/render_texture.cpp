@@ -4,16 +4,19 @@
 #include "graphics/render_texture.hpp"
 #include "util/sfml.hpp"
 
-RenderTexture::RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t height) :
+RenderTexture::RenderTexture(sf::RenderTexture &sf_texture, size_t width, size_t height, bool clear) :
     m_sf_texture(sf_texture),
     m_plug_texture(new plug::Texture(width, height)),
     m_flag_upd(true),
     m_width(width),
     m_height(height)
 {
-    m_sf_texture.create(width, height);
-    m_sf_texture.clear(sf::Color::Transparent);
-    m_sf_texture.display();
+    if (clear)
+    {
+        m_sf_texture.create(width, height);
+        m_sf_texture.clear(sf::Color::Transparent);
+        m_sf_texture.display();
+    }
 }
 
 void RenderTexture::create(size_t width, size_t height)
