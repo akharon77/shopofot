@@ -1,26 +1,26 @@
-#ifndef CANVAS_MANAGER_HPP
-#define CANVAS_MANAGER_HPP
+#ifndef UI_CANVAS_VIEW_MANAGER_HPP
+#define UI_CANVAS_VIEW_MANAGER_HPP
 
-#include "list.hpp"
+#include "util/list.hpp"
 #include "widget.hpp"
-#include "button.hpp"
-#include "canvas.hpp"
-#include "scrollbar.hpp"
-#include "frame.hpp"
+#include "ui/button/button.hpp"
+#include "ui/canvas_view.hpp"
+#include "ui/scrollbar.hpp"
+#include "ui/frame.hpp"
 
-struct CanvasManagerTexture
+struct CanvasViewManagerTexture
 {
     ScrollBarTexture *m_scrollbar_texture;
     FrameTexture     *m_frame_texture;
 };
 
-class CanvasManager : public Widget, public Container
+class CanvasViewManager : public Widget, public Container
 {
     struct CanvasWindow
     {
-        Canvas    *m_canvas;
-        ScrollBar *m_scrollbar;
-        Frame     *m_frame;
+        CanvasView *m_canvas;
+        ScrollBar  *m_scrollbar;
+        Frame      *m_frame;
 
         ~CanvasWindow();
     };
@@ -28,38 +28,38 @@ class CanvasManager : public Widget, public Container
     FilterPalette *m_filter_palette;
     ToolPalette   *m_tool_palette;
     
-    CanvasManagerTexture *m_texture;
+    CanvasViewManagerTexture *m_texture;
 
     List<CanvasWindow*> m_canv_window_lst;
 
 public:
-    CanvasManager(const LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasManagerTexture &canv_manager_texture);
+    CanvasViewManager(const plug::LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasViewManagerTexture &canv_manager_texture);
 
-    ~CanvasManager() = default;
-    CanvasManager& operator = (const CanvasManager &rhs) = delete;
-    CanvasManager(const CanvasManager &rhs) = delete;
+    ~CanvasViewManager() = default;
+    CanvasViewManager& operator = (const CanvasViewManager &rhs) = delete;
+    CanvasViewManager(const CanvasViewManager &rhs) = delete;
 
     void addCanvas(int32_t canv_width, int32_t canv_height);
-    Canvas *getActive();
+    CanvasView *getActive();
     FilterPalette *getFilterPalette();
     ToolPalette *getToolPalette();
 
     virtual bool close(int32_t id) override;
 
-    virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
+    virtual void draw(plug::TransformStack &stack, plug::RenderTarget &target) override;
 
-    virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
-    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual void onTime(double d_seconds, plug::EHC &context) override;
 
-    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual void onMouseMoved (double x, double y, plug::EHC &context) override;
 
-    virtual bool onKeyboardPressed  (KeyboardKey key) override;
-    virtual bool onKeyboardReleased (KeyboardKey key) override;
+    virtual void onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) override;
+    virtual void onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) override;
 
-    virtual bool onTime (float d_seconds) override;
+    virtual void onKeyboardPressed  (plug::KeyCode key, plug::EHC &context) override;
+    virtual void onKeyboardReleased (plug::KeyCode key, plug::EHC &context) override;
 
-    virtual bool onResize(float width, float height) override;
+    virtual void onResize(double width, double height, plug::EHC &context) override;
 };
 
-#endif  // CANVAS_MANAGER_HPP
+#endif  // UI_CANVAS_MANAGER_HPP
 

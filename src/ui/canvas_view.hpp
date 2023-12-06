@@ -2,6 +2,7 @@
 #define UI_CANVAS_VIEW_HPP
 
 #include <SFML/Graphics/Image.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include "widget.hpp"
 #include "filter/filter_mask.hpp"
@@ -27,7 +28,7 @@ public:
     sf::RenderTexture m_sf_canv_texture;
     RenderTexture     m_canv_texture;
 
-    // sf::Image           m_image;
+    sf::Image           m_image;
 
     plug::Vec2d m_last_mouse_pos;
 
@@ -37,9 +38,9 @@ public:
     CanvasView& operator = (const CanvasView &rhs) = delete;
     CanvasView(const CanvasView &rhs) = delete;
 
-    // sf::Image getImage();
-    // void loadFromImage(const sf::Image &image);
-    // void drawImage(const sf::Image &image);
+    sf::Image getImage();
+    void loadFromImage(const sf::Image &image);
+    void drawImage(const sf::Image &image);
 
     void resize(uint32_t width, uint32_t height);
 

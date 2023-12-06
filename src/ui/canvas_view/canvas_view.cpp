@@ -32,28 +32,30 @@ void CanvasView::updateVertexArray()
     m_vertex_arr[3].tex_coords = plug::Vec2d(0, m_canv_height);
 }
 
-// sf::Image CanvasView::getImage()
-// {
-//     return m_canv_texture.getTexture().copyToImage();
-// }
+sf::Image CanvasView::getImage()
+{
+    return m_sf_canv_texture.getTexture().copyToImage();
+}
 
-// void CanvasView::drawImage(const sf::Image &image)
-// {
-//     sf::Texture buf_texture;
-//     buf_texture.loadFromImage(image);
-// 
-//     sf::Sprite buf_sprite;
-//     buf_sprite.setTexture(buf_texture);
-//     m_canv_texture.draw(buf_sprite);
-//     m_canv_texture.display();
-// }
+void CanvasView::drawImage(const sf::Image &image)
+{
+    sf::Texture buf_texture;
+    buf_texture.loadFromImage(image);
 
-// void CanvasView::loadFromImage(const sf::Image &image)
-// {
-//     sf::Vector2u size = image.getSize();
-//     resize(size.x, size.y);
-//     drawImage(image);
-// }
+    sf::Sprite buf_sprite;
+    buf_sprite.setTexture(buf_texture);
+    m_sf_canv_texture.draw(buf_sprite);
+    m_sf_canv_texture.display();
+
+    m_canv_texture.draw(plug::VertexArray(plug::PrimitiveType::Quads, 0));
+}
+
+void CanvasView::loadFromImage(const sf::Image &image)
+{
+    sf::Vector2u size = image.getSize();
+    resize(size.x, size.y);
+    drawImage(image);
+}
 
 void CanvasView::resize(uint32_t width, uint32_t height)
 {

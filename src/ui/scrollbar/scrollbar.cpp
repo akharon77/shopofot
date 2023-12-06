@@ -4,6 +4,7 @@
 #include "universal_layoutbox.hpp"
 #include "ui/scrollbar.hpp"
 #include "math/transform_stack.hpp"
+#include "graphics.hpp"
 
 static const double EPS = 1e-6;
 static TransformStack FAKE_STACK;

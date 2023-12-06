@@ -5,7 +5,8 @@
 #include <SFML/Graphics/VertexArray.hpp>
 
 #include "ui/button/button.hpp"
-#include "graphics.hpp"
+#include "plug/graphics.hpp"
+#include "universal_layoutbox.hpp"
 
 struct ScrollBarTexture
 {

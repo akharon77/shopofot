@@ -1,14 +1,15 @@
-#include "canvas_manager.hpp"
-#include "universal_layout_box.hpp"
+#include "ui/canvas_view_manager.hpp"
+#include "universal_layoutbox.hpp"
+#include "math/transform_stack.hpp"
 
-CanvasManager::CanvasManager(const LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasManagerTexture &canv_manager_texture) :
+CanvasViewManager::CanvasViewManager(const plug::LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasViewManagerTexture &canv_manager_texture) :
     Widget(box),
     m_tool_palette(&tool_palette),
     m_filter_palette(&filter_palette),
     m_texture(&canv_manager_texture)
 {}
 
-void CanvasManager::addCanvas(int32_t canv_width, int32_t canv_height)
+void CanvasViewManager::addCanvas(int32_t canv_width, int32_t canv_height)
 {
     Vec2d own_size = getLayoutBox().getSize();
 
@@ -16,12 +17,12 @@ void CanvasManager::addCanvas(int32_t canv_width, int32_t canv_height)
     canv_base_box.setSize(own_size);
     canv_base_box.setPosition(own_size / 2);
 
-    Canvas    *canvas    = new Canvas(canv_base_box, canv_width, canv_height, *m_tool_palette, *m_filter_palette);
+    CanvasView *canvas    = new CanvasView(canv_base_box, canv_width, canv_height, *m_tool_palette, *m_filter_palette);
     ScrollBar *scrollbar = new ScrollBar(*canvas, 1_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), *m_texture->m_scrollbar_texture);
     Frame     *frame     = new Frame(*scrollbar, "hello", 8_mm, *m_texture->m_frame_texture);
     
     sf::Image cat_img;
-    cat_img.loadFromFile("cat.jpg");
+    cat_img.loadFromFile("assets/img/cat.jpg");
 
     canvas->loadFromImage(cat_img);
 
@@ -31,28 +32,24 @@ void CanvasManager::addCanvas(int32_t canv_width, int32_t canv_height)
     frame->setCloseId(id);
 }
 
-CanvasManager::CanvasWindow::~CanvasWindow()
+CanvasViewManager::CanvasWindow::~CanvasWindow()
 {
     delete m_canvas;
     delete m_scrollbar;
     delete m_frame;
 }
 
-bool CanvasManager::close(int32_t id)
+bool CanvasViewManager::close(int32_t id)
 {
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(id);
     delete node.val;
     m_canv_window_lst.Erase(id);
 }
 
-void CanvasManager::draw(sf::RenderTarget &target, List<Transform> &transf_list)
+void CanvasViewManager::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
-
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    stack.enter(own_transf);
 
     int32_t anch = m_canv_window_lst.GetTail();
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
@@ -60,22 +57,21 @@ void CanvasManager::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     int32_t size = m_canv_window_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->m_frame->draw(target, transf_list);
+        node.val->m_frame->draw(stack, target);
         anch = node.prev;
         node = *m_canv_window_lst.Get(anch);
     }
 
-    transf_list.PopBack();
+    stack.leave();
 }
 
-bool CanvasManager::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void CanvasViewManager::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_canv_window_lst.GetHead();
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
@@ -83,8 +79,8 @@ bool CanvasManager::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Tran
     int32_t size = m_canv_window_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        bool res = node.val->m_frame->onMousePressed(key, x, y, transf_list);
-        if (res)
+        node.val->m_frame->onMousePressed(key, x, y, context);
+        if (context.stopped)
         {
             if (m_canv_window_lst.GetSize() == size)
             {
@@ -93,26 +89,24 @@ bool CanvasManager::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Tran
                 m_canv_window_lst.PushFront(val);
             }
 
-            transf_list.PopBack();
-            return true;
+            context.stack.leave();
+            return;
         }
 
         anch = node.next;
         node = *m_canv_window_lst.Get(anch);
     }
 
-    transf_list.PopBack();
-    return false;
+    context.stack.leave();
 };
 
-bool CanvasManager::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void CanvasViewManager::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_canv_window_lst.GetHead();
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
@@ -120,109 +114,110 @@ bool CanvasManager::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Tra
     int32_t size = m_canv_window_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        bool res = node.val->m_frame->onMouseReleased(key, x, y, transf_list);
-        if (res)
+        node.val->m_frame->onMouseReleased(key, x, y, context);
+        if (context.stopped)
         {
             CanvasWindow *val = node.val;
             m_canv_window_lst.Erase(anch);
             m_canv_window_lst.PushFront(val);
 
-            transf_list.PopBack();
-            return true;
+            context.stack.leave();
+            return;
         }
 
         anch = node.next;
         node = *m_canv_window_lst.Get(anch);
     }
 
-    transf_list.PopBack();
-    return false;
-};
+    context.stack.leave();
+}
 
-bool CanvasManager::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+void CanvasViewManager::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
+    
     int32_t anch = m_canv_window_lst.GetHead();
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
 
     int32_t size = m_canv_window_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        bool res = node.val->m_frame->onMouseMoved(x, y, transf_list);
-        if (res)
+        node.val->m_frame->onMouseMoved(x, y, context);
+        if (context.stopped)
         {
             CanvasWindow *val = node.val;
             m_canv_window_lst.Erase(anch);
             m_canv_window_lst.PushFront(val);
 
-            transf_list.PopBack();
-            return true;
+            context.stack.leave();
+            return;
         }
 
         anch = node.next;
         node = *m_canv_window_lst.Get(anch);
     }
 
-    transf_list.PopBack();
-    return false;
-};
+    context.stack.leave();
+}
 
-bool CanvasManager::onKeyboardPressed(KeyboardKey key)
+void CanvasViewManager::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
+{
+    if (context.stopped)
+        return;
+
+    int32_t anch = m_canv_window_lst.GetHead();
+    Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
+
+    node.val->m_frame->onKeyboardPressed(key, context);
+}
+
+void CanvasViewManager::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
     int32_t anch = m_canv_window_lst.GetHead();
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
 
-    return node.val->m_frame->onKeyboardPressed(key);
+    node.val->m_frame->onKeyboardReleased(key, context);
 }
 
-bool CanvasManager::onKeyboardReleased(KeyboardKey key)
+void CanvasViewManager::onTime(double d_seconds, plug::EHC &context)
 {
-    int32_t anch = m_canv_window_lst.GetHead();
-    Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
+    if (context.stopped)
+        return;
 
-    return node.val->m_frame->onKeyboardReleased(key);
-}
-
-bool CanvasManager::onTime(float d_seconds)
-{
     int32_t anch = m_canv_window_lst.GetHead();
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
 
     int32_t size = m_canv_window_lst.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->m_frame->onTime(d_seconds);
+        node.val->m_frame->onTime(d_seconds, context);
         anch = node.next;
         node = *m_canv_window_lst.Get(anch);
     }
-
-    return true;
 }
 
-bool CanvasManager::onResize(float width, float height)
+void CanvasViewManager::onResize(double width, double height, plug::EHC &context)
 {
-    return false;
+    context.stopped = false;
 }
 
-Canvas *CanvasManager::getActive()
+CanvasView *CanvasViewManager::getActive()
 {
     int32_t anch = m_canv_window_lst.GetHead();
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
     return node.val->m_canvas;
 }
 
-FilterPalette *CanvasManager::getFilterPalette()
+FilterPalette *CanvasViewManager::getFilterPalette()
 {
     return m_filter_palette;
 }
 
-ToolPalette *CanvasManager::getToolPalette()
+ToolPalette *CanvasViewManager::getToolPalette()
 {
     return m_tool_palette;
 }
