@@ -137,30 +137,38 @@ void CanvasView::onMouseMoved(double x, double y, plug::EHC &context)
 void CanvasView::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 {
     plug::Tool *tool = m_tool_palette->getActiveTool();
-    if (tool == nullptr)
-        return;
-
-    plug::Widget *tool_widget = tool->getWidget();
-
-    if (key == plug::KeyCode::Right)
+    if (tool != nullptr)
     {
-        m_tool_palette->nextTool();
-        context.stopped = true;
-        return;
-    }
+        plug::Widget *tool_widget = tool->getWidget();
 
-    if (key == plug::KeyCode::Enter)
-    {
-        m_tool_palette->getActiveTool()->onConfirm();
-        context.stopped = true;
-        return;
-    }
+        if (tool_widget != nullptr)
+            tool_widget->onEvent((const plug::Event&)
+                    plug::KeyboardPressedEvent(key, false, false, false),
+                    context);
 
-    if (key == plug::KeyCode::Escape)
-    {
-        m_tool_palette->getActiveTool()->onCancel();
-        context.stopped = true;
-        return;
+        if (tool_widget != nullptr)
+        {
+            if (key == plug::KeyCode::Right)
+            {
+                m_tool_palette->nextTool();
+                context.stopped = true;
+                return;
+            }
+
+            if (key == plug::KeyCode::Enter)
+            {
+                m_tool_palette->getActiveTool()->onConfirm();
+                context.stopped = true;
+                return;
+            }
+
+            if (key == plug::KeyCode::Escape)
+            {
+                m_tool_palette->getActiveTool()->onCancel();
+                context.stopped = true;
+                return;
+            }
+        }
     }
 
     if (key == plug::KeyCode::F)
@@ -169,11 +177,6 @@ void CanvasView::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
         context.stopped = true;
         return;
     }
-
-    if (tool_widget != nullptr)
-        tool_widget->onEvent((const plug::Event&)
-                plug::KeyboardPressedEvent(key, false, false, false),
-                context);
 }
 
 void CanvasView::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
