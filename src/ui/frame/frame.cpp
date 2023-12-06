@@ -1,3 +1,5 @@
+#include <cstdio>
+
 #include "ui/frame.hpp"
 #include "math/transform_stack.hpp"
 
@@ -35,6 +37,7 @@ Frame::Frame(Widget &wrappee, const char *title, double thickness, FrameTexture 
 
     updateVertexArray();
 
+    FAKE_EHC.stopped = false;
     m_close_btn.onResize(thickness, thickness, FAKE_EHC);
     m_close_btn.getLayoutBox().setPosition(plug::Vec2d(wrappee_size.x + thickness, 0));
 }
@@ -96,6 +99,8 @@ void Frame::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC 
         m_hold_pos = pos;
 
         context.stopped = true;
+        printf("hold\n");
+        printf("size: %lf, %lf\n", getLayoutBox().getSize().x, getLayoutBox().getSize().y);
     }
 
     if (EPS + m_wrappee->getLayoutBox().getSize().x + m_thickness < pos.x && pos.x < m_size.x - EPS &&
@@ -105,6 +110,7 @@ void Frame::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC 
         m_hold_pos = pos;
 
         context.stopped = true;
+        printf("hold hor\n");
     }
 
     if (EPS + m_thickness < pos.x && pos.x < m_size.x - EPS &&
@@ -114,6 +120,7 @@ void Frame::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC 
         m_hold_pos = pos;
 
         context.stopped = true;
+        printf("hold ver\n");
     }
 
     m_wrappee->onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
@@ -154,7 +161,7 @@ void Frame::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC
 
 void Frame::onResize(double width, double height, plug::EHC &context)
 {
-    m_wrappee->onEvent((const plug::Event&) ResizeEvent(Vec2d(width, height)), context);
+    m_wrappee->onEvent((const plug::Event&) ResizeEvent(Vec2d(width, height) - Vec2d(m_thickness, m_thickness) * 2), context);
     if (!context.stopped)
         return;
 
@@ -162,7 +169,6 @@ void Frame::onResize(double width, double height, plug::EHC &context)
     m_wrappee->getLayoutBox().onParentUpdate(getLayoutBox());
     m_close_btn.getLayoutBox().setPosition(plug::Vec2d(width - m_thickness, 0));
     updateVertexArray();
-    context.stopped = true;
 }
 
 void Frame::onMouseMoved(double x, double y, plug::EHC &context)
@@ -193,6 +199,7 @@ void Frame::onMouseMoved(double x, double y, plug::EHC &context)
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_HOR)
     {
         plug::Vec2d delta_hold_pos = pos - m_hold_pos;
+        FAKE_EHC.stopped = false;
         onResize(getLayoutBox().getSize().x + delta_hold_pos.x * context.stack.top().getScale().x, getLayoutBox().getSize().y, FAKE_EHC);
         m_hold_pos.x = getLayoutBox().getSize().x;
         context.stopped = true;
@@ -201,6 +208,7 @@ void Frame::onMouseMoved(double x, double y, plug::EHC &context)
     if ((uint8_t) m_status & (uint8_t) status_t::HOLD_VER)
     {
         plug::Vec2d delta_hold_pos = pos - m_hold_pos;
+        FAKE_EHC.stopped = false;
         onResize(getLayoutBox().getSize().x, getLayoutBox().getSize().y + delta_hold_pos.y * context.stack.top().getScale().y, FAKE_EHC);
         m_hold_pos.y = getLayoutBox().getSize().y;
         context.stopped = true;

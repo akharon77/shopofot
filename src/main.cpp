@@ -40,6 +40,8 @@
 #include "util/sfml.hpp"
 #include "math/transform_stack.hpp"
 #include "graphics/render_window.hpp"
+#include "ui/frame.hpp"
+#include "ui/canvas_view.hpp"
 
 int main()
 {
@@ -74,11 +76,11 @@ int main()
         &btn_texture_config
     };
 
-    // FrameTexture frame_texture_config
-    // {
-    //     &btn_texture_config,
-    //     &btn_texture_config
-    // };
+    FrameTexture frame_texture_config
+    {
+        &btn_texture_config,
+        &btn_texture_config
+    };
 
     // CanvasManagerTexture canv_manager_texture_config
     // {
@@ -93,7 +95,7 @@ int main()
     // PolygonTool polygon_tool;
     // LineEditTool line_edit_tool(font, 0.05);
 
-    // ToolPalette tool_palette;
+    ToolPalette tool_palette;
     // ToolBar toolbar(30_px, 30_px, tool_palette, 2);
 
     // // tool_palette.addTool(&line_tool);
@@ -180,7 +182,7 @@ int main()
 
     // NegativeFilter negative_filter;
 
-    // FilterPalette filter_palette;
+    FilterPalette filter_palette;
     // int32_t brightness_filter_pos_id = filter_palette.loadPlugin("filter_plugins/brightness_filter.so");
 
     // filter_palette.addFilter(brightness_filter_pos);
@@ -231,18 +233,19 @@ int main()
     // cat_img.loadFromFile("cat.jpg");
     // canvas.loadFromImage(cat_img);
 
-    sf::Clock globalClock;
-
     EventManager event_manager(sf_window, stack);
 
-    TextButton sample_button(UniversalLayoutBox(10_cm, 2_cm), "ded hui n nn n n n n lol", text_btn_texture_config);
+    // TextButton sample_button(UniversalLayoutBox(10_cm, 2_cm), "ded hui n nn n n n n lol", text_btn_texture_config);
+    CanvasView canvas_view(UniversalLayoutBox(10_cm, 10_cm), 1024, 640, tool_palette, filter_palette);
+    Frame frame(canvas_view, "loh", 1_cm, frame_texture_config);
+    frame.setClosable(true);
 
     while (sf_window.isOpen())
     {
-        event_manager.sendEvents((plug::Widget*) &sample_button);
+        event_manager.sendEvents((plug::Widget*) &frame);
 
         sf_window.clear(sf::Color::Black);
-        sample_button.draw(stack, window);
+        frame.draw(stack, window);
 
         sf_window.display();
     }
