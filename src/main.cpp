@@ -43,6 +43,7 @@
 #include "ui/frame.hpp"
 #include "ui/canvas_view.hpp"
 #include "ui/scrollbar.hpp"
+#include "ui/menu.hpp"
 
 int main()
 {
@@ -240,7 +241,17 @@ int main()
 
     CanvasView canvas_view(UniversalLayoutBox(20_cm, 20_cm), 1024, 640, tool_palette, filter_palette);
     ScrollBar scrollbar(canvas_view, 1_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
-    Frame frame(scrollbar, "loh", 1_cm, frame_texture_config);
+    Menu menu(scrollbar);
+
+    Button testButton1(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+    Button testButton2(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+    Button testButton3(UniversalLayoutBox(30_px, 30_px), btn_texture_config);
+
+    menu.addButton(testButton1);
+    menu.addButton(testButton2);
+    menu.addButton(testButton3);
+
+    Frame frame(menu, "loh", 1_cm, frame_texture_config);
     frame.setClosable(true);
 
     while (sf_window.isOpen())

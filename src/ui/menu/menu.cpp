@@ -1,11 +1,13 @@
-#include "menu.hpp"
+#include "ui/menu.hpp"
+#include "math/transform_stack.hpp"
+#include "universal_layoutbox.hpp"
 
-Menu::Menu(Widget &wrappee) :
+static const double EPS = 1e-6;
+static TransformStack FAKE_STACK;
+static plug::EHC FAKE_EHC((plug::TransformStack&) FAKE_STACK, false, false);
+
+Menu::Menu(plug::Widget &wrappee) :
     Widget(UniversalLayoutBox(0_px, 0_px)),
-    // {
-    //     {wrappee.m_transf.m_offset, {1, 1}},
-    //     wrappee.m_size
-    // },
     m_wrappee(&wrappee),
     m_wrappee_stolen_layout_box(wrappee.getLayoutBox().clone()),
     m_right_corner(0),
@@ -28,7 +30,6 @@ void Menu::addButton(Button &btn)
     btn.setLayoutBox(UniversalLayoutBox(0_px, 0_px));
     btn.getLayoutBox().setSize(btn_size);
     btn.getLayoutBox().setPosition(Vec2d(m_right_corner, 0));
-    // btn.m_transf.m_offset = {m_right_corner, 0};
     m_right_corner += btn_size.x;
     m_btn_list.PushBack(&btn);
 
@@ -39,25 +40,19 @@ void Menu::addButton(Button &btn)
         Vec2d prev_wrappee_pos = m_wrappee->getLayoutBox().getPosition();
         prev_wrappee_pos.y = m_max_height;
         m_wrappee->getLayoutBox().setPosition(prev_wrappee_pos);
-        // m_wrappee->m_transf.m_offset.y = m_max_height;
 
         Vec2d prev_size = getLayoutBox().getSize();
         prev_size.y = m_wrappee->getLayoutBox().getSize().y + m_max_height;
         getLayoutBox().setSize(prev_size);
-        // m_size.y = m_wrappee->m_size.y + m_max_height;
     }
 }
 
-void Menu::draw(sf::RenderTarget &target, List<Transform> &transf_list)
+void Menu::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    stack.enter(own_transf);
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-    m_wrappee->draw(target, transf_list);
+    m_wrappee->draw(stack, target);
 
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
@@ -65,24 +60,21 @@ void Menu::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->draw(target, transf_list);
+        node.val->draw(stack, target);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    transf_list.PopBack();
+    stack.leave();
 }
 
-bool Menu::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void Menu::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-    bool res = false;
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
@@ -90,26 +82,23 @@ bool Menu::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &t
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        res = node.val->onMousePressed(key, x, y, transf_list) || res;
+        node.val->onMousePressed(key, x, y, context);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    res = res || m_wrappee->onMousePressed(key, x, y, transf_list);
+    m_wrappee->onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
 
-    transf_list.PopBack();
-
-    return res;
+    context.stack.leave();
 }
 
-bool Menu::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void Menu::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
@@ -117,109 +106,109 @@ bool Menu::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onMouseReleased(key, x, y, transf_list);
+        node.val->onMouseReleased(key, x, y, context);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    m_wrappee->onMouseReleased(key, x, y, transf_list);
+    m_wrappee->onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
 
-    transf_list.PopBack();
-
-    return true;
+    context.stack.leave();
 }
 
-bool Menu::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+void Menu::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
+    
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
 
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onMouseMoved(x, y, transf_list);
+        node.val->onMouseMoved(x, y, context);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    m_wrappee->onMouseMoved(x, y, transf_list);
-
-    transf_list.PopBack();
-
-    return true;
+    m_wrappee->onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
+    context.stack.leave();
 }
 
-bool Menu::onResize(float width, float height)
+void Menu::onResize(double width, double height, plug::EHC &context)
 {
     if (width < m_right_corner)
-        return false;
+    {
+        context.stopped = false;
+        return;
+    }
 
-    bool res = m_wrappee->onResize(width, height - m_max_height);
+    FAKE_EHC.stopped = false;
+    m_wrappee->onEvent((const plug::Event&) ResizeEvent(Vec2d(width, height - m_max_height)), context);
+    if (!context.stopped)
+        return;
 
-    // m_size = {width, height};
     getLayoutBox().setSize(Vec2d(width, height));
-
-    return res;
 }
 
-bool Menu::onKeyboardPressed(KeyboardKey key)
+void Menu::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
 
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onKeyboardPressed(key);
+        node.val->onEvent((const plug::Event&) plug::KeyboardPressedEvent(key, false, false, false), context);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    m_wrappee->onKeyboardPressed(key);
-
-    return true; 
+    m_wrappee->onEvent((const plug::Event&) plug::KeyboardPressedEvent(key, false, false, false), context);
 }
 
-bool Menu::onKeyboardReleased(KeyboardKey key)
+void Menu::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
 
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onKeyboardReleased(key);
+        node.val->onEvent((const plug::Event&) plug::KeyboardReleasedEvent(key, false, false, false), context);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    m_wrappee->onKeyboardReleased(key);
-
-    return true;
+    m_wrappee->onEvent((const plug::Event&) plug::KeyboardReleasedEvent(key, false, false, false), context);
 }
 
-bool Menu::onTime(float d_seconds)
+void Menu::onTime(double d_seconds, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     int32_t anch = m_btn_list.GetHead();
     Node<Button*> node = *m_btn_list.Get(anch);
 
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onTime(d_seconds);
+        node.val->onEvent((const plug::Event&) plug::TickEvent(d_seconds), context);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    m_wrappee->onTime(d_seconds);
-
-    return true;
+    m_wrappee->onEvent((const plug::Event&) plug::TickEvent(d_seconds), context);
 }
 
