@@ -186,7 +186,7 @@ int main()
     // NegativeFilter negative_filter;
 
     FilterPalette filter_palette;
-    int32_t plugin_negative_filter_pos_id = filter_palette.loadPlugin("plugins/NegativeFilter.so");
+    int32_t plugin_negative_filter_pos_id = filter_palette.loadPlugin("Plugins/ContrastFilter/ContrastFilter.so");
     // int32_t brightness_filter_pos_id = filter_palette.loadplugin("filter_plugins/brightness_filter.so");
 
     // filter_palette.addFilter(brightness_filter_pos);
