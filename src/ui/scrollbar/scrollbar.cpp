@@ -1,10 +1,13 @@
 #include <type_traits>
+#include <cstdio>
 
-#include <SFML/Graphics/RenderTexture.hpp>
+#include "universal_layoutbox.hpp"
+#include "ui/scrollbar.hpp"
+#include "math/transform_stack.hpp"
 
-#include "universal_layout_box.hpp"
-#include "scrollbar.hpp"
-#include "window.hpp"
+static const double EPS = 1e-6;
+static TransformStack FAKE_STACK;
+static plug::EHC FAKE_EHC((plug::TransformStack&) FAKE_STACK, false, false);
 
 ScrollBar::ScrollDeltaButton::ScrollDeltaButton(ScrollBar &scrollbar, const Vec2d &delta, ButtonTexture &btn_texture) :
     Button(UniversalLayoutBox(), btn_texture),
@@ -12,78 +15,72 @@ ScrollBar::ScrollDeltaButton::ScrollDeltaButton(ScrollBar &scrollbar, const Vec2
     m_scrollbar(scrollbar)
 {}
 
-bool ScrollBar::ScrollDeltaButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ScrollBar::ScrollDeltaButton::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool res = Button::onMousePressed(key, x, y, transf_list);
+    if (context.stopped)
+        return;
 
-    if (res)
+    Button::onMousePressed(key, x, y, context);
+    if (context.stopped)
+    {
+        printf("delta %lf\n", m_delta.x);
         m_scrollbar.deltaPercentageOffset(m_delta);
-
-    return res;
+    }
 }
 
 ScrollBar::ScrollButton::ScrollButton(ScrollBar &scrollbar, scroll_button_t btn_type, ButtonTexture &btn_texture) :
     Button(UniversalLayoutBox(), btn_texture),
     m_type(btn_type),
     m_status(DEFAULT),
-    m_hold_pos{0, 0},
+    m_hold_pos(0, 0),
     m_scrollbar(&scrollbar)
+{}
+
+void ScrollBar::ScrollButton::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // UniversalLayoutBox box(0_px, 0_px);
-    // double scrollbar_thickness = scrollbar.getThickness();
-    // box.setPosition(Vec2d(scrollbar_thickness, scrollbar_thickness));
+    if (context.stopped)
+        return;
 
-    // setLayoutBox(box);
-}
+    Button::onMousePressed(key, x, y, context);
 
-bool ScrollBar::ScrollButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
-{
-    bool res = Button::onMousePressed(key, x, y, transf_list);
-
-    if (res)
+    if (context.stopped)
     {
         m_status = HOLD;
 
-        // TODO: make more based and less cringe
-        // for compatibility only
-        Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+        Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+        context.stack.enter(own_transf);
 
-        transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-        Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-        Vec2d pos = top_transf.restore(Vec2d(x, y));
+        Vec2d pos = context.stack.restore(Vec2d(x, y));
         m_hold_pos = pos;
 
-        transf_list.PopBack();
+        context.stack.leave();
     }
-
-    return res;
 }
 
-bool ScrollBar::ScrollButton::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ScrollBar::ScrollButton::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool res = Button::onMouseReleased(key, x, y, transf_list);
+    if (context.stopped)
+        return;
+
+    Button::onMouseReleased(key, x, y, context);
     m_status = DEFAULT;
-
-    return res;
 }
 
-bool ScrollBar::ScrollButton::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+void ScrollBar::ScrollButton::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    Button::onMouseMoved(x, y, transf_list);
+    if (context.stopped)
+        return;
 
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    Button::onMouseMoved(x, y, context);
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
+    context.stack.enter(own_transf);
 
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
+    Vec2d pos = context.stack.restore(Vec2d(x, y));
 
     if (m_status == HOLD)
     {
-        Vec2d delta_hold_pos = (pos - m_hold_pos) * top_transf.getScale();
+        Vec2d delta_hold_pos = (pos - m_hold_pos) * context.stack.top().getScale();
 
         if (m_type == VER)
             delta_hold_pos.x = 0;
@@ -97,14 +94,12 @@ bool ScrollBar::ScrollButton::onMouseMoved(int32_t x, int32_t y, List<Transform>
         m_scrollbar->deltaPercentageOffset(delta_perc);
     }
 
-    transf_list.PopBack();
-
-    return true;
+    context.stack.leave();
 }
 
 // ==========================================
 
-ScrollBar::ScrollBar(Widget &wrappee, const Length &thickness, const Length &width, const Length &height, scrollable_t type, ScrollBarTexture &texture) :
+ScrollBar::ScrollBar(plug::Widget &wrappee, const Length &thickness, const Length &width, const Length &height, scrollable_t type, ScrollBarTexture &texture) :
     Widget(UniversalLayoutBox(0_px, 0_px)),
     m_wrappee(&wrappee),
     m_thickness(thickness),
@@ -129,7 +124,9 @@ ScrollBar::ScrollBar(Widget &wrappee, const Length &thickness, const Length &wid
 
     Vec2d add_size(m_is_ver ? thickness : 0, m_is_hor ? thickness : 0);
     Vec2d whole_size = Vec2d(width, height) + add_size;
-    onResize(whole_size.x, whole_size.y);
+
+    FAKE_EHC.stopped = false;
+    onResize(whole_size.x, whole_size.y, FAKE_EHC);
 
     setPercentageOffset(Vec2d(0, 0));
     getLayoutBox().setPosition(wrappee_pos);
@@ -170,7 +167,7 @@ Vec2d ScrollBar::getPrefferedButtonsSizes() const
 {
     Vec2d perc_cov = getPercentageCovering();
     Vec2d own_size(m_width, m_height);
-    Vec2d buttons_sizes = (own_size - 2 * Vec2d(m_thickness, m_thickness)) * perc_cov;
+    Vec2d buttons_sizes = (own_size - Vec2d(m_thickness, m_thickness) * 2) * perc_cov;
 
     buttons_sizes.x = std::min(buttons_sizes.x, 0.5 * own_size.x);
     buttons_sizes.y = std::min(buttons_sizes.y, 0.5 * own_size.y);
@@ -195,11 +192,11 @@ void ScrollBar::updateComponentsPositionsByPercents()
     Vec2d pref_btns_sizes = getPrefferedButtonsSizes();
 
     // scroll button position
-    LayoutBox &btn_ver_box = m_btn_ver.getLayoutBox();
+    plug::LayoutBox &btn_ver_box = m_btn_ver.getLayoutBox();
     double prev_pos_y = perc_offset.y * (m_height - pref_btns_sizes.y - 2 * m_thickness);
     btn_ver_box.setPosition(Vec2d(m_width, m_thickness + prev_pos_y));
 
-    LayoutBox &btn_hor_box = m_btn_hor.getLayoutBox();
+    plug::LayoutBox &btn_hor_box = m_btn_hor.getLayoutBox();
     double prev_pos_x = perc_offset.x * (m_width - pref_btns_sizes.x - 2 * m_thickness);
     btn_hor_box.setPosition(Vec2d(m_thickness + prev_pos_x, m_height));
 
@@ -235,124 +232,114 @@ Vec2d ScrollBar::getWrappeeSize() const
     return m_wrappee->getLayoutBox().getSize();
 }
 
-void ScrollBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
+void ScrollBar::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    stack.enter(own_transf);
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    sf::RenderTexture fake_sf_target;
+    RenderTexture fake_target(fake_sf_target, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    sf::RenderTexture fake_target;
-    fake_target.create(SCREEN_WIDTH, SCREEN_HEIGHT);
+    m_wrappee->draw(stack, fake_target);
 
-    m_wrappee->draw(fake_target, transf_list);
-    fake_target.display();
+    plug::VertexArray vertex_arr(plug::PrimitiveType::Quads, 4);
 
-    sf::VertexArray vertex_arr(sf::Quads, 4);
-
-    vertex_arr[0].position = vertex_arr[0].texCoords = {0, 0};
-    vertex_arr[1].position = vertex_arr[1].texCoords = {m_width, 0};
-    vertex_arr[2].position = vertex_arr[2].texCoords = {m_width, m_height};
-    vertex_arr[3].position = vertex_arr[3].texCoords = {0, m_height};
+    vertex_arr[0].position = vertex_arr[0].tex_coords = Vec2d{0, 0};
+    vertex_arr[1].position = vertex_arr[1].tex_coords = Vec2d{m_width, 0};
+    vertex_arr[2].position = vertex_arr[2].tex_coords = Vec2d{m_width, m_height};
+    vertex_arr[3].position = vertex_arr[3].tex_coords = Vec2d{0, m_height};
 
     for (int32_t i = 0; i < 4; ++i)
     {
-        vertex_arr[i].position  = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(vertex_arr[i].position)));
-        vertex_arr[i].texCoords = static_cast<Vector2f>(top_transf.apply(static_cast<Vec2d>(vertex_arr[i].texCoords)));
+        vertex_arr[i].position  = stack.apply(vertex_arr[i].position);
+        vertex_arr[i].tex_coords = stack.apply(vertex_arr[i].tex_coords);
     }
 
-    target.draw(vertex_arr, &fake_target.getTexture());
+    target.draw(vertex_arr, fake_target.getPlugTexture());
 
     if (m_is_ver)
     {
-        m_btn_ver .draw(target, transf_list);
-        m_btn_up  .draw(target, transf_list);
-        m_btn_down.draw(target, transf_list);
+        m_btn_ver .draw(stack, target);
+        m_btn_up  .draw(stack, target);
+        m_btn_down.draw(stack, target);
     }
 
     if (m_is_hor)
     {
-        m_btn_hor  .draw(target, transf_list);
-        m_btn_left .draw(target, transf_list);
-        m_btn_right.draw(target, transf_list);
+        m_btn_hor  .draw(stack, target);
+        m_btn_left .draw(stack, target);
+        m_btn_right.draw(stack, target);
     }
 
-    transf_list.PopBack();
+    stack.leave();
 }
 
-bool ScrollBar::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ScrollBar::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool res = false;
-    
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
+    Vec2d pos = context.stack.restore(Vec2d(x, y));
 
     if (m_is_ver)
     {
-        res = res || m_btn_ver .onMousePressed(key, x, y, transf_list);
-        res = res || m_btn_up  .onMousePressed(key, x, y, transf_list);
-        res = res || m_btn_down.onMousePressed(key, x, y, transf_list);
+        m_btn_ver .onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
+        m_btn_up  .onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
+        m_btn_down.onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
     }
 
     if (m_is_hor)
     {
-        res = res || m_btn_hor  .onMousePressed(key, x, y, transf_list);
-        res = res || m_btn_left .onMousePressed(key, x, y, transf_list);
-        res = res || m_btn_right.onMousePressed(key, x, y, transf_list);
+        m_btn_hor  .onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
+        m_btn_left .onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
+        m_btn_right.onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
     }
 
-    if (res)
+    if (context.stopped)
     {
-        transf_list.PopBack();
-        return true;
+        context.stack.leave();
+        return;
     }
 
     if (EPS < pos.x && pos.x < m_width - EPS &&
         EPS < pos.y && pos.y < m_height - EPS)
-        res = res || m_wrappee->onMousePressed(key, x, y, transf_list);
+        m_wrappee->onEvent((const plug::Event&) plug::MousePressedEvent(key, Vec2d(x, y), false, false, false), context);
 
-    transf_list.PopBack();
-    return res;
+    context.stack.leave();
 }
 
-bool ScrollBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ScrollBar::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
-
-    m_wrappee->onMouseReleased(key, x, y, transf_list);
+    Vec2d pos = context.stack.restore(Vec2d(x, y));
 
     if (m_is_ver)
     {
-        m_btn_ver .onMouseReleased(key, x, y, transf_list);
-        m_btn_up  .onMouseReleased(key, x, y, transf_list);
-        m_btn_down.onMouseReleased(key, x, y, transf_list);
+        m_btn_ver .onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
+        m_btn_up  .onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
+        m_btn_down.onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
     }
     if (m_is_hor)
     {
-        m_btn_hor  .onMouseReleased(key, x, y, transf_list);
-        m_btn_left .onMouseReleased(key, x, y, transf_list);
-        m_btn_right.onMouseReleased(key, x, y, transf_list);
+        m_btn_hor  .onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
+        m_btn_left .onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
+        m_btn_right.onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
     }
 
-    transf_list.PopBack();
+    m_wrappee->onEvent((const plug::Event&) plug::MouseReleasedEvent(key, Vec2d(x, y), false, false, false), context);
+
+    context.stack.leave();
 }
 
-bool ScrollBar::onResize(float width, float height)
+void ScrollBar::onResize(double width, double height, plug::EHC &context)
 {
     Vec2d prev_visible_area_size = Vec2d(m_width, m_height);
 
@@ -360,7 +347,10 @@ bool ScrollBar::onResize(float width, float height)
     m_height = std::max(m_thickness, height - (m_is_hor ? m_thickness : 0));
 
     if (prev_visible_area_size == Vec2d(m_width, m_height))
-        return false;
+    {
+        context.stopped = false;
+        return;
+    }
 
     getLayoutBox().setSize(Vec2d(width, height));
     m_btn_ver.onParentUpdate(getLayoutBox());
@@ -368,51 +358,59 @@ bool ScrollBar::onResize(float width, float height)
     updateButtonsSizes();
     updateComponentsPositionsByPercents();
     
-    return true;
+    context.stopped = true;
 }
 
-bool ScrollBar::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+void ScrollBar::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
+    if (context.stopped)
+        return;
 
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
-    Vec2d pos = top_transf.restore(Vec2d(x, y));
-
-    m_wrappee->onMouseMoved(x, y, transf_list);
+    Vec2d pos = context.stack.restore(Vec2d(x, y));
 
     if (m_is_ver)
     {
-        m_btn_ver .onMouseMoved(x, y, transf_list);
-        m_btn_up  .onMouseMoved(x, y, transf_list);
-        m_btn_down.onMouseMoved(x, y, transf_list);
+        m_btn_ver .onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
+        m_btn_up  .onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
+        m_btn_down.onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
     }
 
     if (m_is_hor)
     {
-        m_btn_hor  .onMouseMoved(x, y, transf_list);
-        m_btn_left .onMouseMoved(x, y, transf_list);
-        m_btn_right.onMouseMoved(x, y, transf_list);
+        m_btn_hor  .onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
+        m_btn_left .onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
+        m_btn_right.onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
     }
 
-    transf_list.PopBack();
+    m_wrappee->onEvent((const plug::Event&) plug::MouseMoveEvent(Vec2d(x, y), false, false, false), context);
+
+    context.stack.leave();
 }
 
-bool ScrollBar::onKeyboardPressed(KeyboardKey key)
+void ScrollBar::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 {
-    m_wrappee->onKeyboardPressed(key);
+    if (context.stopped)
+        return;
+
+    m_wrappee->onEvent((const plug::Event&) plug::KeyboardPressedEvent(key, false, false, false), context);
 }
 
-bool ScrollBar::onKeyboardReleased(KeyboardKey key)
+void ScrollBar::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
-    m_wrappee->onKeyboardReleased(key);
+    if (context.stopped)
+        return;
+
+    m_wrappee->onEvent((const plug::Event&) plug::KeyboardReleasedEvent(key, false, false, false), context);
 }
 
-bool ScrollBar::onTime(float d_seconds)
+void ScrollBar::onTime(double d_seconds, plug::EHC &context)
 {
-    m_wrappee->onTime(d_seconds);
+    if (context.stopped)
+        return;
+
+    m_wrappee->onEvent((const plug::Event&) plug::TickEvent(d_seconds), context);
 }
 

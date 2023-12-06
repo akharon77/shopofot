@@ -13,7 +13,7 @@ PROGRAM_OUT		:= $(addsuffix .out, $(PROGRAM_NAME))
 INCLUDE_DIRS	:= include/ src/
 
  SOURCE_DIR		:= src/
- SOURCE_DIRS	:= util/list/ util/sfml/ widget/ universal_layoutbox/ math/transform/ math/transform_stack/ math/vec2d/ ui/button/button/ ui/button/text_button/ ui/button/vertical_button_list/ ui/button/toggle_button/ event/event/ event/event_manager/ graphics/render_texture/ graphics/render_window/ graphics/shapes/ ui/canvas_view/ ui/frame/ filter/
+ SOURCE_DIRS	:= util/list/ util/sfml/ widget/ universal_layoutbox/ math/transform/ math/transform_stack/ math/vec2d/ ui/button/button/ ui/button/text_button/ ui/button/vertical_button_list/ ui/button/toggle_button/ event/event/ event/event_manager/ graphics/render_texture/ graphics/render_window/ graphics/shapes/ ui/canvas_view/ ui/frame/ filter/ ui/scrollbar/
 
 BUILD_DIR		:= build/
 BUILD_DIRS		:= obj/
@@ -26,7 +26,7 @@ BUILD_DIRS_DEP	:= $(addsuffix .dirstamp, $(BUILD_DIRS) $(addprefix $(OBJ_DIR), $
 SOURCE_DIRS		:= $(SOURCE_DIR) $(addprefix $(SOURCE_DIR), $(SOURCE_DIRS))
 SOURCE_FILES	:= $(wildcard $(addsuffix *.cpp, $(SOURCE_DIRS)))
 
-DEP_FILES 		:= $(SOURCE_FILES:.cpp=.d)
+DEP_FILES 		:= $(addprefix $(OBJ_DIR), $(SOURCE_FILES:.cpp=.d))
 
 OBJECT_FILES	:= $(patsubst src/%.cpp, $(OBJ_DIR)%.o, $(SOURCE_FILES))
 

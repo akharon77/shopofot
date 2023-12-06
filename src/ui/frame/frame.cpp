@@ -75,6 +75,9 @@ void Frame::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 
 void Frame::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
     context.stack.enter(own_transf);
 
@@ -130,6 +133,9 @@ void Frame::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC 
 
 void Frame::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
     context.stack.enter(own_transf);
 
@@ -173,6 +179,9 @@ void Frame::onResize(double width, double height, plug::EHC &context)
 
 void Frame::onMouseMoved(double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
     context.stack.enter(own_transf);
     
@@ -220,16 +229,25 @@ void Frame::onMouseMoved(double x, double y, plug::EHC &context)
 
 void Frame::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     m_wrappee->onEvent((const plug::Event&) plug::KeyboardPressedEvent(key, false, false, false), context);
 }
 
 void Frame::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     m_wrappee->onEvent((const plug::Event&) plug::KeyboardReleasedEvent(key, false, false, false), context);
 }
 
 void Frame::onTime(double d_seconds, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     m_wrappee->onEvent((const plug::Event&) plug::TickEvent(d_seconds), context);
 }
 
@@ -263,7 +281,11 @@ void Frame::setCloseId(int32_t id)
 
 void Frame::CloseButton::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     Button::onMousePressed(key, x, y, context);
+
     if (context.stopped)
         m_container->close(m_close_id);
 }

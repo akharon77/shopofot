@@ -1,15 +1,15 @@
-#ifndef SCROLLBAR_HPP
-#define SCROLLBAR_HPP
+#ifndef UI_SCROLLBAR_HPP
+#define UI_SCROLLBAR_HPP
 
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/VertexArray.hpp>
 
-#include "button.hpp"
-#include "universal_layout_box.hpp"
+#include "ui/button/button.hpp"
+#include "graphics.hpp"
 
 struct ScrollBarTexture
 {
-    sf::Texture   *m_background;
+    plug::Texture   *m_background;
 
     ButtonTexture *m_btn_up;
     ButtonTexture *m_btn_down;
@@ -27,9 +27,6 @@ protected:
         VER,
         HOR
     };
-
-    // friend class ScrollButton;
-    // friend class ScrollDeltaButton;
 
     class ScrollButton : public Button
     {
@@ -52,10 +49,10 @@ protected:
         ScrollButton(const ScrollButton &rhs) = default;
         ScrollButton& operator = (const ScrollButton& rhs) = default;
 
-        virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
-        virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+        virtual void onMouseMoved (double x, double y, plug::EHC &context) override;
 
-        virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) override;
+        virtual void onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) override;
+        virtual void onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) override;
     };
 
     class ScrollDeltaButton : public Button
@@ -71,14 +68,14 @@ protected:
         ScrollDeltaButton(const ScrollDeltaButton &rhs) = default;
         ScrollDeltaButton& operator = (const ScrollDeltaButton& rhs) = default;
 
-        virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+        virtual void onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) override;
     };
 
-    Widget *m_wrappee;
+    plug::Widget *m_wrappee;
 
     double m_thickness;
 
-    LayoutBox *m_wrappee_stolen_layout_box;
+    plug::LayoutBox *m_wrappee_stolen_layout_box;
 
     // visible area params
     double m_width;
@@ -114,7 +111,7 @@ public:
         SCROLLABLE_HORIZONTAL = 0x02
     };
 
-    ScrollBar(Widget &wrappee, const Length &thickness, const Length &width, const Length &height, scrollable_t type, ScrollBarTexture &texture);
+    ScrollBar(plug::Widget &wrappee, const Length &thickness, const Length &width, const Length &height, scrollable_t type, ScrollBarTexture &texture);
 
     ~ScrollBar() = default;
     ScrollBar& operator = (const ScrollBar &rhs) = default;
@@ -133,20 +130,20 @@ public:
     Vec2d getVisibleAreaSize() const;
     Vec2d getWrappeeSize() const;
 
-    virtual void draw(sf::RenderTarget &target, List<Transform> &transf_list) override;
+    virtual void draw(plug::TransformStack &stack, plug::RenderTarget &target) override;
 
-    virtual bool onMousePressed  (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
-    virtual bool onMouseReleased (MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual void onTime(double d_seconds, plug::EHC &context) override;
 
-    virtual bool onMouseMoved (int32_t x, int32_t y, List<Transform> &transf_list) override;
+    virtual void onMouseMoved (double x, double y, plug::EHC &context) override;
 
-    virtual bool onKeyboardPressed  (KeyboardKey key) override;
-    virtual bool onKeyboardReleased (KeyboardKey key) override;
+    virtual void onMousePressed  (plug::MouseButton key, double x, double y, plug::EHC &context) override;
+    virtual void onMouseReleased (plug::MouseButton key, double x, double y, plug::EHC &context) override;
 
-    virtual bool onResize(float width, float height) override;
+    virtual void onKeyboardPressed  (plug::KeyCode key, plug::EHC &context) override;
+    virtual void onKeyboardReleased (plug::KeyCode key, plug::EHC &context) override;
 
-    virtual bool onTime (float d_seconds) override;
+    virtual void onResize(double width, double height, plug::EHC &context) override;
 };
 
-#endif  // SCROLLBAR_HPP 
+#endif  // UI_SCROLLBAR_HPP 
 

@@ -42,6 +42,7 @@
 #include "graphics/render_window.hpp"
 #include "ui/frame.hpp"
 #include "ui/canvas_view.hpp"
+#include "ui/scrollbar.hpp"
 
 int main()
 {
@@ -60,15 +61,15 @@ int main()
         {57, 104, 57, 52}
     };
 
-    // ScrollBarTexture scrollbar_texture_config
-    // {
-    //     &button_texture,
-    //     &btn_texture_config,
-    //     &btn_texture_config,
-    //     &btn_texture_config,
-    //     &btn_texture_config,
-    //     &btn_texture_config
-    // };
+    ScrollBarTexture scrollbar_texture_config
+    {
+        &button_texture,
+        &btn_texture_config,
+        &btn_texture_config,
+        &btn_texture_config,
+        &btn_texture_config,
+        &btn_texture_config
+    };
 
     TextButtonTexture text_btn_texture_config
     {
@@ -236,8 +237,10 @@ int main()
     EventManager event_manager(sf_window, stack);
 
     // TextButton sample_button(UniversalLayoutBox(10_cm, 2_cm), "ded hui n nn n n n n lol", text_btn_texture_config);
-    CanvasView canvas_view(UniversalLayoutBox(10_cm, 10_cm), 1024, 640, tool_palette, filter_palette);
-    Frame frame(canvas_view, "loh", 1_cm, frame_texture_config);
+
+    CanvasView canvas_view(UniversalLayoutBox(20_cm, 20_cm), 1024, 640, tool_palette, filter_palette);
+    ScrollBar scrollbar(canvas_view, 1_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
+    Frame frame(scrollbar, "loh", 1_cm, frame_texture_config);
     frame.setClosable(true);
 
     while (sf_window.isOpen())

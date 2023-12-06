@@ -40,6 +40,9 @@ void Button::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 
 void Button::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
@@ -61,6 +64,9 @@ void Button::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC
 
 void Button::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
@@ -92,6 +98,9 @@ void Button::onMouseReleased(plug::MouseButton key, double x, double y, plug::EH
 
 void Button::onMouseMoved(double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     plug::Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
