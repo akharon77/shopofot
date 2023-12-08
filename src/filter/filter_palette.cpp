@@ -29,19 +29,13 @@ size_t FilterPalette::getFilterCount() const
     return m_filter_lst.GetSize();
 }
 
-int32_t FilterPalette::loadPlugin(const char *path)
+int32_t FilterPalette::loadPlugin(plug::Plugin *plugin)
 {
-    void *plugin = dlopen(path, RTLD_NOW | RTLD_LOCAL | RTLD_NODELETE);
-    void *loadPlugin_symbol = dlsym(plugin, "loadPlugin");
+    plug::Filter *filter = static_cast<plug::Filter*>(
+            plugin->tryGetInterface(static_cast<size_t>(
+                    plug::PluginGuid::Filter)));
 
-    typedef plug::Filter* plugin_loader_t(void);
-    plugin_loader_t *load = (plugin_loader_t*) loadPlugin_symbol;
-    plug::Filter *loaded_filter = load();
-
-    int32_t res = addFilter(*loaded_filter);
-
-    dlclose(plugin);
-
-    return res;
+    if (filter)
+        return addFilter(*filter);
 }
 

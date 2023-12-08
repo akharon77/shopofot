@@ -27,6 +27,7 @@
 // #include "negative_filter.hpp"
 
 #include "shopofot.hpp"
+#include "plugin_loader.hpp"
 
 // #include "line_edit.hpp"
 
@@ -99,7 +100,7 @@ int main()
     // LineEditTool line_edit_tool(font, 0.05);
 
     ToolPalette tool_palette;
-    tool_palette.loadPlugin("Plugins/CircleTool/CircleTool.so");
+    // tool_palette.loadPlugin("Plugins/CircleTool/CircleTool.so");
 
     // ToolBar toolbar(30_px, 30_px, tool_palette, 2);
 
@@ -188,7 +189,9 @@ int main()
     // NegativeFilter negative_filter;
 
     FilterPalette filter_palette;
-    int32_t plugin_negative_filter_pos_id = filter_palette.loadPlugin("Plugins/ContrastFilter/ContrastFilter.so");
+    loadPlugins("Plugins", filter_palette, tool_palette);
+
+    // int32_t plugin_negative_filter_pos_id = filter_palette.loadPlugin("Plugins/ContrastFilter/ContrastFilter.so");
     // int32_t brightness_filter_pos_id = filter_palette.loadplugin("filter_plugins/brightness_filter.so");
 
     // filter_palette.addFilter(brightness_filter_pos);
@@ -210,7 +213,7 @@ int main()
     FileVerticalButtonList file_ver_btn_lst(UniversalLayoutBox(50_px, 30_px), canv_manager, text_btn_texture_config);
 
     FilterVerticalButtonList filt_ver_btn_lst(UniversalLayoutBox(50_px, 30_px), canv_manager, text_btn_texture_config);
-    filt_ver_btn_lst.addFilter("Contrast",     plugin_negative_filter_pos_id);
+    // filt_ver_btn_lst.addFilter("Contrast",     plugin_negative_filter_pos_id);
     // filt_ver_btn_lst.addFilter("Light+",     brightness_filter_pos_id);
     // filt_ver_btn_lst.addFilter("Light-",     brightness_filter_neg_id);
     // filt_ver_btn_lst.addFilter("B/W",        blackwhite_filter_id);

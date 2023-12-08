@@ -19,7 +19,7 @@ public:
 
     size_t getFilterCount() const;
 
-    int32_t loadPlugin(const char *path);
+    int32_t loadPlugin(plug::Plugin *plugin);
 };
 
 #endif  // FILTER_FILTER_PALETTE_HPP

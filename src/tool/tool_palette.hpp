@@ -10,7 +10,7 @@ struct ToolPalette
 
     List<plug::Tool*> m_list;
 
-    int32_t loadPlugin(const char *path);
+    int32_t loadPlugin(plug::Plugin *plugin);
 
     plug::Tool *getActiveTool()
     {
