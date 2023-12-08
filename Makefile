@@ -14,7 +14,7 @@ PROGRAM_OUT		:= $(addsuffix .out, $(PROGRAM_NAME))
 INCLUDE_DIRS	:= include/ src/
 
  SOURCE_DIR		:= src/
- SOURCE_DIRS	:= util/list/ util/sfml/ widget/ universal_layoutbox/ math/transform/ math/transform_stack/ math/vec2d/ ui/ ui/button/ event/event/ event/event_manager/ graphics/render_texture/ graphics/render_window/ graphics/shapes/ ui/canvas_view/ filter/ canvas/ shopofot/
+ SOURCE_DIRS	:= util/list/ util/sfml/ widget/ universal_layoutbox/ math/transform/ math/transform_stack/ math/vec2d/ ui/ ui/button/ event/event/ event/event_manager/ graphics/render_texture/ graphics/render_window/ graphics/shapes/ ui/canvas_view/ filter/ canvas/ shopofot/ tool/
 
 BUILD_DIR		:= build/
 BUILD_DIRS		:= obj/

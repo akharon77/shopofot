@@ -18,4 +18,7 @@ vgcore*
 *.swp
 
 build/*
+Plugins/
+
+src/Plugins/
 

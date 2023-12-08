@@ -10,8 +10,7 @@ struct ToolPalette
 
     List<plug::Tool*> m_list;
 
-    sf::Color m_foreground_color;
-    sf::Color m_background_color;
+    int32_t loadPlugin(const char *path);
 
     plug::Tool *getActiveTool()
     {

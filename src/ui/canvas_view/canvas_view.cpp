@@ -1,6 +1,7 @@
 #include "ui/canvas_view.hpp"
 #include "util/sfml.hpp"
 #include "plug/tool.hpp"
+#include "math/transform_stack.hpp"
 
 static const double EPS = 1e-6;
 
@@ -47,7 +48,11 @@ void CanvasView::draw(plug::TransformStack &stack, plug::RenderTarget &target)
     {
         plug::Widget *tool_widget = tool->getWidget();
         if (tool_widget != nullptr)
+        {
+            stack.enter(Transform(Vec2d(0, 0), Vec2d(1, 1) / m_canvas->getSize()));
             tool_widget->draw(stack, target);
+            stack.leave();
+        }
     }
 
     stack.leave();
@@ -76,6 +81,7 @@ void CanvasView::onMousePressed(plug::MouseButton key, double x, double y, plug:
         if (tool != nullptr)
         {
             tool->setActiveCanvas(*m_canvas);
+            tool->setColorPalette(*m_color_palette);
             tool->onMainButton(plug::ControlState(plug::State::Pressed),
                     pos * m_canvas->getSize());
 
@@ -124,11 +130,18 @@ void CanvasView::onMouseMoved(double x, double y, plug::EHC &context)
     if (context.stopped)
         return;
 
+    if (context.overlapped)
+        return;
+
     Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
     Vec2d pos = context.stack.restore(Vec2d(x, y));
     m_last_mouse_pos = pos;
+
+    if (EPS < pos.x && pos.x < 1 - EPS &&
+        EPS < pos.y && pos.y < 1 - EPS)
+        context.overlapped = true;
 
     plug::Tool *tool = m_tool_palette->getActiveTool();
     if (tool != nullptr)

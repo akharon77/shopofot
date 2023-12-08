@@ -99,6 +99,8 @@ int main()
     // LineEditTool line_edit_tool(font, 0.05);
 
     ToolPalette tool_palette;
+    tool_palette.loadPlugin("Plugins/CircleTool/CircleTool.so");
+
     // ToolBar toolbar(30_px, 30_px, tool_palette, 2);
 
     // // tool_palette.addTool(&line_tool);
