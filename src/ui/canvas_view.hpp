@@ -12,6 +12,7 @@
 
 class CanvasView : public Widget
 {
+public:
     Canvas *m_canvas;
 
     ToolPalette   *m_tool_palette;
@@ -19,7 +20,6 @@ class CanvasView : public Widget
 
     plug::Vec2d m_last_mouse_pos;
 
-public:
     CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette);
 
     ~CanvasView() = default;

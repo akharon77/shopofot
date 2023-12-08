@@ -174,6 +174,9 @@ void CanvasViewManager::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 
 void CanvasViewManager::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     int32_t anch = m_canv_window_lst.GetHead();
     Node<CanvasWindow*> node = *m_canv_window_lst.Get(anch);
 

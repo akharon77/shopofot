@@ -15,6 +15,9 @@ void ToggleButton::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 
 void ToggleButton::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     Button::onMousePressed(key, x, y, context);
     if (context.stopped)
         m_is_toggled = true;

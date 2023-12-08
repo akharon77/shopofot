@@ -1,6 +1,7 @@
 CXX 		   	:= g++
 CXX_FLAGS		:= -std=c++2a -lsfml-window -lsfml-graphics -lsfml-system
 
+CXX_RELEASE_FLAGS := -O2
 CXX_DEBUG_FLAGS := -O0 -ggdb3
 
 CXX_FLAGS		:= $(CXX_FLAGS) $(CXX_DEBUG_FLAGS)
@@ -13,7 +14,7 @@ PROGRAM_OUT		:= $(addsuffix .out, $(PROGRAM_NAME))
 INCLUDE_DIRS	:= include/ src/
 
  SOURCE_DIR		:= src/
- SOURCE_DIRS	:= util/list/ util/sfml/ widget/ universal_layoutbox/ math/transform/ math/transform_stack/ math/vec2d/ ui/button/button/ ui/button/text_button/ ui/button/vertical_button_list/ ui/button/toggle_button/ event/event/ event/event_manager/ graphics/render_texture/ graphics/render_window/ graphics/shapes/ ui/canvas_view/ ui/frame/ filter/ ui/scrollbar/ ui/menu/ canvas/
+ SOURCE_DIRS	:= util/list/ util/sfml/ widget/ universal_layoutbox/ math/transform/ math/transform_stack/ math/vec2d/ ui/ ui/button/ event/event/ event/event_manager/ graphics/render_texture/ graphics/render_window/ graphics/shapes/ ui/canvas_view/ filter/ canvas/ shopofot/
 
 BUILD_DIR		:= build/
 BUILD_DIRS		:= obj/

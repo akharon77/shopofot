@@ -1,19 +1,17 @@
 #include "toolbar.hpp"
-#include "universal_layout_box.hpp"
+#include "universal_layoutbox.hpp"
 
-ToolButton::ToolButton(const LayoutBox &box, ButtonTexture &btn_texture, ToolPalette &tool_palette, int32_t tool_id) :
+ToolButton::ToolButton(const plug::LayoutBox &box, ButtonTexture &btn_texture, ToolPalette &tool_palette, int32_t tool_id) :
     ToggleButton(box, btn_texture),
     m_tool_palette(&tool_palette),
     m_tool_id(tool_id)
 {}
 
-bool ToolButton::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ToolButton::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool res = ToggleButton::onMousePressed(key, x, y, transf_list);
-    if (res)
+    ToggleButton::onMousePressed(key, x, y, context);
+    if (context.stopped)
         m_tool_palette->setActiveTool(m_tool_id);
-
-    return res;
 }
 
 ToolBar::ToolBar(double btn_width, double btn_height, ToolPalette &tool_palette, int32_t cnt_x) :
@@ -52,14 +50,10 @@ void ToolBar::setToggled(int32_t id)
     m_toggled_id = id;
 }
 
-void ToolBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
+void ToolBar::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
-
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    stack.enter(own_transf);
 
     int32_t anch = m_btn_list.GetHead();
     Node<ToolButton*> node = *m_btn_list.Get(anch);
@@ -67,24 +61,18 @@ void ToolBar::draw(sf::RenderTarget &target, List<Transform> &transf_list)
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->draw(target, transf_list);
+        node.val->draw(stack, target);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    transf_list.PopBack();
+    stack.leave();
 }
 
-bool ToolBar::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ToolBar::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
-
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
-
-    // bool res = false;
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_btn_list.GetHead();
     Node<ToolButton*> node = *m_btn_list.Get(anch);
@@ -92,30 +80,24 @@ bool ToolBar::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform>
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        if (node.val->onMousePressed(key, x, y, transf_list))
+        node.val->onMousePressed(key, x, y, context);
+        if (context.stopped)
         {
             setToggled(anch);
-            transf_list.PopBack();
-            return true;
+            return;
         }
 
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    transf_list.PopBack();
-
-    return false;
+    context.stack.leave();
 }
 
-bool ToolBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ToolBar::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
-
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_btn_list.GetHead();
     Node<ToolButton*> node = *m_btn_list.Get(anch);
@@ -123,24 +105,18 @@ bool ToolBar::onMouseReleased(MouseKey key, int32_t x, int32_t y, List<Transform
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onMouseReleased(key, x, y, transf_list);
+        node.val->onMouseReleased(key, x, y, context);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    transf_list.PopBack();
-
-    return true;
+    context.stack.leave();
 }
 
-bool ToolBar::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
+void ToolBar::onMouseMoved(double x, double y, plug::EHC &context)
 {
-    // TODO: make more based and less cringe
-    // for compatibility only
-    Transform m_transf(getLayoutBox().getPosition(), Vec2d(1, 1));
-
-    transf_list.PushBack(m_transf.combine(transf_list.Get(transf_list.GetTail())->val));
-    Transform top_transf = transf_list.Get(transf_list.GetTail())->val;
+    plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
+    context.stack.enter(own_transf);
 
     int32_t anch = m_btn_list.GetHead();
     Node<ToolButton*> node = *m_btn_list.Get(anch);
@@ -148,13 +124,11 @@ bool ToolBar::onMouseMoved(int32_t x, int32_t y, List<Transform> &transf_list)
     int32_t size = m_btn_list.GetSize();
     for (int32_t i = 0; i < size; ++i)
     {
-        node.val->onMouseMoved(x, y, transf_list);
+        node.val->onMouseMoved(x, y, context);
         anch = node.next;
         node = *m_btn_list.Get(anch);
     }
 
-    transf_list.PopBack();
-
-    return true;
+    context.stack.leave();
 }
 

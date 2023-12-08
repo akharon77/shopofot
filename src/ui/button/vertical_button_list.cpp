@@ -58,6 +58,9 @@ void VerticalButtonList::draw(plug::TransformStack &stack, plug::RenderTarget &t
 
 void VerticalButtonList::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     TextButton::onMousePressed(key, x, y, context);
 
     if (context.stopped)
@@ -92,9 +95,12 @@ void VerticalButtonList::onMousePressed(plug::MouseButton key, double x, double 
 
 void VerticalButtonList::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     TextButton::onMouseReleased(key, x, y, context);
 
-    if (m_status != OPENED)
+    if (m_status == OPENED)
     {
         context.stopped = true;
         return;
@@ -119,6 +125,9 @@ void VerticalButtonList::onMouseReleased(plug::MouseButton key, double x, double
 
 void VerticalButtonList::onMouseMoved(double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     TextButton::onMouseMoved(x, y, context);
 
     plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
@@ -140,6 +149,9 @@ void VerticalButtonList::onMouseMoved(double x, double y, plug::EHC &context)
 
 void VerticalButtonList::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     int32_t anch = m_btn_lst.GetHead();
     Node<Button*> node = *m_btn_lst.Get(anch);
 
@@ -154,6 +166,9 @@ void VerticalButtonList::onKeyboardPressed(plug::KeyCode key, plug::EHC &context
 
 void VerticalButtonList::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     int32_t anch = m_btn_lst.GetHead();
     Node<Button*> node = *m_btn_lst.Get(anch);
 
@@ -168,6 +183,9 @@ void VerticalButtonList::onKeyboardReleased(plug::KeyCode key, plug::EHC &contex
 
 void VerticalButtonList::onTime(double d_seconds, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     int32_t anch = m_btn_lst.GetHead();
     Node<Button*> node = *m_btn_lst.Get(anch);
 

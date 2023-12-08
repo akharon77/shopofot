@@ -61,6 +61,9 @@ void CanvasView::onResize(double width, double height, plug::EHC &context)
 
 void CanvasView::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context) 
 {
+    if (context.stopped)
+        return;
+
     Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
@@ -91,6 +94,9 @@ void CanvasView::onMousePressed(plug::MouseButton key, double x, double y, plug:
 
 void CanvasView::onMouseReleased(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
@@ -113,6 +119,9 @@ void CanvasView::onMouseReleased(plug::MouseButton key, double x, double y, plug
 
 void CanvasView::onMouseMoved(double x, double y, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     Transform own_transf(getLayoutBox().getPosition(), getLayoutBox().getSize());
     context.stack.enter(own_transf);
 
@@ -136,6 +145,9 @@ void CanvasView::onMouseMoved(double x, double y, plug::EHC &context)
 
 void CanvasView::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     plug::Tool *tool = m_tool_palette->getActiveTool();
     if (tool != nullptr)
     {
@@ -181,6 +193,9 @@ void CanvasView::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
 
 void CanvasView::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     plug::Tool *tool = m_tool_palette->getActiveTool();
     if (tool == nullptr)
         return;
@@ -194,6 +209,9 @@ void CanvasView::onKeyboardReleased(plug::KeyCode key, plug::EHC &context)
 
 void CanvasView::onTime(double d_seconds, plug::EHC &context)
 {
+    if (context.stopped)
+        return;
+
     plug::Tool *tool = m_tool_palette->getActiveTool();
     if (tool == nullptr)
         return;

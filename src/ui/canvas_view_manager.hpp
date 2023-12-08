@@ -16,6 +16,7 @@ struct CanvasViewManagerTexture
 
 class CanvasViewManager : public Widget, public Container
 {
+public:
     struct CanvasWindow
     {
         CanvasView *m_canvas;
@@ -32,7 +33,6 @@ class CanvasViewManager : public Widget, public Container
 
     List<CanvasWindow*> m_canv_window_lst;
 
-public:
     CanvasViewManager(const plug::LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasViewManagerTexture &canv_manager_texture);
 
     ~CanvasViewManager() = default;

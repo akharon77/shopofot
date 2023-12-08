@@ -26,14 +26,13 @@
 // #include "onecolor_filter.hpp"
 // #include "negative_filter.hpp"
 
-// #include "shopofot.hpp"
+#include "shopofot.hpp"
 
 // #include "line_edit.hpp"
 
 // #include "canvas_manager.hpp"
 // #include "toolbar.hpp"
 
-// #include "ui/canvas_view.hpp"
 #include "event/event_manager.hpp"
 #include "ui/button.hpp"
 #include "universal_layoutbox.hpp"
@@ -196,10 +195,17 @@ int main()
     // int32_t green_blue_filter_id     = filter_palette.addFilter(green_blue_filter);
     // int32_t negative_filter_id       = filter_palette.addFilter(negative_filter);
 
+    UniversalLayoutBox sample_box(640_px, 480_px);
+    sample_box.setPosition(Vec2d(0_px, 0_px));
 
-    // FileVerticalButtonList file_ver_btn_lst(UniversalLayoutBox(50_px, 30_px), canv_manager, text_btn_texture_config);
+    CanvasViewManager canv_manager(sample_box, tool_palette, filter_palette, canv_manager_texture_config);
+    canv_manager.addCanvas(1024, 640);
+    canv_manager.addCanvas(1024, 640);
 
-    // FilterVerticalButtonList filt_ver_btn_lst(UniversalLayoutBox(50_px, 30_px), canv_manager, text_btn_texture_config);
+    FileVerticalButtonList file_ver_btn_lst(UniversalLayoutBox(50_px, 30_px), canv_manager, text_btn_texture_config);
+
+    FilterVerticalButtonList filt_ver_btn_lst(UniversalLayoutBox(50_px, 30_px), canv_manager, text_btn_texture_config);
+    filt_ver_btn_lst.addFilter("Contrast",     plugin_negative_filter_pos_id);
     // filt_ver_btn_lst.addFilter("Light+",     brightness_filter_pos_id);
     // filt_ver_btn_lst.addFilter("Light-",     brightness_filter_neg_id);
     // filt_ver_btn_lst.addFilter("B/W",        blackwhite_filter_id);
@@ -207,9 +213,11 @@ int main()
     // filt_ver_btn_lst.addFilter("Green&Blue", green_blue_filter_id);
     // filt_ver_btn_lst.addFilter("Negative",   negative_filter_id);
     
-    // Menu menu(canv_manager);
-    // menu.addButton(file_ver_btn_lst);
-    // menu.addButton(filt_ver_btn_lst);
+    Menu menu(canv_manager);
+    menu.addButton(file_ver_btn_lst);
+    menu.addButton(filt_ver_btn_lst);
+
+    EventManager event_manager(sf_window, stack);
 
     // Canvas canvas(sample_box, 1024, 640, tool_palette, filter_palette);
     // ScrollBar scrollbar(canvas, 20_px, 200_px, 200_px, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), scrollbar_texture_config);
@@ -231,15 +239,6 @@ int main()
     // cat_img.loadFromFile("cat.jpg");
     // canvas.loadFromImage(cat_img);
 
-    EventManager event_manager(sf_window, stack);
-
-    UniversalLayoutBox sample_box(640_px, 480_px);
-    sample_box.setPosition(Vec2d(0_px, 0_px));
-
-    CanvasViewManager canv_manager(sample_box, tool_palette, filter_palette, canv_manager_texture_config);
-    canv_manager.addCanvas(1024, 640);
-    canv_manager.addCanvas(1024, 640);
-
     // TextButton sample_button(UniversalLayoutBox(10_cm, 2_cm), "ded hui n nn n n n n lol", text_btn_texture_config);
 
     // CanvasView canvas_view(UniversalLayoutBox(20_cm, 20_cm), 1024, 640, tool_palette, filter_palette);
@@ -259,10 +258,10 @@ int main()
 
     while (sf_window.isOpen())
     {
-        event_manager.sendEvents((plug::Widget*) &canv_manager);
+        event_manager.sendEvents((plug::Widget*) &menu);
 
         sf_window.clear(sf::Color::Black);
-        canv_manager.draw(stack, window);
+        menu.draw(stack, window);
 
         sf_window.display();
     }

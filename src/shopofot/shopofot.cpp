@@ -1,28 +1,26 @@
 #include "shopofot.hpp"
-#include "universal_layout_box.hpp"
+#include "universal_layoutbox.hpp"
 
-ButtonFilterApply::ButtonFilterApply(const LayoutBox &box, const char *str, TextButtonTexture &btn_texture, CanvasManager &canv_manager, int32_t filt_id) :
+ButtonFilterApply::ButtonFilterApply(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t filt_id) :
     TextButton(box, str, btn_texture),
     m_canv_manager(&canv_manager),
     m_filt_id(filt_id)
 {}
 
-bool ButtonFilterApply::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ButtonFilterApply::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool res = TextButton::onMousePressed(key, x, y, transf_list);
-    if (res)
+    TextButton::onMousePressed(key, x, y, context);
+    if (context.stopped)
     {
-        Canvas *canvas = m_canv_manager->getActive();
+        CanvasView *canvas = m_canv_manager->getActive();
 
-        Filter *filter = canvas->m_filter_palette->getFilter(m_filt_id);
-        filter->applyFilter(*canvas, canvas->m_filter_mask);
+        plug::Filter *filter = canvas->m_filter_palette->getFilter(m_filt_id);
+        filter->applyFilter(*canvas->m_canvas);
         canvas->m_filter_palette->setLastFilter(m_filt_id);
     }
-
-    return res;
 }
 
-FilterVerticalButtonList::FilterVerticalButtonList(const LayoutBox &box, CanvasManager &canv_manager, TextButtonTexture &btn_texture) :
+FilterVerticalButtonList::FilterVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, TextButtonTexture &btn_texture) :
     VerticalButtonList(box, "Filter", btn_texture),
     m_canv_manager(&canv_manager),
     m_btn_texture(&btn_texture)
@@ -47,21 +45,19 @@ FilterVerticalButtonList::~FilterVerticalButtonList()
     while (pop_btn != nullptr);
 }
 
-ButtonNewCanvasWindow::ButtonNewCanvasWindow(const LayoutBox &box, TextButtonTexture &btn_texture, CanvasManager &canv_manager) :
+ButtonNewCanvasWindow::ButtonNewCanvasWindow(const plug::LayoutBox &box, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager) :
     TextButton(box, "New canvas", btn_texture),
     m_canv_manager(&canv_manager)
 {}
 
-bool ButtonNewCanvasWindow::onMousePressed(MouseKey key, int32_t x, int32_t y, List<Transform> &transf_list)
+void ButtonNewCanvasWindow::onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context)
 {
-    bool res = TextButton::onMousePressed(key, x, y, transf_list);
-    if (res)
+    TextButton::onMousePressed(key, x, y, context);
+    if (context.stopped)
         m_canv_manager->addCanvas(1024, 640);
-
-    return res;
 }
 
-FileVerticalButtonList::FileVerticalButtonList(const LayoutBox &box, CanvasManager &canv_manager, TextButtonTexture &btn_texture) :
+FileVerticalButtonList::FileVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, TextButtonTexture &btn_texture) :
     VerticalButtonList(box, "File", btn_texture),
     m_canv_manager(&canv_manager),
     m_btn_texture(&btn_texture)
