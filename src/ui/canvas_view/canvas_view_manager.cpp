@@ -2,10 +2,11 @@
 #include "universal_layoutbox.hpp"
 #include "math/transform_stack.hpp"
 
-CanvasViewManager::CanvasViewManager(const plug::LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasViewManagerTexture &canv_manager_texture) :
+CanvasViewManager::CanvasViewManager(const plug::LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, plug::ColorPalette &color_palette, CanvasViewManagerTexture &canv_manager_texture) :
     Widget(box),
     m_tool_palette(&tool_palette),
     m_filter_palette(&filter_palette),
+    m_color_palette(&color_palette),
     m_texture(&canv_manager_texture)
 {}
 
@@ -17,7 +18,7 @@ void CanvasViewManager::addCanvas(int32_t canv_width, int32_t canv_height)
     canv_base_box.setSize(own_size);
     canv_base_box.setPosition(own_size / 2);
 
-    CanvasView *canvas    = new CanvasView(canv_base_box, canv_width, canv_height, *m_tool_palette, *m_filter_palette);
+    CanvasView *canvas    = new CanvasView(canv_base_box, canv_width, canv_height, *m_tool_palette, *m_filter_palette, *m_color_palette);
     ScrollBar *scrollbar = new ScrollBar(*canvas, 1_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), *m_texture->m_scrollbar_texture);
     Frame     *frame     = new Frame(*scrollbar, "hello", 8_mm, *m_texture->m_frame_texture);
 

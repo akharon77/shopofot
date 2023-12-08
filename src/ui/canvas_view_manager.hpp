@@ -28,12 +28,13 @@ public:
 
     FilterPalette *m_filter_palette;
     ToolPalette   *m_tool_palette;
+    plug::ColorPalette *m_color_palette;
     
     CanvasViewManagerTexture *m_texture;
 
     List<CanvasWindow*> m_canv_window_lst;
 
-    CanvasViewManager(const plug::LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, CanvasViewManagerTexture &canv_manager_texture);
+    CanvasViewManager(const plug::LayoutBox &box, ToolPalette &tool_palette, FilterPalette &filter_palette, plug::ColorPalette &color_palette, CanvasViewManagerTexture &canv_manager_texture);
 
     ~CanvasViewManager() = default;
     CanvasViewManager& operator = (const CanvasViewManager &rhs) = delete;

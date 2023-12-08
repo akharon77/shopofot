@@ -4,11 +4,12 @@
 
 static const double EPS = 1e-6;
 
-CanvasView::CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette) :
+CanvasView::CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette, plug::ColorPalette &color_palette) :
     Widget(box),
     m_canvas(new Canvas(canv_width, canv_height, getPlugColor(sf::Color::Transparent))),
     m_tool_palette(&tool_palette),
     m_filter_palette(&filter_palette),
+    m_color_palette(&color_palette),
     m_last_mouse_pos(0, 0)
 {}
 
@@ -74,6 +75,7 @@ void CanvasView::onMousePressed(plug::MouseButton key, double x, double y, plug:
         plug::Tool *tool = m_tool_palette->getActiveTool();
         if (tool != nullptr)
         {
+            tool->setActiveCanvas(*m_canvas);
             tool->onMainButton(plug::ControlState(plug::State::Pressed),
                     pos * m_canvas->getSize());
 

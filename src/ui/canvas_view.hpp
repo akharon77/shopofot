@@ -17,10 +17,11 @@ public:
 
     ToolPalette   *m_tool_palette;
     FilterPalette *m_filter_palette;
+    plug::ColorPalette *m_color_palette;
 
     plug::Vec2d m_last_mouse_pos;
 
-    CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette);
+    CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette, plug::ColorPalette &color_palette);
 
     ~CanvasView() = default;
     CanvasView& operator = (const CanvasView &rhs) = delete;

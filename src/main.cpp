@@ -44,6 +44,7 @@
 #include "ui/scrollbar.hpp"
 #include "ui/menu.hpp"
 #include "ui/canvas_view_manager.hpp"
+#include "color_palette.hpp"
 
 int main()
 {
@@ -195,10 +196,12 @@ int main()
     // int32_t green_blue_filter_id     = filter_palette.addFilter(green_blue_filter);
     // int32_t negative_filter_id       = filter_palette.addFilter(negative_filter);
 
+    ColorPalette color_palette;
+
     UniversalLayoutBox sample_box(640_px, 480_px);
     sample_box.setPosition(Vec2d(0_px, 0_px));
 
-    CanvasViewManager canv_manager(sample_box, tool_palette, filter_palette, canv_manager_texture_config);
+    CanvasViewManager canv_manager(sample_box, tool_palette, filter_palette, color_palette, canv_manager_texture_config);
     canv_manager.addCanvas(1024, 640);
     canv_manager.addCanvas(1024, 640);
 
