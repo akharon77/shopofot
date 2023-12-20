@@ -4,8 +4,9 @@
 #include "plug/plugin.hpp"
 #include "filter_palette.hpp"
 #include "tool/tool_palette.hpp"
+#include "shopofot.hpp"
 
-void loadPlugins(const char *path, FilterPalette &filter_palette, ToolPalette &tool_palette);
+void loadPlugins(const char *path, FilterVerticalButtonList &filter_palette, ToolVerticalButtonList &tool_palette);
 
 #endif  // PLUGIN_LOADER_HPP
 

@@ -6,7 +6,8 @@
 size_t FilterPalette::addFilter(plug::Filter &filter)
 {
     m_last_filter = &filter;
-    return m_filter_lst.PushBack(&filter);
+    m_anch = m_filter_lst.PushBack(&filter);
+    return m_anch;
 }
 
 plug::Filter* FilterPalette::getFilter(size_t filter_id)
@@ -16,12 +17,13 @@ plug::Filter* FilterPalette::getFilter(size_t filter_id)
 
 plug::Filter* FilterPalette::getLastFilter()
 {
-    return m_last_filter;
+    return getFilter(m_anch);
 }
 
 void FilterPalette::setLastFilter(size_t filter_id)
 {
     m_last_filter = getFilter(filter_id);
+    m_anch = filter_id;
 }
 
 size_t FilterPalette::getFilterCount() const
@@ -37,5 +39,7 @@ int32_t FilterPalette::loadPlugin(plug::Plugin *plugin)
 
     if (filter)
         return addFilter(*filter);
+
+    return -1;
 }
 

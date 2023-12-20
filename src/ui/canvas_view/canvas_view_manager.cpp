@@ -16,7 +16,7 @@ void CanvasViewManager::addCanvas(int32_t canv_width, int32_t canv_height)
 
     UniversalLayoutBox canv_base_box(0_px, 0_px);
     canv_base_box.setSize(own_size);
-    canv_base_box.setPosition(own_size / 2);
+    canv_base_box.setPosition(own_size / 1.5);
 
     CanvasView *canvas    = new CanvasView(canv_base_box, canv_width, canv_height, *m_tool_palette, *m_filter_palette, *m_color_palette);
     ScrollBar *scrollbar = new ScrollBar(*canvas, 1_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), *m_texture->m_scrollbar_texture);

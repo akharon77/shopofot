@@ -100,12 +100,6 @@ void VerticalButtonList::onMouseReleased(plug::MouseButton key, double x, double
 
     TextButton::onMouseReleased(key, x, y, context);
 
-    if (m_status == OPENED)
-    {
-        context.stopped = true;
-        return;
-    }
-
     plug::Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
     context.stack.enter(own_transf);
 

@@ -169,19 +169,7 @@ void CanvasView::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
         plug::Widget *tool_widget = tool->getWidget();
 
         if (tool_widget != nullptr)
-            tool_widget->onEvent((const plug::Event&)
-                    plug::KeyboardPressedEvent(key, false, false, false),
-                    context);
-
-        if (tool_widget != nullptr)
         {
-            if (key == plug::KeyCode::Right)
-            {
-                m_tool_palette->nextTool();
-                context.stopped = true;
-                return;
-            }
-
             if (key == plug::KeyCode::Enter)
             {
                 m_tool_palette->getActiveTool()->onConfirm();
@@ -196,6 +184,27 @@ void CanvasView::onKeyboardPressed(plug::KeyCode key, plug::EHC &context)
                 return;
             }
         }
+
+        if (key == plug::KeyCode::Right)
+        {
+            m_tool_palette->nextTool();
+            context.stopped = true;
+            return;
+        }
+
+        if (key == plug::KeyCode::Left)
+        {
+            m_filter_palette->nextFilter();
+            context.stopped = true;
+            return;
+        }
+
+
+        if (tool_widget != nullptr)
+            tool_widget->onEvent((const plug::Event&)
+                    plug::KeyboardPressedEvent(key, false, false, false),
+                    context);
+
     }
 
     if (key == plug::KeyCode::F)

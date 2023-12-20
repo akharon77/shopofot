@@ -31,7 +31,7 @@ static plug::Plugin* loadPlugin(const char *dll_path)
     return plugin;
 }
 
-void loadPlugins(const char *path, FilterPalette &filter_palette, ToolPalette &tool_palette)
+void loadPlugins(const char *path, FilterVerticalButtonList &filter_palette, ToolVerticalButtonList &tool_palette)
 {
     char *full_path = (char*) calloc(MAX_PATH_LEN, sizeof(char));
     strcat(full_path, path);
@@ -62,8 +62,17 @@ void loadPlugins(const char *path, FilterPalette &filter_palette, ToolPalette &t
         plug::Plugin *plugin = loadPlugin(path);
         if (plugin != nullptr)
         {
-            tool_palette  .loadPlugin(plugin);
-            filter_palette.loadPlugin(plugin);
+            int32_t id = -1;
+
+            id = filter_palette.m_canv_manager->m_tool_palette->loadPlugin(plugin);
+            if (id != -1)
+                tool_palette.addTool(plugin->getPluginData()->getName(), id);
+
+            id = filter_palette.m_canv_manager->m_filter_palette->loadPlugin(plugin);
+            if (id != -1)
+                filter_palette.addFilter(plugin->getPluginData()->getName(), id);
+
+            // filter_palette.loadPlugin(plugin);
         }
     }
 
