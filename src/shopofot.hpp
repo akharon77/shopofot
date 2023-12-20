@@ -10,7 +10,7 @@ class ButtonToolSelect : public TextButton
     int32_t m_tool_id;
 
 public:
-    ButtonToolSelect(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t tool_id);
+    ButtonToolSelect(const plug::LayoutBox &box, const char *str, int32_t thickness, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t tool_id);
 
     virtual void onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context) override;
 };
@@ -21,7 +21,7 @@ class ButtonFilterApply : public TextButton
     int32_t m_filt_id;
 
 public:
-    ButtonFilterApply(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t filt_id);
+    ButtonFilterApply(const plug::LayoutBox &box, const char *str, int32_t thickness, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t filt_id);
 
     virtual void onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context) override;
 };
@@ -31,7 +31,7 @@ class ButtonNewCanvasWindow : public TextButton
     CanvasViewManager *m_canv_manager;
 
 public:
-    ButtonNewCanvasWindow(const plug::LayoutBox &box, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager);
+    ButtonNewCanvasWindow(const plug::LayoutBox &box, int32_t thickness, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager);
 
     virtual void onMousePressed(plug::MouseButton key, double x, double y, plug::EHC &context) override;
 };
@@ -42,7 +42,7 @@ public:
     CanvasViewManager *m_canv_manager;
     TextButtonTexture *m_btn_texture;
 
-    FilterVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, TextButtonTexture &btn_texture);
+    FilterVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, int32_t thickness, TextButtonTexture &btn_texture);
 
     void addFilter(const char *str, int32_t filt_id);
 
@@ -58,7 +58,7 @@ public:
     CanvasViewManager *m_canv_manager;
     TextButtonTexture *m_btn_texture;
 
-    ToolVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, TextButtonTexture &btn_texture);
+    ToolVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, int32_t thickness, TextButtonTexture &btn_texture);
 
     void addTool(const char *str, int32_t tool_id);
 
@@ -74,7 +74,7 @@ class FileVerticalButtonList : public VerticalButtonList
     TextButtonTexture *m_btn_texture;
 
 public:
-    FileVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, TextButtonTexture &btn_texture);
+    FileVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, int32_t thickness, TextButtonTexture &btn_texture);
     ~FileVerticalButtonList();
 
     FileVerticalButtonList& operator = (FileVerticalButtonList &rhs) = delete;

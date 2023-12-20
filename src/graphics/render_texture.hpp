@@ -30,6 +30,8 @@ public:
     virtual void clear(plug::Color color) override;
 
     virtual void setActive(bool active) override;
+
+    virtual sf::RenderTarget &getSFMLRenderTarget() override {return m_sf_texture;}
 };
 
 #endif  // GRAPHICS_RENDER_TEXTURE_HPP

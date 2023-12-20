@@ -19,7 +19,9 @@ class VerticalButtonList : public TextButton
     double m_bottom;
 
 public:
-    VerticalButtonList(const plug::LayoutBox &box, const char *str, TextButtonTexture &m_btn_texture);
+    int32_t m_thickness;
+
+    VerticalButtonList(const plug::LayoutBox &box, const char *str, int32_t thickness, TextButtonTexture &m_btn_texture);
 
     ~VerticalButtonList() = default;
     VerticalButtonList& operator = (const VerticalButtonList &rhs) = delete;

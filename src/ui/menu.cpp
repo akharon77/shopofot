@@ -52,6 +52,20 @@ void Menu::draw(plug::TransformStack &stack, plug::RenderTarget &target)
     Transform own_transf(getLayoutBox().getPosition(), plug::Vec2d(1, 1));
     stack.enter(own_transf);
 
+    Vec2d menu_size = getLayoutBox().getSize();
+    plug::VertexArray vertex_array(plug::PrimitiveType::Quads, 4);
+    vertex_array[0].position = plug::Vec2d(0,      0);
+    vertex_array[1].position = plug::Vec2d(m_wrappee->getLayoutBox().getSize().x, 0);
+    vertex_array[2].position = plug::Vec2d(m_wrappee->getLayoutBox().getSize().x, m_max_height);
+    vertex_array[3].position = plug::Vec2d(0,      m_max_height);
+    for (int i = 0; i < 4; ++i)
+    {
+        vertex_array[i].color = plug::Color(60, 60, 60);
+        plug::Vec2d pos = stack.apply(vertex_array[i].position);
+        vertex_array[i].position = pos;
+    }
+    target.draw(vertex_array);
+
     m_wrappee->draw(stack, target);
 
     int32_t anch = m_btn_list.GetHead();

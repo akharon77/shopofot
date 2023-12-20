@@ -1,8 +1,9 @@
 #include "ui/button/vertical_button_list.hpp"
 #include "universal_layoutbox.hpp"
 
-VerticalButtonList::VerticalButtonList(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture) :
-    TextButton(box, str, btn_texture),
+VerticalButtonList::VerticalButtonList(const plug::LayoutBox &box, const char *str, int32_t thickness, TextButtonTexture &btn_texture) :
+    TextButton(box, str, thickness, btn_texture),
+    m_thickness(thickness),
     m_status(DEFAULT),
     m_bottom(0)
 {}
@@ -13,7 +14,7 @@ int32_t VerticalButtonList::addButton(Button &btn)
     plug::Vec2d prev_btn_size = btn.getLayoutBox().getSize();
 
     btn.setLayoutBox(UniversalLayoutBox(0_px, 0_px));
-    btn.getLayoutBox().setSize(prev_btn_size);
+    btn.getLayoutBox().setSize(prev_btn_size + Vec2d(prev_btn_size.x, 0));
     btn.getLayoutBox().setPosition(plug::Vec2d(0, own_size.y + m_bottom));
 
     m_bottom += prev_btn_size.y;

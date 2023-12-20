@@ -21,6 +21,8 @@ public:
 
     plug::Vec2d m_last_mouse_pos;
 
+    bool m_active;
+
     CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t canv_height, ToolPalette &tool_palette, FilterPalette &filter_palette, plug::ColorPalette &color_palette);
 
     ~CanvasView() = default;

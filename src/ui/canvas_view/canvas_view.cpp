@@ -11,7 +11,8 @@ CanvasView::CanvasView(const plug::LayoutBox &box, int32_t canv_width, int32_t c
     m_tool_palette(&tool_palette),
     m_filter_palette(&filter_palette),
     m_color_palette(&color_palette),
-    m_last_mouse_pos(0, 0)
+    m_last_mouse_pos(0, 0),
+    m_active(false)
 {}
 
 void CanvasView::loadFromImage(const char *path)
@@ -43,15 +44,18 @@ void CanvasView::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 
     target.draw(buf_vertex_arr, m_canvas->getTexture());
 
-    plug::Tool *tool = m_tool_palette->getActiveTool();
-    if (tool != nullptr)
+    if (m_active)
     {
-        plug::Widget *tool_widget = tool->getWidget();
-        if (tool_widget != nullptr)
+        plug::Tool *tool = m_tool_palette->getActiveTool();
+        if (tool != nullptr)
         {
-            stack.enter(Transform(Vec2d(0, 0), Vec2d(1, 1) / m_canvas->getSize()));
-            tool_widget->draw(stack, target);
-            stack.leave();
+            plug::Widget *tool_widget = tool->getWidget();
+            if (tool_widget != nullptr)
+            {
+                stack.enter(Transform(Vec2d(0, 0), Vec2d(1, 1) / m_canvas->getSize()));
+                tool_widget->draw(stack, target);
+                stack.leave();
+            }
         }
     }
 

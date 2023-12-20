@@ -4,6 +4,8 @@
 #include "plug/graphics/texture.hpp"
 #include "plug/graphics/vertex_array.hpp"
 
+#include <SFML/Graphics.hpp>
+
 namespace plug
 {
     class RenderTarget
@@ -17,6 +19,8 @@ namespace plug
         virtual void clear(Color color) = 0;
 
         virtual void setActive(bool active) = 0;
+
+        virtual sf::RenderTarget &getSFMLRenderTarget() = 0;
     };
 
 } // namespace plug

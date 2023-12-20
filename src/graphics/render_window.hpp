@@ -19,6 +19,8 @@ public:
     virtual void clear(plug::Color color) override;
 
     virtual void setActive(bool active) override;
+
+    virtual sf::RenderTarget &getSFMLRenderTarget() override {return m_window;}
 };
 
 #endif  // GRAPHICS_RENDER_WINDOW_HPP

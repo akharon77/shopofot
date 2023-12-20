@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "ui/canvas_view_manager.hpp"
 #include "universal_layoutbox.hpp"
 #include "math/transform_stack.hpp"
@@ -7,23 +9,30 @@ CanvasViewManager::CanvasViewManager(const plug::LayoutBox &box, ToolPalette &to
     m_tool_palette(&tool_palette),
     m_filter_palette(&filter_palette),
     m_color_palette(&color_palette),
-    m_texture(&canv_manager_texture)
+    m_texture(&canv_manager_texture),
+    m_glob_cnt(0)
 {}
 
 void CanvasViewManager::addCanvas(int32_t canv_width, int32_t canv_height)
 {
+    ++m_glob_cnt;
     Vec2d own_size = getLayoutBox().getSize();
 
     UniversalLayoutBox canv_base_box(0_px, 0_px);
     canv_base_box.setSize(own_size);
-    canv_base_box.setPosition(own_size / 1.5);
+    canv_base_box.setPosition(Vec2d(50, 50));
 
     CanvasView *canvas    = new CanvasView(canv_base_box, canv_width, canv_height, *m_tool_palette, *m_filter_palette, *m_color_palette);
-    ScrollBar *scrollbar = new ScrollBar(*canvas, 1_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), *m_texture->m_scrollbar_texture);
-    Frame     *frame     = new Frame(*scrollbar, "hello", 8_mm, *m_texture->m_frame_texture);
+    ScrollBar *scrollbar = new ScrollBar(*canvas, 0.5_cm, 10_cm, 10_cm, static_cast<ScrollBar::scrollable_t>(ScrollBar::SCROLLABLE_VERTICAL | ScrollBar::SCROLLABLE_HORIZONTAL), *m_texture->m_scrollbar_texture);
+    char canvas_str[32] = "";
+    sprintf(canvas_str, "Canvas %d", m_glob_cnt);
+    Frame     *frame     = new Frame(*scrollbar, strdup(canvas_str), 5_mm, *m_texture->m_frame_texture);
 
     canvas->loadFromImage("assets/img/cat.jpg");
 
+    if (m_canv_window_lst.GetSize() > 0)
+        m_canv_window_lst.Get(m_canv_window_lst.GetHead())->val->m_canvas->m_active = false;
+    canvas->m_active = true;
     int32_t id = m_canv_window_lst.PushFront(new CanvasWindow(canvas, scrollbar, frame));
     frame->setClosable(true);
     frame->setContainer(*this);
@@ -83,6 +92,8 @@ void CanvasViewManager::onMousePressed(plug::MouseButton key, double x, double y
             if (m_canv_window_lst.GetSize() == size)
             {
                 CanvasWindow *val = node.val;
+                m_canv_window_lst.Get(m_canv_window_lst.GetHead())->val->m_canvas->m_active = false;
+                val->m_canvas->m_active = true;
                 m_canv_window_lst.Erase(anch);
                 m_canv_window_lst.PushFront(val);
             }
@@ -116,6 +127,8 @@ void CanvasViewManager::onMouseReleased(plug::MouseButton key, double x, double 
         if (context.stopped)
         {
             CanvasWindow *val = node.val;
+            m_canv_window_lst.Get(m_canv_window_lst.GetHead())->val->m_canvas->m_active = false;
+            val->m_canvas->m_active = true;
             m_canv_window_lst.Erase(anch);
             m_canv_window_lst.PushFront(val);
 
@@ -148,6 +161,8 @@ void CanvasViewManager::onMouseMoved(double x, double y, plug::EHC &context)
         if (context.stopped)
         {
             CanvasWindow *val = node.val;
+            m_canv_window_lst.Get(m_canv_window_lst.GetHead())->val->m_canvas->m_active = false;
+            val->m_canvas->m_active = true;
             m_canv_window_lst.Erase(anch);
             m_canv_window_lst.PushFront(val);
 

@@ -5,10 +5,13 @@
 #include "widget.hpp"
 #include "universal_layoutbox.hpp"
 
+#include <SFML/Graphics.hpp>
+
 struct FrameTexture
 {
     ButtonTexture *m_close_btn_texture;
     ButtonTexture *m_full_btn_texture;
+    sf::Font &font;
 };
 
 class Frame : public Widget

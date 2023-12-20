@@ -2,6 +2,7 @@
 
 #include "ui/frame.hpp"
 #include "math/transform_stack.hpp"
+#include "graphics/shapes.hpp"
 
 static const double EPS = 1e-6;
 static TransformStack FAKE_STACK;
@@ -19,10 +20,6 @@ Frame::Frame(Widget &wrappee, const char *title, double thickness, FrameTexture 
     m_close_btn(*frame_texture.m_close_btn_texture),
     m_interactive(interactive_t::DEFAULT)
 {
-    // TODO
-    // There should be special frame layoutbox, which will rebroadcast resizing right way,
-    // but now there is wrong solution
-    
     plug::Vec2d wrappee_pos  = wrappee.getLayoutBox().getPosition();
     plug::Vec2d wrappee_size = wrappee.getLayoutBox().getSize();
 
@@ -66,6 +63,19 @@ void Frame::draw(plug::TransformStack &stack, plug::RenderTarget &target)
 
     target.draw(buf_vertex_array);
     m_wrappee->draw(stack, target);
+
+    Vec2d pos = stack.apply(Vec2d(0, 0));
+    pos += Vec2d(m_thickness * 0.05, m_thickness * 0.05);
+
+    sf::Text text;
+    text.setFont(m_frame_texture->font);
+    text.setString(m_title);
+    text.setCharacterSize(m_thickness * 0.9);
+    text.setFillColor(sf::Color::Black);
+    text.setPosition(pos.x, pos.y);
+    target.getSFMLRenderTarget().draw(text);
+
+    // drawText(target, , m_title, m_thickness * 0.9, plug::Color(235, 101, 135));
 
     if ((uint8_t) m_interactive & (uint8_t) interactive_t::CLOSABLE)
         m_close_btn.draw(stack, target);

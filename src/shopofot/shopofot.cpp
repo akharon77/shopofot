@@ -1,8 +1,10 @@
+#include <cstring>
+
 #include "shopofot.hpp"
 #include "universal_layoutbox.hpp"
 
-ButtonToolSelect::ButtonToolSelect(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t tool_id) :
-    TextButton(box, str, btn_texture),
+ButtonToolSelect::ButtonToolSelect(const plug::LayoutBox &box, const char *str, int32_t thickness, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t tool_id) :
+    TextButton(box, str, thickness, btn_texture),
     m_canv_manager(&canv_manager),
     m_tool_id(tool_id)
 {}
@@ -20,8 +22,8 @@ void ButtonToolSelect::onMousePressed(plug::MouseButton key, double x, double y,
     }
 }
 
-ToolVerticalButtonList::ToolVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, TextButtonTexture &btn_texture) :
-    VerticalButtonList(box, "Tool", btn_texture),
+ToolVerticalButtonList::ToolVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, int32_t thickness, TextButtonTexture &btn_texture) :
+    VerticalButtonList(box, "Tool", thickness, btn_texture),
     m_canv_manager(&canv_manager),
     m_btn_texture(&btn_texture)
 {}
@@ -30,7 +32,7 @@ void ToolVerticalButtonList::addTool(const char *str, int32_t tool_id)
 {
     UniversalLayoutBox box(0_px, 0_px);
     box.setSize(getLayoutBox().getSize());
-    Button *btn = new ButtonToolSelect(box, str, *m_btn_texture, *m_canv_manager, tool_id);
+    Button *btn = new ButtonToolSelect(box, str, m_thickness, *m_btn_texture, *m_canv_manager, tool_id);
     addButton(*btn);
 }
 
@@ -45,8 +47,8 @@ ToolVerticalButtonList::~ToolVerticalButtonList()
     while (pop_btn != nullptr);
 }
 
-ButtonFilterApply::ButtonFilterApply(const plug::LayoutBox &box, const char *str, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t filt_id) :
-    TextButton(box, str, btn_texture),
+ButtonFilterApply::ButtonFilterApply(const plug::LayoutBox &box, const char *str, int32_t thickness, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager, int32_t filt_id) :
+    TextButton(box, str, thickness, btn_texture),
     m_canv_manager(&canv_manager),
     m_filt_id(filt_id)
 {}
@@ -67,8 +69,8 @@ void ButtonFilterApply::onMousePressed(plug::MouseButton key, double x, double y
     }
 }
 
-FilterVerticalButtonList::FilterVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, TextButtonTexture &btn_texture) :
-    VerticalButtonList(box, "Filter", btn_texture),
+FilterVerticalButtonList::FilterVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, int32_t thickness, TextButtonTexture &btn_texture) :
+    VerticalButtonList(box, "Filter", thickness, btn_texture),
     m_canv_manager(&canv_manager),
     m_btn_texture(&btn_texture)
 {}
@@ -77,7 +79,10 @@ void FilterVerticalButtonList::addFilter(const char *str, int32_t filt_id)
 {
     UniversalLayoutBox box(0_px, 0_px);
     box.setSize(getLayoutBox().getSize());
-    Button *btn = new ButtonFilterApply(box, str, *m_btn_texture, *m_canv_manager, filt_id);
+    char s[32] = "";
+    strncpy(s, str, 20);
+    strcat(s, "...");
+    Button *btn = new ButtonFilterApply(box, strdup(s), m_thickness, *m_btn_texture, *m_canv_manager, filt_id);
     addButton(*btn);
 }
 
@@ -92,8 +97,8 @@ FilterVerticalButtonList::~FilterVerticalButtonList()
     while (pop_btn != nullptr);
 }
 
-ButtonNewCanvasWindow::ButtonNewCanvasWindow(const plug::LayoutBox &box, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager) :
-    TextButton(box, "New canvas", btn_texture),
+ButtonNewCanvasWindow::ButtonNewCanvasWindow(const plug::LayoutBox &box, int32_t thickness, TextButtonTexture &btn_texture, CanvasViewManager &canv_manager) :
+    TextButton(box, "New canvas", thickness, btn_texture),
     m_canv_manager(&canv_manager)
 {}
 
@@ -107,14 +112,14 @@ void ButtonNewCanvasWindow::onMousePressed(plug::MouseButton key, double x, doub
         m_canv_manager->addCanvas(1024, 1024);
 }
 
-FileVerticalButtonList::FileVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, TextButtonTexture &btn_texture) :
-    VerticalButtonList(box, "File", btn_texture),
+FileVerticalButtonList::FileVerticalButtonList(const plug::LayoutBox &box, CanvasViewManager &canv_manager, int32_t thickness, TextButtonTexture &btn_texture) :
+    VerticalButtonList(box, "File", thickness, btn_texture),
     m_canv_manager(&canv_manager),
     m_btn_texture(&btn_texture)
 {
     UniversalLayoutBox sample_box(0_px, 0_px);
     sample_box.setSize(getLayoutBox().getSize());
-    Button *btn = new ButtonNewCanvasWindow(sample_box, *m_btn_texture, *m_canv_manager);
+    Button *btn = new ButtonNewCanvasWindow(sample_box, m_thickness, *m_btn_texture, *m_canv_manager);
     addButton(*btn);
 }
 
